@@ -11,7 +11,6 @@
     "standard-with-typescript",
     "plugin:react/recommended",
     "next/core-web-vitals",
-    "plugin:@next/next/recommended",
     "prettier",
     "eslint-config-prettier"
   ],
