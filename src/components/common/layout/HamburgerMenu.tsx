@@ -4,6 +4,7 @@ import { HamburgerMenuStyle } from '@/styles/common/layout/layoutStyles';
 import React, { useState } from 'react';
 import UserIcon from '../ui/UserIcon';
 import SecretIcon from '../ui/SecretIcon';
+import BasicButton from '../button/Button';
 
 const menuList = [
   {
@@ -62,7 +63,16 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
             ))}
           </ul>
         </div>
-        <div>버튼</div>
+        <div>
+          <BasicButton
+            color="red"
+            assetType="Secondary"
+            size="S"
+            content="로그아웃"
+            onClickEvent={null}
+            isActive
+          />
+        </div>
       </div>
     </HamburgerMenuStyle>
   );

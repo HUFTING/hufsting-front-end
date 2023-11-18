@@ -39,7 +39,7 @@ export const HamburgerMenuStyle = styled.section`
     > div.body {
       ${tw`w-[9rem] h-full bg-[#F8F8F8] py-7 flex flex-col justify-between`}
 
-      > div {
+      > div:first-child {
         ${tw`w-full flex flex-col`}
 
         div.user-info {
@@ -78,6 +78,10 @@ export const HamburgerMenuStyle = styled.section`
             }
           }
         }
+      }
+
+      > div:last-child {
+        ${tw`flex w-full px-4 justify-center`}
       }
     }
   }
