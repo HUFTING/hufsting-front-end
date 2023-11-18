@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import Logo from '../ui/LogoIcon';
 import SearchIcon from '../ui/SearchIcon';
 import HamburgerIcon from '../ui/HamburgerIcon';
+import HamburgerMenu from './HamburgerMenu';
 
 const MainHeader = () => {
   const [openHamburger, setOpenHamburger] = useState<boolean>(false);
@@ -30,7 +31,7 @@ const MainHeader = () => {
           <HamburgerIcon />
         </div>
       </div>
-      {openHamburger && <section>hamburger</section>}
+      {openHamburger && <HamburgerMenu />}
     </MainHeaderStyle>
   );
 };
