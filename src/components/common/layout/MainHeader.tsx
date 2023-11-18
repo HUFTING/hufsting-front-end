@@ -10,10 +10,6 @@ import HamburgerMenu from './HamburgerMenu';
 const MainHeader = () => {
   const [openHamburger, setOpenHamburger] = useState<boolean>(false);
 
-  const openHamburgerHandler = () => {
-    setOpenHamburger(true);
-  };
-
   return (
     <MainHeaderStyle>
       <div>
@@ -24,14 +20,22 @@ const MainHeader = () => {
           <SearchIcon />
         </div>
         <div
-          onClick={() => {}}
-          onKeyDown={openHamburgerHandler}
+          onClick={() => {
+            setOpenHamburger(true);
+          }}
+          // onKeyDown={() => {}}
           role="presentation"
         >
           <HamburgerIcon />
         </div>
       </div>
-      {openHamburger && <HamburgerMenu />}
+      {openHamburger && (
+        <HamburgerMenu
+          closeHamburgerEvent={() => {
+            setOpenHamburger(false);
+          }}
+        />
+      )}
     </MainHeaderStyle>
   );
 };

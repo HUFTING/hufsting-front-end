@@ -31,12 +31,16 @@ const menuList = [
     pickedIcon: <SecretIcon color="white" />,
   },
 ];
-const HamburgerMenu = () => {
+interface props {
+  closeHamburgerEvent: () => void;
+}
+
+const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
   const [picked] = useState<string | null>('프로필');
 
   return (
     <HamburgerMenuStyle>
-      <div />
+      <div role="presentation" onClick={closeHamburgerEvent} />
       <div className="body">
         <div>
           <div className="user-info">
