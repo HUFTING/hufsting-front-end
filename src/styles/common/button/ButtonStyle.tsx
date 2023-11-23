@@ -2,8 +2,8 @@ import type { SizeAssetType } from '@/types/common/buttonType';
 import styled from 'styled-components';
 
 export interface BasicButtonStyleType {
-  sizeAsset: SizeAssetType;
-  colorAsset: {
+  $sizeAsset: SizeAssetType;
+  $colorAsset: {
     backgroundColor: string;
     borderColor: string;
     contentColor: string;
@@ -11,7 +11,7 @@ export interface BasicButtonStyleType {
     disabledBorderColor: string;
     disabledContentColor: string;
   };
-  isActive: boolean;
+  $isActive: boolean;
   width: string;
 }
 
@@ -22,30 +22,30 @@ export const ButtonStyle = styled.button<BasicButtonStyleType>`
     align-items: center;
 
     width: ${props => props.width};
-    height: ${props => props.sizeAsset.height};
+    height: ${props => props.$sizeAsset.height};
 
-    padding-top: ${props => props.sizeAsset.paddingY};
-    padding-bottom: ${props => props.sizeAsset.paddingY};
-    padding-left: ${props => props.sizeAsset.paddingX};
-    padding-right: ${props => props.sizeAsset.paddingX};
+    padding-top: ${props => props.$sizeAsset.paddingY};
+    padding-bottom: ${props => props.$sizeAsset.paddingY};
+    padding-left: ${props => props.$sizeAsset.paddingX};
+    padding-right: ${props => props.$sizeAsset.paddingX};
 
-    font-size: ${props => props.sizeAsset.fontSize};
-    font-weight: ${props => props.sizeAsset.fontWeight};
+    font-size: ${props => props.$sizeAsset.fontSize};
+    font-weight: ${props => props.$sizeAsset.fontWeight};
     color: ${props =>
-      props.isActive
-        ? props.colorAsset.contentColor
-        : props.colorAsset.disabledContentColor};
+      props.$isActive
+        ? props.$colorAsset.contentColor
+        : props.$colorAsset.disabledContentColor};
 
     border-radius: 0.5rem;
     border: 1px solid
       ${props =>
-        props.isActive
-          ? props.colorAsset.borderColor
-          : props.colorAsset.disabledBorderColor};
+        props.$isActive
+          ? props.$colorAsset.borderColor
+          : props.$colorAsset.disabledBorderColor};
     background: ${props =>
-      props.isActive
-        ? props.colorAsset.backgroundColor
-        : props.colorAsset.disabledBackgroundColor};
-    cursor: ${props => (props.isActive ? 'pointer' : 'unset')};
+      props.$isActive
+        ? props.$colorAsset.backgroundColor
+        : props.$colorAsset.disabledBackgroundColor};
+    cursor: ${props => (props.$isActive ? 'pointer' : 'unset')};
   }
 `;
