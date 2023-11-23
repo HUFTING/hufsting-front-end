@@ -81,9 +81,9 @@ const BasicButton = ({
 
   return (
     <ButtonStyle
-      sizeAsset={sizeAsset as SizeAssetType}
-      colorAsset={colorAsset}
-      isActive={isActive}
+      $sizeAsset={sizeAsset as SizeAssetType}
+      $colorAsset={colorAsset}
+      $isActive={isActive}
       onClick={() => {
         if (onClickEvent !== null) {
           isActive && onClickEvent();
