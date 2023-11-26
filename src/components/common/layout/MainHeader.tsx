@@ -23,7 +23,6 @@ const MainHeader = () => {
           onClick={() => {
             setOpenHamburger(true);
           }}
-          // onKeyDown={() => {}}
           role="presentation"
         >
           <HamburgerIcon />
