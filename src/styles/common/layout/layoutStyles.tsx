@@ -97,3 +97,14 @@ export const HamburgerMenuStyle = styled.section`
     }
   }
 `;
+
+export const BasicModalStyle = styled.article`
+  & {
+    ${tw`w-[390px] h-screen fixed flex justify-center items-center`}
+
+    > section.modal {
+      ${tw`w-[20.5rem] p-4 flex flex-col items-center gap-4 justify-center rounded-3xl bg-white`}
+      box-shadow:0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+  }
+`;

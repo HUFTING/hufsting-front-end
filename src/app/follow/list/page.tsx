@@ -9,6 +9,7 @@ import {
   FollowerListItemStyle,
   FollowerListPageStyle,
 } from '@/styles/followerStyles';
+import AddFollowingModal from '@/components/common/modal/AddFollowingModal';
 
 const UserListPage = () => {
   const router = useRouter();
@@ -17,9 +18,10 @@ const UserListPage = () => {
     name: string;
     isFollowing: boolean;
   }> | null>(null);
+  const [openModal, setOpenModal] = useState(true);
 
-  const addFollowing = () => {
-    console.log('');
+  const addFollowing = (value: string) => {
+    console.log(value);
   };
 
   const getUserList = () => {
@@ -40,7 +42,9 @@ const UserListPage = () => {
       <section
         role="presentation"
         className="add-follower"
-        onClick={addFollowing}
+        onClick={() => {
+          setOpenModal(true);
+        }}
       >
         파트너 추가
         <FollowIcon />
@@ -63,6 +67,7 @@ const UserListPage = () => {
           </FollowerListItemStyle>
         ))}
       </section>
+      {openModal && <AddFollowingModal addEvent={addFollowing} />}
     </FollowerListPageStyle>
   );
 };
