@@ -22,6 +22,10 @@ export const SubHeaderStyle = styled.section`
   & {
     ${tw`flex justify-between items-center px-4 py-2`}
 
+    > div:first-child,div:last-child {
+      ${tw`cursor-pointer`}
+    }
+
     > div:nth-child(2) {
       ${tw`text-2xl font-bold`}
     }
