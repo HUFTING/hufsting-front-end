@@ -45,7 +45,7 @@ export const HamburgerMenuStyle = styled.section`
     }
 
     > div.body {
-      ${tw`w-[9rem] h-full bg-[#F8F8F8] py-7 flex flex-col justify-between`}
+      ${tw`w-[14rem] h-full bg-[#F8F8F8] py-7 flex flex-col justify-between`}
 
       > div:first-child {
         ${tw`w-full flex flex-col`}
@@ -53,15 +53,18 @@ export const HamburgerMenuStyle = styled.section`
         div.user-info {
           ${tw`w-full flex bg-[#EBEBEB] p-2 flex gap-2`}
 
+          > div:first-child {
+            ${tw`bg-pink-50 rounded-[50%] w-12 h-12 overflow-hidden`}
+          }
           > div:last-child {
             > div:first-child {
               color: #294566;
-              font-size: 12px;
+              font-size: 18px;
               font-weight: 800;
             }
             > div:last-child {
               color: #a3b6cc;
-              font-size: 6px;
+              font-size: 12px;
               font-weight: 600;
             }
           }
