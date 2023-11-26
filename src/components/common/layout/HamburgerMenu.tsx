@@ -3,6 +3,7 @@
 import { HamburgerMenuStyle } from '@/styles/common/layout/layoutStyles';
 import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import UserIcon from '../ui/UserIcon';
 import SecretIcon from '../ui/SecretIcon';
 import BasicButton from '../button/Button';
@@ -43,6 +44,11 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
   const pathname = usePathname();
   const router = useRouter();
   const [picked, setPicked] = useState<string | null>(null);
+  const [user] = useState({
+    name: '예람',
+    major: '중국어통번역학과',
+    profile: '/',
+  });
 
   useEffect(() => {
     const i = menuList.findIndex(menu => pathname.includes(menu.link));
@@ -55,10 +61,17 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
       <div className="body">
         <div>
           <div className="user-info">
-            <div>img</div>
             <div>
-              <div>이름</div>
-              <div>학과</div>
+              <Image
+                src={user.profile}
+                alt="사용자 프로필 사진"
+                width={48}
+                height={48}
+              />
+            </div>
+            <div>
+              <div>{user.name}</div>
+              <div>{user.major}</div>
             </div>
           </div>
           <ul>
