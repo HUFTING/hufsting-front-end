@@ -20,7 +20,11 @@ export const MainHeaderStyle = styled.section`
 
 export const SubHeaderStyle = styled.section`
   & {
-    ${tw`bg-pink-200 w-full h-10`}
+    ${tw`flex justify-between items-center px-4 py-2`}
+
+    > div:nth-child(2) {
+      ${tw`text-2xl font-bold`}
+    }
   }
 `;
 
