@@ -17,7 +17,7 @@ export const DropDownStyle = styled.div<DropDownStyleType>`
       }
     }
     > ul {
-      ${tw`absolute top-7 z-10 w-full bg-white border-2 rounded-lg`}
+      ${tw`absolute top-7 z-10 w-full bg-white border-2 rounded-lg max-h-40 overflow-y-auto`}
       > li {
         ${tw`px-2 py-2 border-b-2  cursor-pointer hover:bg-[#FF6969] hover:text-white`}
       }
