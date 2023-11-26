@@ -5,29 +5,31 @@ import React, { useState } from 'react';
 import UserIcon from '../ui/UserIcon';
 import SecretIcon from '../ui/SecretIcon';
 import BasicButton from '../button/Button';
+import ManageFollowIcon from '../ui/ManageFollowIcon';
+import ListIcon from '../ui/ListIcon';
 
 const menuList = [
   {
     title: '프로필',
-    link: '',
+    link: '/',
     icon: <UserIcon />,
     pickedIcon: <UserIcon color="white" />,
   },
   {
     title: '나의 훕팅',
-    link: '',
-    icon: <UserIcon />,
-    pickedIcon: <UserIcon color="white" />,
+    link: '/',
+    icon: <ListIcon />,
+    pickedIcon: <ListIcon color="white" />,
   },
   {
     title: '친구 관리',
-    link: '',
-    icon: <UserIcon />,
-    pickedIcon: <UserIcon color="white" />,
+    link: '/follow/list',
+    icon: <ManageFollowIcon />,
+    pickedIcon: <ManageFollowIcon color="white" />,
   },
   {
     title: '설정',
-    link: '',
+    link: '/',
     icon: <SecretIcon />,
     pickedIcon: <SecretIcon color="white" />,
   },
