@@ -20,7 +20,15 @@ export const MainHeaderStyle = styled.section`
 
 export const SubHeaderStyle = styled.section`
   & {
-    ${tw`bg-pink-200 w-full h-10`}
+    ${tw`flex justify-between items-center px-4 py-2`}
+
+    > div:first-child,div:last-child {
+      ${tw`cursor-pointer`}
+    }
+
+    > div:nth-child(2) {
+      ${tw`text-2xl font-bold`}
+    }
   }
 `;
 
@@ -37,7 +45,7 @@ export const HamburgerMenuStyle = styled.section`
     }
 
     > div.body {
-      ${tw`w-[9rem] h-full bg-[#F8F8F8] py-7 flex flex-col justify-between`}
+      ${tw`w-[14rem] h-full bg-[#F8F8F8] py-7 flex flex-col justify-between`}
 
       > div:first-child {
         ${tw`w-full flex flex-col`}
@@ -45,15 +53,18 @@ export const HamburgerMenuStyle = styled.section`
         div.user-info {
           ${tw`w-full flex bg-[#EBEBEB] p-2 flex gap-2`}
 
+          > div:first-child {
+            ${tw`bg-pink-50 rounded-[50%] w-12 h-12 overflow-hidden`}
+          }
           > div:last-child {
             > div:first-child {
               color: #294566;
-              font-size: 12px;
+              font-size: 18px;
               font-weight: 800;
             }
             > div:last-child {
               color: #a3b6cc;
-              font-size: 6px;
+              font-size: 12px;
               font-weight: 600;
             }
           }
@@ -83,6 +94,17 @@ export const HamburgerMenuStyle = styled.section`
       > div:last-child {
         ${tw`flex w-full px-4 justify-center`}
       }
+    }
+  }
+`;
+
+export const BasicModalStyle = styled.article`
+  & {
+    ${tw`w-[390px] h-screen fixed flex justify-center items-center`}
+
+    > section.modal {
+      ${tw`w-[20.5rem] p-4 flex flex-col items-center gap-4 justify-center rounded-3xl bg-white`}
+      box-shadow:0px 0px 4px 0px rgba(0, 0, 0, 0.25);
     }
   }
 `;

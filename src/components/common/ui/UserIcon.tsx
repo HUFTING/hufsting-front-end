@@ -5,7 +5,7 @@ const UserIcon = ({ color = '#A3B6CC' }) => (
     xmlns="http://www.w3.org/2000/svg"
     width="29"
     height="29"
-    viewBox="0 0 29 29"
+    viewBox="0 0 24 24"
     fill="none"
   >
     <path
