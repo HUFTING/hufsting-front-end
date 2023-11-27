@@ -7,6 +7,7 @@ import BasicButton from '../common/button/Button';
 import UserProfileInput from './UserProfileInput';
 import SignUpHeader from './SignUpHeader';
 import SignUpContainer from './SignUpContainer';
+import UserProfileTextArea from './UserProfileTextArea';
 
 const DropDownData = [
   {
@@ -77,6 +78,10 @@ const Register = () => (
         />
       ),
     )}
+    <UserProfileTextArea
+      titleContent="한줄 정보"
+      subTitleContent="매칭 상대방이 확인할 수 있습니다"
+    />
     <BasicButton
       content="저장하기"
       color="red"

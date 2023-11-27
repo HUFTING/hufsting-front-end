@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DropDownStyle } from '@/styles/common/dropdown/DropDownStyle';
+import { DropDownStyle } from '@/styles/common/input/dropdown/DropDownStyle';
 import type { DropDownPropsType } from '@/types/common/dropdown';
 import DownIcon from '../ui/DownIcon';
 import DropDownList from './DropDownItems';
