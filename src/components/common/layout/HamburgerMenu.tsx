@@ -1,33 +1,37 @@
 'use client';
 
 import { HamburgerMenuStyle } from '@/styles/common/layout/layoutStyles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import UserIcon from '../ui/UserIcon';
 import SecretIcon from '../ui/SecretIcon';
 import BasicButton from '../button/Button';
+import ManageFollowIcon from '../ui/ManageFollowIcon';
+import ListIcon from '../ui/ListIcon';
 
 const menuList = [
   {
     title: '프로필',
-    link: '',
+    link: '/sdlfjslad;fdf',
     icon: <UserIcon />,
     pickedIcon: <UserIcon color="white" />,
   },
   {
     title: '나의 훕팅',
-    link: '',
-    icon: <UserIcon />,
-    pickedIcon: <UserIcon color="white" />,
+    link: '/dfsdkflsadlfa',
+    icon: <ListIcon />,
+    pickedIcon: <ListIcon color="white" />,
   },
   {
     title: '친구 관리',
-    link: '',
-    icon: <UserIcon />,
-    pickedIcon: <UserIcon color="white" />,
+    link: '/follow/list',
+    icon: <ManageFollowIcon />,
+    pickedIcon: <ManageFollowIcon color="white" />,
   },
   {
     title: '설정',
-    link: '',
+    link: '/fslkdajflsda;fl',
     icon: <SecretIcon />,
     pickedIcon: <SecretIcon color="white" />,
   },
@@ -37,7 +41,19 @@ interface props {
 }
 
 const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
-  const [picked] = useState<string | null>('프로필');
+  const pathname = usePathname();
+  const router = useRouter();
+  const [picked, setPicked] = useState<string | null>(null);
+  const [user] = useState({
+    name: '예람',
+    major: '중국어통번역학과',
+    profile: '/',
+  });
+
+  useEffect(() => {
+    const i = menuList.findIndex(menu => pathname.includes(menu.link));
+    setPicked(menuList[i].title);
+  }, [pathname]);
 
   return (
     <HamburgerMenuStyle>
@@ -45,10 +61,17 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
       <div className="body">
         <div>
           <div className="user-info">
-            <div>img</div>
             <div>
-              <div>이름</div>
-              <div>학과</div>
+              <Image
+                src={user.profile}
+                alt="사용자 프로필 사진"
+                width={48}
+                height={48}
+              />
+            </div>
+            <div>
+              <div>{user.name}</div>
+              <div>{user.major}</div>
             </div>
           </div>
           <ul>
@@ -56,6 +79,11 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
               <li
                 key={menu.title}
                 className={`${picked === menu.title ? 'picked' : ''}`}
+                role="presentation"
+                onClick={() => {
+                  router.push(menu.link);
+                  closeHamburgerEvent();
+                }}
               >
                 {picked === menu.title ? menu.pickedIcon : menu.icon}
                 <div>{menu.title}</div>
