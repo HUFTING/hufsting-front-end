@@ -2,27 +2,37 @@
 
 import React from 'react';
 import Text from '@/components/common/text/Text';
-import type { DropDownPropsType } from '@/types/common/dropdown';
+import type { UserProfileInputType } from '@/types/common/profile';
 import DropDown from '../../common/dropdown/DropDown';
 
 const UserProfileInput = ({
-  defaultValue,
+  dropDownState,
+  dropDownTitle,
+  dropDownName,
   dropDownItems,
   required = false,
-}: Omit<DropDownPropsType, 'isBorder'>) => (
+  disabled = false,
+  onChange,
+}: UserProfileInputType) => (
   <div className="flex justify-between my-10">
     <div className="flex">
       <Text
         color="black"
         fontSize="xl"
         fontWeight="ExtraBold"
-        content={defaultValue}
+        content={dropDownTitle}
       />
       {required && (
         <Text color="red" fontSize="lg" fontWeight="ExtraBold" content="*" />
       )}
     </div>
-    <DropDown defaultValue={defaultValue} dropDownItems={dropDownItems} />
+    <DropDown
+      dropDownState={dropDownState}
+      dropDownItems={dropDownItems}
+      dropDownName={dropDownName}
+      onChange={onChange}
+      disabled={disabled}
+    />
   </div>
 );
 
