@@ -1,7 +1,11 @@
 'use client';
 
-import React, { useReducer } from 'react';
-import { type DropDownDataType } from '@/types/common/profile';
+import React from 'react';
+import useDropdownForm from '@/hooks/useDropdownForm';
+import {
+  ProfileDropDownData,
+  ProfileDropDownInitalState,
+} from '@/constants/dropdown';
 import Logo from '../common/ui/LogoIcon';
 import Text from '../common/text/Text';
 import BasicButton from '../common/button/Button';
@@ -10,78 +14,10 @@ import SignUpHeader from './SignUpHeader';
 import SignUpContainer from './SignUpContainer';
 import UserProfileTextArea from './UserProfileTextArea';
 
-const DropDownData: DropDownDataType[] = [
-  {
-    dropDownTitle: '성별',
-    dropDownName: 'gender',
-    dropDownItems: ['남성', '여성'],
-    disabled: true,
-    required: true,
-  },
-  {
-    dropDownTitle: 'MBTI',
-    dropDownName: 'mbti',
-    dropDownItems: [
-      'ISTJ',
-      'ISFJ',
-      'INFJ',
-      'INTJ',
-      'ISTP',
-      'ISFP',
-      'INFP',
-      'INTP',
-      'ESTP',
-      'ESFP',
-      'ENFP',
-      'ENTP',
-      'ESTJ',
-      'ESFJ',
-      'ENFJ',
-      'ENTJ',
-    ],
-  },
-  {
-    dropDownTitle: '학번',
-    dropDownName: 'studentNumber',
-    dropDownItems: ['17이하', '18', '19', '20', '21', '22', '23'],
-  },
-  {
-    dropDownTitle: '생년월일',
-    dropDownName: 'birthday',
-    dropDownItems: [
-      '1995이하',
-      '1996',
-      '1997',
-      '1998',
-      '1999',
-      '2000',
-      '2001',
-      '2002',
-      '2003',
-    ],
-  },
-];
-export type FormInitialStateType = Record<string, string>;
-export interface actionType {
-  name: string;
-  value: string;
-}
-
-const initalState = {
-  gender: '',
-  mbti: '',
-  studentNumber: '',
-  birthday: '',
-  content: '',
-};
-const reducer = (state: FormInitialStateType, action: actionType) => ({
-  ...state,
-  [action.name]: action.value,
-});
-
 const Register = () => {
-  const [dropDownState, setDropDownState] = useReducer(reducer, initalState);
-  // console.log(dropDownState);
+  const [dropDownState, setDropDownState] = useDropdownForm(
+    ProfileDropDownInitalState,
+  );
   return (
     <SignUpContainer>
       <SignUpHeader>
@@ -94,7 +30,7 @@ const Register = () => {
         fontWeight="ExtraBold"
         className="mt-12 mb-12"
       />
-      {DropDownData.map(
+      {ProfileDropDownData.map(
         ({
           dropDownTitle,
           dropDownName,

@@ -1,27 +1,17 @@
+import { type DropDownActionType } from '@/types/common/profile';
 import { useReducer } from 'react';
 
-interface FormInitialStateType {
-  gender: string;
-  mbti: string;
-  studentNumber: string;
-  birthday: string;
-  content: string;
-}
+type DropDownDataType = Record<string, string>;
 
-interface actionType {
-  name: string;
-  value: string;
-}
-
-const reducer = (state: FormInitialStateType, action: actionType) => ({
+const reducer = (state: DropDownDataType, action: DropDownActionType) => ({
   ...state,
   [action.name]: action.value,
 });
 
-const useDropdownForm = (initialState: FormInitialStateType) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+const useDropdownForm = (initialState: DropDownDataType) => {
+  const [dropDownState, setDropDownState] = useReducer(reducer, initialState);
 
-  return [state, dispatch];
+  return [dropDownState, setDropDownState] as const;
 };
 
 export default useDropdownForm;
