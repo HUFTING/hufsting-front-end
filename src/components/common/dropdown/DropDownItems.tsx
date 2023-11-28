@@ -1,4 +1,4 @@
-import { type DropDownTypes } from '@/types/common/profile';
+import { type DropDownListType } from '@/types/common/profile';
 import React from 'react';
 
 const DropDownList = ({
@@ -6,10 +6,7 @@ const DropDownList = ({
   dropDownName,
   onChange,
   handleCloseDropDown,
-}: Pick<
-  DropDownTypes,
-  'dropDownItems' | 'dropDownName' | 'onChange' | 'handleCloseDropDown'
->) => (
+}: DropDownListType) => (
   <ul>
     {dropDownItems.map(item => (
       <li
