@@ -1,19 +1,20 @@
+import { type DropDownListType } from '@/types/common/profile';
 import React from 'react';
 
 const DropDownList = ({
   dropDownItems,
-  onClickButton,
-}: {
-  dropDownItems: string[];
-  onClickButton: (item: string) => void;
-}) => (
+  dropDownName,
+  onChange,
+  handleCloseDropDown,
+}: DropDownListType) => (
   <ul>
     {dropDownItems.map(item => (
       <li
         role="presentation"
         key={item}
         onMouseDown={() => {
-          onClickButton(item);
+          onChange({ name: dropDownName, value: item });
+          handleCloseDropDown();
         }}
       >
         {item}

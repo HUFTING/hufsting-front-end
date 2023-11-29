@@ -3,8 +3,9 @@ import React from 'react';
 import type { TitleTextProps, getTextStyleType } from '@/types/common/TextType';
 
 const colorList = {
-  black: 'text-#000000',
-  gray: 'text-#7A7A7A',
+  black: 'text-[#000000]',
+  gray: 'text-[#7A7A7A]',
+  red: 'text-[#FF6869]',
 };
 const getSize = {
   '3xl': 'text-3xl',
