@@ -1,40 +1,42 @@
 import React, { useState } from 'react';
-import { DropDownStyle } from '@/styles/common/dropdown/DropDownStyle';
-import type { DropDownPropsType } from '@/types/common/dropdown';
+import { DropDownStyle } from '@/styles/common/input/dropdown/DropDownStyle';
+import type { DropDownType } from '@/types/common/profile';
 import DownIcon from '../ui/DownIcon';
 import DropDownList from './DropDownItems';
 
 const DropDown = ({
+  dropDownState,
   dropDownItems,
-  defaultValue,
+  dropDownName,
+  onChange,
+  disabled = false,
   isBorder = false,
-}: DropDownPropsType) => {
+}: DropDownType) => {
   const [openDropDown, setOpenDropDown] = useState<boolean>(false);
-  const [value, setValue] = useState(defaultValue);
   const handleOpenDropDown = () => {
     setOpenDropDown(prev => !prev);
   };
-  const HandleCloseDropDown = () => {
+  const handleCloseDropDown = () => {
     setOpenDropDown(false);
   };
-  const onClickButton = (item: string) => {
-    setValue(item);
-    HandleCloseDropDown();
-  };
+
   return (
     <DropDownStyle $isBorder={isBorder}>
       <button
         type="button"
+        name={dropDownName}
         onClick={handleOpenDropDown}
-        onBlur={HandleCloseDropDown}
+        onBlur={handleCloseDropDown}
       >
-        {value}
-        <DownIcon />
+        {dropDownState.length > 0 ? dropDownState : '미선택'}
+        {!disabled && <DownIcon />}
       </button>
-      {openDropDown && (
+      {openDropDown && !disabled && (
         <DropDownList
           dropDownItems={dropDownItems}
-          onClickButton={onClickButton}
+          onChange={onChange}
+          dropDownName={dropDownName}
+          handleCloseDropDown={handleCloseDropDown}
         />
       )}
     </DropDownStyle>
