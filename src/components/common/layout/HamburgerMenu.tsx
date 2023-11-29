@@ -13,7 +13,7 @@ import ListIcon from '../ui/ListIcon';
 const menuList = [
   {
     title: '프로필',
-    link: '/sdlfjslad;fdf',
+    link: '/profile',
     icon: <UserIcon />,
     pickedIcon: <UserIcon color="white" />,
   },
