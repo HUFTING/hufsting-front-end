@@ -52,7 +52,7 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
 
   useEffect(() => {
     const i = menuList.findIndex(menu => pathname.includes(menu.link));
-    setPicked(menuList[i].title);
+    if (i > -1) setPicked(menuList[i].title);
   }, [pathname]);
 
   return (
