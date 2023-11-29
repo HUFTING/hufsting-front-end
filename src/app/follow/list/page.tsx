@@ -18,7 +18,7 @@ const UserListPage = () => {
     name: string;
     isFollowing: boolean;
   }> | null>(null);
-  const [openModal, setOpenModal] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
 
   const addFollowing = (value: string) => {
     console.log(value);
@@ -26,8 +26,13 @@ const UserListPage = () => {
 
   const getUserList = () => {
     setUserList([
-      { id: 1, name: '예람', isFollowing: true },
-      { id: 2, name: '세현', isFollowing: false },
+      { id: 1, name: '임예람', isFollowing: true },
+      { id: 2, name: '김강민', isFollowing: false },
+      { id: 3, name: '김재우', isFollowing: false },
+      { id: 4, name: '김예은', isFollowing: false },
+      { id: 5, name: '원동현', isFollowing: false },
+      { id: 6, name: '설희관', isFollowing: false },
+      { id: 7, name: '조성민', isFollowing: false },
     ]);
   };
 
