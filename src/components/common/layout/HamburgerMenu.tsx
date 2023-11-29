@@ -19,7 +19,7 @@ const menuList = [
   },
   {
     title: '나의 훕팅',
-    link: '/dfsdkflsadlfa',
+    link: '/myhufting',
     icon: <ListIcon />,
     pickedIcon: <ListIcon color="white" />,
   },
@@ -31,7 +31,7 @@ const menuList = [
   },
   {
     title: '설정',
-    link: '/fslkdajflsda;fl',
+    link: '/setting',
     icon: <SecretIcon />,
     pickedIcon: <SecretIcon color="white" />,
   },
@@ -47,7 +47,7 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
   const [user] = useState({
     name: '예람',
     major: '중국어통번역학과',
-    profile: '/',
+    profile: null,
   });
 
   useEffect(() => {
@@ -62,12 +62,16 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
         <div>
           <div className="user-info">
             <div>
-              <Image
-                src={user.profile}
-                alt="사용자 프로필 사진"
-                width={48}
-                height={48}
-              />
+              {user.profile !== null && user.profile !== undefined ? (
+                <Image
+                  src={user.profile}
+                  alt="사용자 프로필 사진"
+                  width={48}
+                  height={48}
+                />
+              ) : (
+                <div className="h-full w-full bg-gray-300" />
+              )}
             </div>
             <div>
               <div>{user.name}</div>
