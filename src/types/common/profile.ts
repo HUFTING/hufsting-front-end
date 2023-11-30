@@ -7,19 +7,19 @@ export interface DropDownActionType {
 
 export interface DropDownTypes {
   dropDownState: string;
-  dropDownItems: string[];
+  dropDownItems?: string[];
   dropDownTitle: string;
   dropDownName: string;
   isBorder?: boolean;
   required?: boolean;
-  onChange: Dispatch<DropDownActionType>;
-  disabled: boolean;
+  onChange?: Dispatch<DropDownActionType>;
+  disabled?: boolean;
   handleCloseDropDown: () => void;
 }
 export interface DropDownDataType {
   dropDownTitle: string;
   dropDownName: string;
-  dropDownItems: string[];
+  dropDownItems?: string[];
   required?: boolean;
   disabled?: boolean;
 }
