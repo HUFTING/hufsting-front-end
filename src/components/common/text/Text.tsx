@@ -31,8 +31,17 @@ const Text = ({
   fontSize,
   fontWeight,
   className,
+  onClick,
 }: TitleTextProps) => (
-  <div className={getTextStyle({ color, fontSize, fontWeight, className })}>
+  <div
+    role="presentation"
+    className={getTextStyle({ color, fontSize, fontWeight, className })}
+    onClick={() => {
+      if (onClick !== undefined) {
+        onClick();
+      }
+    }}
+  >
     {content}
   </div>
 );
