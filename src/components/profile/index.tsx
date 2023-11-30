@@ -11,6 +11,7 @@ import ProfileHeader from './header';
 import ProfileContainer from '../signup/ProfileContainer';
 import UserProfileInput from '../common/input/UserProfileInput';
 import UserProfileTextArea from '../common/input/UserProfileTextArea';
+import Text from '../common/text/Text';
 
 const Profile = () => {
   const [dropDownState, setDropDownState] = useDropdownForm(
@@ -52,7 +53,7 @@ const Profile = () => {
           />
         ),
       )}
-      <div className="w-full h-4 bg-[#E8E8E8]" />
+      <div className="w-full h-4 bg-[#E8E8E8] mb-4" />
       <UserProfileTextArea
         disabled={isDisable}
         titleContent="한줄 정보"
@@ -60,6 +61,18 @@ const Profile = () => {
         state={textValue}
         setState={setTextValue}
       />
+      <div className="h-full flex justify-center items-center w-full py-4 bg-[#E8E8E8]">
+        <Text
+          content="탈퇴하기"
+          fontWeight="Regular"
+          color="red"
+          fontSize="lg"
+          onClick={() => {
+            // eslint-disable-next-line no-console
+            console.log('탈퇴하기');
+          }}
+        />
+      </div>
     </ProfileContainer>
   );
 };
