@@ -20,3 +20,16 @@ export interface BasicButtonProps {
   buttonType?: 'submit' | 'reset' | 'button';
   width?: string;
 }
+
+export type SmallButtonColor = 'red' | 'gray';
+export type SmallButtonAssetType = 'Primary' | 'Secondary';
+export interface SmallButtonProps {
+  color: SmallButtonColor;
+  assetType: SmallButtonAssetType;
+  size: 'S' | 'M';
+  content: string;
+  onClickEvent: null | voidFunc;
+  isActive: boolean;
+  buttonType?: 'submit' | 'reset' | 'button';
+  width?: string;
+}
