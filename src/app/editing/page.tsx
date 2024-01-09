@@ -11,20 +11,7 @@ import BasicButton from '@/components/common/button/Button';
 import Modal from '@/components/Modal';
 import SmallButton from '@/components/common/button/SmallButton';
 
-{
-  /* const otherInfo = [
-  {
-    id: 1,
-    username: '김**',
-    major: 'Global Business%Technology 학부',
-  },
-  {
-    id: 2,
-    username: '원**',
-    major: '수학과',
-  },
-]; */
-}
+const otherInfo = 'https://open.kakao.com/o/gto74LSf';
 
 const total = {
   huftingid: 1,
@@ -34,12 +21,12 @@ const total = {
 
 const Editing = () => {
   const [isOpenModal, setOpenModal] = useState<boolean>(false);
-  const [gender, setGender] = useState<string | null>(null);
+  /* const [gender, setGender] = useState<string | null>(null); */
   const [numberOfPeople, setNumberOfPeople] = useState<number>(0);
 
-  const handleGenderSelection = (selectedGender: string) => {
+  /* const handleGenderSelection = (selectedGender: string) => {
     setGender(selectedGender);
-  };
+  }; */
 
   const handleIncrement = () => {
     setNumberOfPeople(prev => prev + 1);
@@ -73,24 +60,7 @@ const Editing = () => {
         <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
       )}
       <div className="otherInfo">
-        {/* } <SubTitle>성별</SubTitle>
-
-        <div className="flex">
-          <SmallButton
-            content="남성"
-            //'gender == 남성' 이 참이면 Primary를 반환 거짓이면 Secondary를 반환
-            onClickEvent={() => handleGenderSelection('남성')}
-            //버튼을 누르면 handleGenderSelection이 setGender 함수와 useState를 활용해 gender에 남성을 담는다
-            isActive={gender === '남성'}
-          />
-          <SmallButton
-            content="여성"
-            onClickEvent={() => handleGenderSelection('여성')}
-            isActive={gender === '여성'}
-          />
-      </div> */}
-        {/* <div className="genderbox"><p>{total.gender}성</p></div> */}
-        <SubTitle>인원</SubTitle>
+        <SubTitle>희망 인원 수</SubTitle>
         <div className="flex">
           <span>{numberOfPeople}</span>
           <SmallButton
@@ -110,22 +80,17 @@ const Editing = () => {
           />
         </div>
 
-        {/* <OtherInfo>
+        <OtherInfo>
           <div className="top">
-            <SubTitle>상대 정보</SubTitle>
-            <More onClick={handleMore}>더 보기</More>
+            <SubTitle>오픈채팅방 링크</SubTitle>
+            <a href={otherInfo} target="_blank" rel="noopener noreferrer">
+              {otherInfo}
+            </a>
+            <More onClick={handleMore}>더보기</More>
           </div>
-          {otherInfo.map(info => (
-            <div className="infobox" key={info.id}>
-              <p>
-                {info.username} _ {info.major}
-              </p>
-            </div>
-          ))}
-          </OtherInfo> */}
+        </OtherInfo>
       </div>
       <div className="listbox">
-        <p className="essential">필수 참가 인원 {total.num}인</p>
         <NameList total={total} />
       </div>
       <BasicButtonWrapper
@@ -151,16 +116,6 @@ const Editing = () => {
           buttonType="button"
           width="40%"
         />
-        {/* <BasicButton
-          color="red"
-          assetType="Primary"
-          size="M"
-          content="등록하기"
-          onClickEvent={handleClick}
-          isActive
-          buttonType="button"
-          width="50%"
-        /> */}
       </BasicButtonWrapper>
     </Container>
   );

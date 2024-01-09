@@ -7,10 +7,10 @@ import LogoIcon from '@/components/common/ui/LogoIcon';
 import SearchIcon from '@/components/common/ui/SearchIcon';
 import NameList from '@/components/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
-import BasicButton from '@/components/common/button/Button';
+/* import BasicButton from '@/components/common/button/Button'; */
 import Modal from '@/components/Modal';
 
-//오픈 채팅방 링크
+// 오픈 채팅방 링크
 const otherInfo = 'https://open.kakao.com/o/gto74LSf';
 
 const total = {
@@ -22,9 +22,9 @@ const total = {
 const Detail = () => {
   const [isOpenModal, setOpenModal] = useState<boolean>(false);
 
-  const handleClick = () => {
+  /* const handleClick = () => {
     alert('clicked!');
-  };
+  }; */
 
   const handleMore = useCallback(() => {
     setOpenModal(!isOpenModal);
@@ -46,16 +46,16 @@ const Detail = () => {
       <p>
         ❤️훕팅완료❤️
         <br />
-        아래링크로 접소개 인사를 나눠보세요
+        아래링크로 접속해 인사를 나눠보세요
       </p>
       {isOpenModal && (
         <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
       )}
       <div className="otherInfo">
-        <SubTitle>성별</SubTitle>
+        {/* <SubTitle>성별</SubTitle>
         <div className="genderbox">
           <p>{total.gender}성</p>
-        </div>
+      </div> */}
         <OtherInfo>
           <div className="top">
             <SubTitle>오픈채팅방 링크</SubTitle>
@@ -64,31 +64,12 @@ const Detail = () => {
             </a>
             <More onClick={handleMore}>더 보기</More>
           </div>
-          {/*{otherInfo.map(info => (
-            <div className="infobox" key={info.id}>
-              <p>
-                {info.username} _ {info.major}
-              </p>
-            </div>
-          ))}*/}
         </OtherInfo>
       </div>
       <div className="listbox">
         <p className="essential">필수 참가 인원 {total.num}인</p>
         <NameList total={total} />
       </div>
-      {/*<BasicButtonWrapper>
-        <BasicButton
-          color="red"
-          assetType="Primary"
-          size="M"
-          content="매칭하기"
-          onClickEvent={handleClick}
-          isActive
-          buttonType="button"
-          width="100%"
-        />
-        </BasicButtonWrapper>*/}
     </Container>
   );
 };
@@ -197,7 +178,7 @@ const More = styled.button`
   color: #8d8d8d;
 `;
 
-const BasicButtonWrapper = styled.div`
+/* const BasicButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -207,4 +188,4 @@ const BasicButtonWrapper = styled.div`
   bottom: 0;
   padding: 22px;
   z-index: 1000;
-`;
+`; */
