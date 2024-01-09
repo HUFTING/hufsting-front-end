@@ -11,8 +11,7 @@ import BasicButton from '@/components/common/button/Button';
 import Modal from '@/components/Modal';
 import SmallButton from '@/components/common/button/SmallButton';
 
-{
-  /*const otherInfo = [
+/* const otherInfo = [
   {
     id: 1,
     username: '김**',
@@ -23,8 +22,7 @@ import SmallButton from '@/components/common/button/SmallButton';
     username: '원**',
     major: '수학과',
   },
-];*/
-}
+]; */
 
 const total = {
   huftingid: 1,
@@ -78,35 +76,42 @@ const Registerting = () => {
         <div className="flex">
           <SmallButton
             content="남성"
-            //'gender == 남성' 이 참이면 Primary를 반환 거짓이면 Secondary를 반환
-            onClickEvent={() => handleGenderSelection('남성')}
-            //버튼을 누르면 handleGenderSelection이 setGender 함수와 useState를 활용해 gender에 남성을 담는다
+            onClickEvent={() => {
+              handleGenderSelection('남성');
+            }}
             isActive={gender === '남성'}
           />
+
           <SmallButton
             content="여성"
-            onClickEvent={() => handleGenderSelection('여성')}
+            onClickEvent={() => {
+              handleGenderSelection('여성');
+            }}
             isActive={gender === '여성'}
           />
         </div>
-        {/*<div className="genderbox"><p>{total.gender}성</p></div>*/}
-        <SubTitle>인원</SubTitle>
+        {/* <div className="genderbox"><p>{total.gender}성</p></div> */}
+        <SubTitle>희망 인원 수</SubTitle>
         <div className="flex">
           <span>{numberOfPeople}</span>
           <SmallButton
             content="+"
-            onClickEvent={() => handleIncrement()}
-            isActive={true}
+            onClickEvent={() => {
+              handleIncrement();
+            }}
+            isActive // isActive={true}를 isActive로 변경
           />
 
           <SmallButton
             content="-"
-            onClickEvent={() => handleDecrement()}
+            onClickEvent={() => {
+              handleDecrement();
+            }}
             isActive={false}
-          ></SmallButton>
+          />
         </div>
 
-        {/*<OtherInfo>
+        {/* <OtherInfo>
           <div className="top">
             <SubTitle>상대 정보</SubTitle>
             <More onClick={handleMore}>더 보기</More>
@@ -118,7 +123,7 @@ const Registerting = () => {
               </p>
             </div>
           ))}
-          </OtherInfo>*/}
+          </OtherInfo> */}
       </div>
       <div className="listbox">
         <p className="essential">필수 참가 인원 {total.num}인</p>
@@ -210,6 +215,7 @@ const SubTitle = styled.p`
   font-weight: bold;
 `;
 
+/*
 const OtherInfo = styled.div`
   .top {
     display: flex;
@@ -225,6 +231,7 @@ const More = styled.button`
   font-size: 15px;
   color: #8d8d8d;
 `;
+*/
 
 const BasicButtonWrapper = styled.div`
   display: flex;
