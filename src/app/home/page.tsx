@@ -1,30 +1,113 @@
 'use client';
 
-import Filter from '@/components/Filter';
-import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
-import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
-import React from 'react';
+import Filter, {
+  type SelectedFilters,
+} from '@/components/common/dropdown/HomeFilter';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import List from '../../components/List';
+import MainHeader from '@/components/common/layout/MainHeader';
+import SubHeader from '@/components/common/layout/SubHeader';
+import List from '../../components/list/HomeList';
+
+// YourListType을 정의
+interface ListType {
+  huftingid: number;
+  matching: boolean;
+  title: string;
+  people: number;
+  gender: string;
+  username: string;
+  upload: number;
+}
+
+const initialLists: ListType[] = [
+  {
+    huftingid: 1,
+    matching: false,
+    title: '모두 같이 훕팅해요~~',
+    people: 3,
+    gender: '남',
+    username: '김**',
+    upload: 1,
+  },
+  {
+    huftingid: 2,
+    matching: false,
+    title: '모두 같이',
+    people: 3,
+    gender: '여',
+    username: '김**',
+    upload: 1,
+  },
+  {
+    huftingid: 3,
+    matching: false,
+    title: '모두 같이 훕팅해요~~',
+    people: 2,
+    gender: '여',
+    username: '김**',
+    upload: 1,
+  },
+  {
+    huftingid: 4,
+    matching: false,
+    title: '안녕하세요',
+    people: 3,
+    gender: '남',
+    username: '김**',
+    upload: 1,
+  },
+  {
+    huftingid: 5,
+    matching: false,
+    title: 'Hello! How are you',
+    people: 4,
+    gender: '남',
+    username: '김**',
+    upload: 2,
+  },
+  {
+    huftingid: 6,
+    matching: true,
+    title: '넌 누구니',
+    people: 1,
+    gender: '남',
+    username: '김**',
+    upload: 2,
+  },
+];
 
 const Home = () => {
-  const handleFilterChange = (selectedFilters: unknown) => {
-    alert(selectedFilters);
+  const [filteredLists, setFilteredLists] = useState(initialLists);
+
+  const handleFilterChange = (selectedFilters: SelectedFilters) => {
+    const updatedLists = filterLists(selectedFilters, initialLists);
+    setFilteredLists(updatedLists);
+  };
+
+  // 선택된 필터에 따라 리스트를 필터링하는 함수
+  const filterLists = (filters: SelectedFilters, lists: ListType[]) => {
+    const filteredByGender =
+      filters.gender !== ''
+        ? lists.filter(item => item.gender === filters.gender)
+        : lists;
+
+    const filteredByCount =
+      filters.count !== ''
+        ? filteredByGender.filter(
+            item => `${item.people.toString()}명` === filters.count,
+          )
+        : filteredByGender;
+
+    return filteredByCount;
   };
 
   return (
     <Container>
-      <Header>
-        <LogoIcon width={118} height={30} />
-        <div>
-          <SearchIcon />
-          <HamburgerIcon />
-        </div>
-      </Header>
-      <Title>훕팅 목록</Title>
+      <MainHeader />
+      <SubHeader title="훕팅 목록" />
       <Filter onFilterChange={handleFilterChange} />
-      <List />
+      <List lists={filteredLists} pathnameProp="/detail" />
     </Container>
   );
 };
@@ -35,30 +118,4 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  padding: 0px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 23px;
-
-  div {
-    width: 73px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
-const Title = styled.p`
-  margin-bottom: 23px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  color: black;
-  font-size: 25px;
-  font-weight: bold;
 `;
