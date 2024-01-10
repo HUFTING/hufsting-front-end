@@ -2,13 +2,11 @@
 
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
-import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
-import NameList from '@/components/NameList';
-import BackIcon from '@/components/common/ui/BackIcon';
+import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/Modal';
+import Modal from '@/components/common/modal/MainInfo';
+import SubHeader from '@/components/common/layout/SubHeader';
+import MainHeader from '@/components/common/layout/MainHeader';
 
 const otherInfo = [
   {
@@ -42,20 +40,9 @@ const Detail = () => {
 
   return (
     <Container>
-      <Header>
-        <LogoIcon width={118} height={30} />
-        <div>
-          <SearchIcon />
-          <HamburgerIcon />
-        </div>
-      </Header>
-      <div className="titlebox">
-        <BackIcon />
-        <Title>훕팅 목록</Title>
-      </div>
-      {isOpenModal && (
-        <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
-      )}
+      <MainHeader />
+      <SubHeader title="훕팅 참여하기" />
+      {isOpenModal && <Modal handleMore={handleMore} isModal />}
       <div className="otherInfo">
         <SubTitle>성별</SubTitle>
         <div className="genderbox">
@@ -140,31 +127,6 @@ const Container = styled.div`
       margin-bottom: 30px;
     }
   }
-`;
-
-const Header = styled.div`
-  width: 100%;
-  padding: 0px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 23px;
-
-  div {
-    width: 73px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
-const Title = styled.p`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  color: black;
-  font-size: 25px;
-  font-weight: bold;
 `;
 
 const SubTitle = styled.p`
