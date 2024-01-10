@@ -6,71 +6,27 @@ interface StyledButtonProps {
   backColor: number;
 }
 
-const lists = [
-  {
-    huftingid: 1,
-    matching: false,
-    title: '모두 같이 훕팅해요~~',
-    people: 3,
-    gender: '남',
-    username: '김**',
-    upload: 1,
-  },
-  {
-    huftingid: 2,
-    matching: false,
-    title: '모두 같이',
-    people: 3,
-    gender: '남',
-    username: '김**',
-    upload: 1,
-  },
-  {
-    huftingid: 3,
-    matching: false,
-    title: '모두 같이 훕팅해요~~',
-    people: 3,
-    gender: '남',
-    username: '김**',
-    upload: 1,
-  },
-  {
-    huftingid: 4,
-    matching: false,
-    title: '안녕하세요',
-    people: 3,
-    gender: '남',
-    username: '김**',
-    upload: 1,
-  },
-  {
-    huftingid: 5,
-    matching: false,
-    title: 'Hello! How are you',
-    people: 3,
-    gender: '남',
-    username: '김**',
-    upload: 2,
-  },
-  {
-    huftingid: 6,
-    matching: true,
-    title: '넌 누구니',
-    people: 3,
-    gender: '남',
-    username: '김**',
-    upload: 2,
-  },
-];
+interface HomeListProps {
+  lists: Array<{
+    huftingid: number;
+    matching: boolean;
+    title: string;
+    people: number;
+    gender: string;
+    username: string;
+    upload: number;
+  }>;
+  pathnameProp?: string;
+}
 
-const List = () => (
+const List = ({ lists, pathnameProp }: HomeListProps) => (
   <Container>
     {lists.map(item => (
       <Wrapper key={item.huftingid} backColor={item.huftingid}>
         <Link
           key={item.huftingid}
           href={{
-            pathname: '/detail',
+            pathname: pathnameProp,
             query: { huftingid: item.huftingid },
           }}
           style={{ width: '100%' }}
