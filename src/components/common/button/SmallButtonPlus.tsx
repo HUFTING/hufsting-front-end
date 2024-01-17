@@ -15,7 +15,8 @@ const getButtonStyles = (isActive: boolean): React.CSSProperties => {
       width: '74px',
       height: '30px',
       flexShrink: 0,
-      borderRadius: '10px',
+      borderTopRightRadius: '10px',
+      borderBottomRightRadius: '10px',
       background: '#FF6869',
     };
   }
@@ -25,7 +26,8 @@ const getButtonStyles = (isActive: boolean): React.CSSProperties => {
     width: '74px',
     height: '30px',
     flexShrink: 0,
-    borderRadius: '10px',
+    borderTopRightRadius: '10px',
+    borderBottomRightRadius: '10px',
     border: '1px solid #FF6869',
     background: '#FFF',
   };

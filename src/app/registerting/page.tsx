@@ -9,141 +9,8 @@ import NameList from '@/components/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
 import Modal from '@/components/Modal';
-import SmallButton from '@/components/common/button/SmallButton';
-
-/* const otherInfo = [
-  {
-    id: 1,
-    username: '김**',
-    major: 'Global Business%Technology 학부',
-  },
-  {
-    id: 2,
-    username: '원**',
-    major: '수학과',
-  },
-]; */
-
-const total = {
-  huftingid: 1,
-  gender: '남',
-  num: 2,
-};
-
-const Registerting = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
-  const [gender, setGender] = useState<string | null>(null);
-  const [numberOfPeople, setNumberOfPeople] = useState<number>(0);
-
-  const handleGenderSelection = (selectedGender: string) => {
-    setGender(selectedGender);
-  };
-
-  const handleIncrement = () => {
-    setNumberOfPeople(prev => prev + 1);
-  };
-
-  const handleDecrement = () => {
-    setNumberOfPeople(prev => prev - 1);
-  };
-
-  const handleClick = () => {
-    alert('clicked!');
-  };
-  const handleMore = useCallback(() => {
-    setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
-
-  return (
-    <Container>
-      <Header>
-        <LogoIcon width={118} height={30} />
-        <div>
-          <SearchIcon />
-          <HamburgerIcon />
-        </div>
-      </Header>
-      <div className="titlebox">
-        <BackIcon />
-        <Title>훕팅 등록</Title>
-      </div>
-      {isOpenModal && (
-        <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
-      )}
-      <div className="otherInfo">
-        <SubTitle>성별</SubTitle>
-
-        <div className="flex">
-          <SmallButton
-            content="남성"
-            onClickEvent={() => {
-              handleGenderSelection('남성');
-            }}
-            isActive={gender === '남성'}
-          />
-
-          <SmallButton
-            content="여성"
-            onClickEvent={() => {
-              handleGenderSelection('여성');
-            }}
-            isActive={gender === '여성'}
-          />
-        </div>
-        {/* <div className="genderbox"><p>{total.gender}성</p></div> */}
-        <SubTitle>희망 인원 수</SubTitle>
-        <div className="flex">
-          <span>{numberOfPeople}</span>
-          <SmallButton
-            content="+"
-            onClickEvent={() => {
-              handleIncrement();
-            }}
-            isActive // isActive={true}를 isActive로 변경
-          />
-
-          <SmallButton
-            content="-"
-            onClickEvent={() => {
-              handleDecrement();
-            }}
-            isActive={false}
-          />
-        </div>
-
-        {/* <OtherInfo>
-          <div className="top">
-            <SubTitle>상대 정보</SubTitle>
-            <More onClick={handleMore}>더 보기</More>
-          </div>
-          {otherInfo.map(info => (
-            <div className="infobox" key={info.id}>
-              <p>
-                {info.username} _ {info.major}
-              </p>
-            </div>
-          ))}
-          </OtherInfo> */}
-      </div>
-      <div className="listbox">
-        <p className="essential">필수 참가 인원 {total.num}인</p>
-        <NameList total={total} />
-      </div>
-      <BasicButtonWrapper>
-        <BasicButton
-          color="red"
-          assetType="Primary"
-          size="M"
-          content="등록하기"
-          onClickEvent={handleClick}
-          isActive
-          buttonType="button"
-          width="100%"
-        />
-      </BasicButtonWrapper>
-    </Container>
-  );
-};
+import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
+import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
 
 const Container = styled.div`
   padding: 33px 0 0 0;
@@ -158,16 +25,6 @@ const Container = styled.div`
   }
   .otherInfo {
     padding: 25px 22px;
-    .genderbox {
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 70px;
-      height: 30px;
-      background-color: #f3f5f7;
-      border-radius: 10px;
-    }
   }
   .listbox {
     padding: 30px 30px;
@@ -176,11 +33,33 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    .essential {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ff324b;
-      margin-bottom: 30px;
+  }
+  .numberContainer {
+    width: 74px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #f3f5f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .flex {
+    display: flex;
+    gap: 10px; /* 요소들 사이의 간격 설정 */
+    margin-bottom: 20px;
+    .numberContainer {
+      width: 74px;
+      height: 30px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: #f3f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .SmallButtonContainer {
+      width: 300px;
     }
   }
 `;
@@ -215,24 +94,6 @@ const SubTitle = styled.p`
   font-weight: bold;
 `;
 
-/*
-const OtherInfo = styled.div`
-  .top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .infobox p {
-    font-size: 18px;
-  }
-`;
-
-const More = styled.button`
-  font-size: 15px;
-  color: #8d8d8d;
-`;
-*/
-
 const BasicButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -244,5 +105,146 @@ const BasicButtonWrapper = styled.div`
   padding: 22px;
   z-index: 1000;
 `;
+
+const total = {
+  huftingid: 1,
+  gender: '남',
+  num: 1,
+};
+
+const Registerting = () => {
+  const [isOpenModal, setOpenModal] = useState<boolean>(false);
+  // const [gender, setGender] = useState<string | null>(null);
+  const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
+  const [title, setTitle] = useState<string>(''); // title 상태 추가
+  const [kakaoLink, setKakaoLink] = useState<string>('');
+
+  /* const handleGenderSelection = (selectedGender: string) => {
+    setGender(selectedGender);
+  }; */
+
+  const handleIncrement = () => {
+    setNumberOfPeople(prev => {
+      const incrementedValue = prev + 1;
+      // total.num을 numberOfPeople과 동일하게 업데이트
+      total.num = incrementedValue;
+      return incrementedValue;
+    });
+  };
+
+  const handleDecrement = () => {
+    if (numberOfPeople > 1) {
+      setNumberOfPeople(prev => {
+        const decrementedValue = prev - 1;
+        // total.num을 numberOfPeople과 동일하게 업데이트
+        total.num = decrementedValue;
+        return decrementedValue;
+      });
+    }
+  };
+
+  const handleClick = () => {
+    alert('clicked!');
+  };
+  const handleMore = useCallback(() => {
+    setOpenModal(!isOpenModal);
+  }, [isOpenModal]);
+
+  return (
+    <Container>
+      <Header>
+        <LogoIcon width={118} height={30} />
+        <div>
+          <SearchIcon />
+          <HamburgerIcon />
+        </div>
+      </Header>
+      <div className="titlebox">
+        <BackIcon />
+        <Title>훕팅 등록하기</Title>
+      </div>
+      {isOpenModal && (
+        <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
+      )}
+
+      <div className="otherInfo">
+        <input
+          type="text"
+          placeholder="제목을 입력하세요"
+          value={title} // title에 입력된 값이 표시되어야 함
+          onChange={e => {
+            setTitle(e.target.value);
+            return undefined;
+          }}
+          style={{
+            border: '2px solid #8D8D8D',
+            borderRadius: '5px',
+            width: '100%',
+            height: '35px',
+            marginBottom: '20px',
+          }}
+        />
+        <SubTitle>희망 인원 수</SubTitle>
+
+        <div className="flex">
+          <div className="numberContainer">
+            <span>{numberOfPeople}</span>
+          </div>
+          <div className="SmallButtonContainer">
+            <SmallButtonMinus
+              content="-"
+              onClickEvent={() => {
+                handleDecrement();
+              }}
+              isActive={false}
+            />
+            <SmallButtonPlus
+              content="+"
+              onClickEvent={() => {
+                handleIncrement();
+              }}
+              isActive // isActive={true}를 isActive로 변경
+            />
+          </div>
+        </div>
+
+        <SubTitle>오픈채팅방 링크 등록</SubTitle>
+        <input
+          type="text"
+          placeholder="카카오톡 오픈채팅방 링크 입력"
+          value={kakaoLink} // kakaoLink에 입력된 값이 표시되어야 함
+          onChange={e => {
+            setKakaoLink(e.target.value);
+            return undefined;
+          }}
+          style={{
+            border: 'none',
+            borderBottom: '2px solid #8D8D8D', // 밑줄 설정
+            borderRadius: '0',
+            width: '100%',
+            height: '35px',
+          }}
+        />
+      </div>
+
+      <div className="listbox">
+        <NameList total={total} />
+      </div>
+
+      <BasicButtonWrapper>
+        <BasicButton
+          color="red"
+          assetType="Primary"
+          size="M"
+          content="매칭하기"
+          onClickEvent={handleClick}
+          isActive
+          buttonType="button"
+          width="100%"
+        />
+      </BasicButtonWrapper>
+    </Container>
+  );
+};
 
 export default Registerting;
