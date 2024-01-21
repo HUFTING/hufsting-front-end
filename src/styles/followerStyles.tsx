@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 
 export const FollowerListPageStyle = styled.article`
   & {
-    ${tw`flex flex-col`}
+    ${tw`flex flex-col h-screen`}
 
     section.add-follower {
       ${tw`flex w-full items-center gap-2 justify-end px-2 text-[1.125rem] cursor-pointer`}
@@ -24,7 +24,7 @@ export const FollowerListItemStyle = styled.div`
     }
 
     > div.user {
-      ${tw`flex flex-grow items-center border-b-[2px] border-solid border-[#D9D9D9] py-2`}
+      ${tw`flex flex-grow items-center justify-between border-b-[2px] border-solid border-[#D9D9D9] py-3`}
 
       > div:first-child {
         ${tw`flex flex-col `}
