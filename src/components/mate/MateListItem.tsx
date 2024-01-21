@@ -1,6 +1,7 @@
 import type { UserInfo } from '@/app/mate/management/page';
 import { FollowerListItemStyle } from '@/styles/followerStyles';
 import React from 'react';
+import Image from 'next/image';
 
 interface props {
   user: UserInfo;
@@ -16,7 +17,9 @@ const MateListItem = ({ user, onClickItem, right }: props) => (
       onClickItem();
     }}
   >
-    <div className="photo">{user.photo}</div>
+    <div className="photo">
+      <Image src={user.photo} layout="fill" alt="mate-photo" />
+    </div>
     <div className="user">
       <div>
         <div>{user.name}</div>

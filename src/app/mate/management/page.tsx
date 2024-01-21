@@ -19,6 +19,7 @@ export interface UserInfo {
   profile: string;
   isFollowing: boolean;
 }
+// TODO yarn dev해야 hmr 가능이다.
 
 const ManageMateList = () => {
   const router = useRouter();
@@ -36,7 +37,8 @@ const ManageMateList = () => {
         id: 1,
         name: '임예람',
         email: 'email',
-        photo: '..',
+        photo:
+          'https://phinf.pstatic.net/contact/20220224_279/1645675907154rcS3m_JPEG/profileImage.jpg?type=s80',
         profile: 'hi',
         isFollowing: true,
       },
@@ -44,7 +46,8 @@ const ManageMateList = () => {
         id: 2,
         name: '김강민',
         email: 'email',
-        photo: '..',
+        photo:
+          'https://phinf.pstatic.net/contact/20220224_279/1645675907154rcS3m_JPEG/profileImage.jpg?type=s80',
         profile: 'hi',
         isFollowing: false,
       },
