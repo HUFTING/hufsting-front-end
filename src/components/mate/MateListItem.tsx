@@ -5,7 +5,7 @@ import React from 'react';
 interface props {
   user: UserInfo;
   onClickItem: () => void;
-  right?: { icon: JSX.Element; onClick: () => void };
+  right?: null | { icon: JSX.Element; onClick: () => void };
 }
 
 const MateListItem = ({ user, onClickItem, right }: props) => (
@@ -20,9 +20,9 @@ const MateListItem = ({ user, onClickItem, right }: props) => (
     <div className="user">
       <div>
         <div>{user.name}</div>
-        <div>{user.email}</div>
+        <div>{user.isFollowing ? user.profile : user.email}</div>
       </div>
-      <div>{right !== undefined ? right.icon : ''}</div>
+      <div>{right !== undefined && right !== null ? right.icon : ''}</div>
     </div>
   </FollowerListItemStyle>
 );
