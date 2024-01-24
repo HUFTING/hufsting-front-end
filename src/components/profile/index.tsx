@@ -8,7 +8,7 @@ import {
 import useDropdownForm from '@/hooks/useDropdownForm';
 import { ProfileData, ProfileInitialState } from '@/constants/profile';
 import ProfileHeader from './header';
-import ProfileContainer from '../signup/ProfileContainer';
+import ProfileContainer from '../register/ProfileContainer';
 import UserProfileInput from '../common/input/UserProfileInput';
 import UserProfileTextArea from '../common/input/UserProfileTextArea';
 import Text from '../common/text/Text';
