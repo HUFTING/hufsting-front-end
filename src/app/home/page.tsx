@@ -78,7 +78,36 @@ const initialLists: ListType[] = [
 ];
 
 const Home = () => {
+  // const [initialLists, setInitialLists] = useState<ListType[]>([]);
   const [filteredLists, setFilteredLists] = useState(initialLists);
+
+  // useEffect(() => {
+  //   // 서버에서 데이터를 가져오는 함수
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         'http://35.219.139.69:8080/api/v1/matchingposts',
+  //         {
+  //           method: 'GET',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //         },
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error('error');
+  //       }
+
+  //       const data = await response.json();
+  //       setInitialLists(data);
+  //       setFilteredLists(data);
+  //     } catch (error) {
+  //       console.error('데이터를 가져오는 동안 오류 발생:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   const handleFilterChange = (selectedFilters: SelectedFilters) => {
     const updatedLists = filterLists(selectedFilters, initialLists);
