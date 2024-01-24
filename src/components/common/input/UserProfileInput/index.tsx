@@ -19,7 +19,7 @@ const UserProfileInput = ({
       <Text
         color="black"
         fontSize="xl"
-        fontWeight="ExtraBold"
+        fontWeight="SemiBold"
         content={dropDownTitle}
       />
       {required && (
