@@ -23,7 +23,15 @@ const getTextStyle = ({
   fontWeight,
   className,
 }: getTextStyleType) =>
-  `${getSize[fontSize]} ${colorList[color]} h-fit whitespace-pre-wrap font-Pretendard-${fontWeight} ${className}`;
+  `${getSize[fontSize]} ${colorList[color]} h-fit whitespace-pre-wrap ${getFontWeight[fontWeight]} ${className}`;
+
+const getFontWeight = {
+  Regular: 'font-Pretendard-Regular',
+  Medium: 'font-Pretendard-Medium',
+  Bold: 'font-Pretendard-Bold',
+  SemiBold: 'font-Pretendard-SemiBold',
+  ExtraBold: 'font-Pretendard-ExtraBold',
+};
 
 const Text = ({
   content,
