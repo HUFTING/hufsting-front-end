@@ -1,6 +1,6 @@
 import Profile from '@/components/profile';
 import React from 'react';
 
-const page = () => <Profile />;
+const ProfilePage = () => <Profile />;
 
-export default page;
+export default ProfilePage;
