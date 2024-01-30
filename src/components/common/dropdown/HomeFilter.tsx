@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-interface SelectedFilters {
+export interface SelectedFilters {
   count: string;
   gender: string;
-  sorting: string;
 }
 
 interface FilterProps {
@@ -15,7 +14,6 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
   const [selectedFilters, setSelectedFilters] = useState({
     count: '',
     gender: '',
-    sorting: '',
   });
 
   const handleFilterChange = (filterType: string, value: string) => {
@@ -23,6 +21,14 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
       ...prevFilters,
       [filterType]: value,
     }));
+  };
+
+  const handleResetFilters = () => {
+    // 초기화 버튼 클릭 시, 상태를 초기값으로 설정
+    setSelectedFilters({
+      count: '',
+      gender: '',
+    });
   };
 
   useEffect(() => {
@@ -48,16 +54,8 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
             handleFilterChange('gender', value);
           }}
         />
-        <DropdownFilter
-          label="정렬"
-          options={['최신순', '매칭 대기중']}
-          selectedOption={selectedFilters.sorting}
-          onOptionSelect={value => {
-            handleFilterChange('sorting', value);
-          }}
-        />
       </div>
-      <FilteringIcon>⚙️</FilteringIcon>
+      <ResetBtn onClick={handleResetFilters}>초기화</ResetBtn>
     </Container>
   );
 };
@@ -120,13 +118,12 @@ const Container = styled.div`
   }
 `;
 
-const FilteringIcon = styled.div`
+const ResetBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
+  padding: 5px 10px;
+  border-radius: 15px;
   border: 0.5px solid #a3b6cc;
 `;
 
@@ -157,9 +154,10 @@ const DropdownList = styled.ul`
   padding: 5px 0;
   background-color: white;
   border-top: none;
-  border-radius: 0 0 15px 15px;
+  border-radius: 15px;
   list-style: none;
   z-index: 999;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 `;
 
 const DropdownItem = styled.li`

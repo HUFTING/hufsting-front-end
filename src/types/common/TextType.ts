@@ -7,6 +7,7 @@ export interface TitleTextProps {
   fontSize: fontSizeType;
   fontWeight: fontWeightType;
   className?: string;
+  onClick?: () => void;
 }
 
 export type getTextStyleType = Omit<TitleTextProps, 'content'>;

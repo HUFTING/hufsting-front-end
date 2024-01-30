@@ -5,7 +5,7 @@ import LogoIcon from '@/components/common/ui/LogoIcon';
 import SearchIcon from '@/components/common/ui/SearchIcon';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import List from '../../components/List';
+import List from '../../components/list/HomeList';
 
 interface FilterButtonProps {
   active: boolean;
@@ -37,6 +37,63 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 );
 
 const MyList = () => {
+  const lists = [
+    {
+      huftingid: 1,
+      matching: false,
+      title: '모두 같이 훕팅해요~~',
+      people: 3,
+      gender: '남',
+      username: '김**',
+      upload: 1,
+    },
+    {
+      huftingid: 2,
+      matching: false,
+      title: '모두 같이',
+      people: 3,
+      gender: '남',
+      username: '김**',
+      upload: 1,
+    },
+    {
+      huftingid: 3,
+      matching: false,
+      title: '모두 같이 훕팅해요~~',
+      people: 3,
+      gender: '남',
+      username: '김**',
+      upload: 1,
+    },
+    {
+      huftingid: 4,
+      matching: false,
+      title: '안녕하세요',
+      people: 3,
+      gender: '남',
+      username: '김**',
+      upload: 1,
+    },
+    {
+      huftingid: 5,
+      matching: false,
+      title: 'Hello! How are you',
+      people: 3,
+      gender: '남',
+      username: '김**',
+      upload: 2,
+    },
+    {
+      huftingid: 6,
+      matching: true,
+      title: '넌 누구니',
+      people: 3,
+      gender: '남',
+      username: '김**',
+      upload: 2,
+    },
+  ];
+
   const [filter, setFilter] = useState('all'); // 'all', 'waiting', 'completed'
 
   const handleFilterChange = (newFilter: string) => {
@@ -81,7 +138,7 @@ const MyList = () => {
           </FilterButton>
         </FilterBox>
       </div>
-      <List />
+      <List lists={lists} pathnameProp="/detailmyhufting" />
     </Container>
   );
 };
