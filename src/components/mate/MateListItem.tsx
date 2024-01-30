@@ -23,7 +23,7 @@ const MateListItem = ({ user, onClickItem, right }: props) => (
     <div className="user">
       <div>
         <div>{user.name}</div>
-        <div>{user.isFollowing ? user.profile : user.email}</div>
+        <div>{user.profile}</div>
       </div>
       <div>{right !== undefined && right !== null ? right.icon : ''}</div>
     </div>
