@@ -2,13 +2,14 @@
 
 import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FollowerListPageStyle } from '@/styles/followerStyles';
 import AddFollowingModal from '@/components/common/modal/AddFollowingModal';
 import SelectMenuBar from '@/components/mate/SelectMenuBar';
 import MateListItem from '@/components/mate/MateListItem';
 import Image from 'next/image';
+import BasicInput from '@/components/common/BasicInput';
 
 type MatePageType = 'my-mate' | 'new-mate';
 export interface UserInfo {
@@ -31,7 +32,10 @@ const ManageMateList = () => {
     // console.log(value);
   };
 
-  const getUserList = () => {
+  const getUserList = useCallback((searchValue: string | null) => {
+    // api 호출할 때 searchValue 넣기
+    console.log(searchValue);
+
     setUserList([
       {
         id: 1,
@@ -57,10 +61,10 @@ const ManageMateList = () => {
       // { id: 6, name: '설희관', email: '', isFollowing: false },
       // { id: 7, name: '조성민', email: '', isFollowing: false },
     ]);
-  };
+  }, []);
 
   useEffect(() => {
-    getUserList();
+    getUserList(null);
   }, []);
 
   return (
@@ -88,13 +92,14 @@ const ManageMateList = () => {
         pickedMenuId={pageType}
       />
 
-      {pageType === 'my-mate' ? (
-        <div className="w-[90%] mx-auto pt-4 pb-2 text-sm font-normal text-[#7A7A7A]">
-          메이트 {userList !== null ? userList.length : 0}
-        </div>
-      ) : (
-        <div className="w-[90%] mx-auto pt-4 pb-2">검색</div>
-      )}
+      <div className="w-[90%] mb-4 mx-auto">
+        <BasicInput
+          placeholder="이름 또는 이메일 입력"
+          changeHandler={e => {
+            getUserList(e.target.value);
+          }}
+        />
+      </div>
 
       <section
         className="w-[90%] rounded-t-3xl bg-[#F3F5F7] mx-auto flex flex-col items-center px-4 flex-grow"
@@ -103,7 +108,7 @@ const ManageMateList = () => {
         <div className="bg-[#C8C8C8] w-12 h-2 rounded-3xl my-4" />
         <div className="font-bold text-xl mb-2">
           {pageType === 'my-mate' ? (
-            ''
+            <span className="text-[#FF6869]">훕팅 메이트</span>
           ) : (
             <>
               <span className="text-[#FF6869]">훕팅 메이트</span>를 확인해보세요
