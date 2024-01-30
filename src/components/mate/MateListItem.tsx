@@ -19,9 +19,9 @@ const MateListItem = ({ user, onClickItem, right }: props) => {
     <FollowerListItemStyle
       key={user.id}
       role="presentation"
-      // onClick={() => {
-      //   onClickItem();
-      // }}
+      onClick={() => {
+        onClickItem();
+      }}
     >
       <div className="photo">
         <Image src={user.photo} layout="fill" alt="mate-photo" />

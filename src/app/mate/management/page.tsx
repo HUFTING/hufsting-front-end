@@ -129,44 +129,54 @@ const ManageMateList = () => {
         </div>
 
         <section className="w-full flex flex-grow flex-col overflow-auto">
-          {userList?.map(user => (
-            <MateListItem
-              key={user.id}
-              user={user}
-              onClickItem={() => {
-                if (user.isFollowing) {
-                  // 유저 상세 페이지로 이동
-                  router.push('/');
-                } else {
-                  alert('서로 파트너여야만 프로필 조회가 가능합니다');
-                }
-              }}
-              right={
-                pageType === 'my-mate'
-                  ? null
-                  : {
-                      icon: user.isFollowing ? (
-                        <Image
-                          src="/check.svg"
-                          width={24}
-                          height={24}
-                          alt="my-mate-icon"
-                        />
-                      ) : (
-                        <Image
-                          src="/Plus.svg"
-                          width={24}
-                          height={24}
-                          alt="add-mate-icon"
-                        />
-                      ),
-                      onClick: () => {
-                        changeMateState(user);
-                      },
+          {userList?.map(user => {
+            if (
+              (pageType === 'my-mate' && user.isFollowing) ||
+              pageType === 'new-mate'
+            ) {
+              return (
+                <MateListItem
+                  key={user.id}
+                  user={user}
+                  onClickItem={() => {
+                    if (pageType === 'my-mate') {
+                      if (user.isFollowing) {
+                        router.push('/profile');
+                      } else {
+                        // eslint-disable-next-line no-alert
+                        alert('서로 파트너여야만 프로필 조회가 가능합니다');
+                      }
                     }
-              }
-            />
-          ))}
+                  }}
+                  right={
+                    pageType === 'my-mate'
+                      ? null
+                      : {
+                          icon: user.isFollowing ? (
+                            <Image
+                              src="/check.svg"
+                              width={24}
+                              height={24}
+                              alt="my-mate-icon"
+                            />
+                          ) : (
+                            <Image
+                              src="/Plus.svg"
+                              width={24}
+                              height={24}
+                              alt="add-mate-icon"
+                            />
+                          ),
+                          onClick: () => {
+                            changeMateState(user);
+                          },
+                        }
+                  }
+                />
+              );
+            }
+            return '';
+          })}
         </section>
       </section>
       {openModal && <AddFollowingModal addEvent={addFollowing} />}
