@@ -3,23 +3,23 @@
 import React from 'react';
 import Text from '@/components/common/text/Text';
 import type { UserProfileInputType } from '@/types/common/profile';
-import DropDown from '../../common/dropdown/DropDown';
+import DropDown from '../../dropdown/DropDown';
 
 const UserProfileInput = ({
   dropDownState,
   dropDownTitle,
   dropDownName,
-  dropDownItems,
+  dropDownItems = [],
   required = false,
   disabled = false,
   onChange,
 }: UserProfileInputType) => (
-  <div className="flex justify-between my-10">
+  <div className="flex justify-between my-10 mx-4">
     <div className="flex">
       <Text
         color="black"
         fontSize="xl"
-        fontWeight="ExtraBold"
+        fontWeight="SemiBold"
         content={dropDownTitle}
       />
       {required && (

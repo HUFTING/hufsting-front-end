@@ -1,88 +1,79 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/common/modal/MainInfo';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
-
-const otherInfo = [
-  {
-    id: 1,
-    username: '김**',
-    major: 'Global Business%Technology 학부',
-  },
-  {
-    id: 2,
-    username: '원**',
-    major: '수학과',
-  },
-];
+import MainInfo from '@/components/common/modal/MainInfo';
 
 const total = {
   huftingid: 1,
   gender: '남',
   num: 2,
+  openlink: 'open.kakao.com/o/gto74LSf',
 };
 
-const Detail = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
+const MyDetail = () => {
+  // const [isOpenModal, setOpenModal] = useState<boolean>(false);
 
-  const handleClick = () => {
-    alert('clicked!');
+  const handleRemove = () => {
+    alert('삭제!');
   };
 
-  const handleMore = useCallback(() => {
-    setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
+  const handleEdit = () => {
+    alert('수정!');
+  };
+
+  const handleMore = () => {
+    alert('복사되었습니다!');
+  };
 
   return (
     <Container>
       <MainHeader />
-      <SubHeader title="훕팅 참여하기" />
-      {isOpenModal && <Modal handleMore={handleMore} isModal />}
+      <SubHeader title="내가 올린 훕팅" />
       <div className="otherInfo">
-        <SubTitle>성별</SubTitle>
+        <SubTitle>희망 인원 수</SubTitle>
         <div className="genderbox">
-          <p>{total.gender}성</p>
+          <p>{total.num}</p>
         </div>
         <OtherInfo>
           <div className="top">
-            <SubTitle>상대 정보</SubTitle>
-            <More onClick={handleMore}>더 보기</More>
+            <SubTitle>오픈채팅방 링크</SubTitle>
+            <More onClick={handleMore}>복사하기</More>
           </div>
-          {otherInfo.map(info => (
-            <div className="infobox" key={info.id}>
-              <p>
-                {info.username} _ {info.major}
-              </p>
-            </div>
-          ))}
+          <p>{total.openlink}</p>
         </OtherInfo>
       </div>
       <div className="listbox">
-        <p className="essential">필수 참가 인원 {total.num}인</p>
-        <NameList total={total} />
+        <MainInfo isModal={false} />
       </div>
       <BasicButtonWrapper>
+        <BasicButton
+          color="gray"
+          assetType="Primary"
+          size="M"
+          content="삭제하기"
+          onClickEvent={handleRemove}
+          isActive
+          width="48%"
+        />
         <BasicButton
           color="red"
           assetType="Primary"
           size="M"
-          content="매칭하기"
-          onClickEvent={handleClick}
+          content="수정하기"
+          onClickEvent={handleEdit}
           isActive
-          buttonType="button"
-          width="100%"
+          width="48%"
         />
       </BasicButtonWrapper>
     </Container>
   );
 };
 
-export default Detail;
+export default MyDetail;
 
 const Container = styled.div`
   padding: 33px 0 0 0;
@@ -154,9 +145,8 @@ const More = styled.button`
 
 const BasicButtonWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  position: fixed;
   width: 100%;
   max-width: 390px;
   bottom: 0;

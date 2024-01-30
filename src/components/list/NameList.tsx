@@ -246,7 +246,6 @@ const Container = styled.div`
   flex-direction: column;
   max-width: 390px;
   width: 100%;
-  margin-bottom: 80px;
 `;
 
 const Wrapper = styled.div`
