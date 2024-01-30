@@ -63,6 +63,18 @@ const ManageMateList = () => {
     ]);
   }, []);
 
+  const changeMateState = useCallback(
+    (user: UserInfo) => {
+      const copiedUserList = JSON.parse(JSON.stringify(userList));
+      const clickedMate = copiedUserList?.find(
+        (copiedUser: UserInfo) => copiedUser.id === user.id,
+      );
+      clickedMate.isFollowing = clickedMate.isFollowing !== true;
+      setUserList(copiedUserList);
+    },
+    [userList],
+  );
+
   useEffect(() => {
     getUserList(null);
   }, []);
@@ -149,7 +161,7 @@ const ManageMateList = () => {
                         />
                       ),
                       onClick: () => {
-                        console.log('click');
+                        changeMateState(user);
                       },
                     }
               }
