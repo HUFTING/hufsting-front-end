@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 
 export const TextAreaContainer = styled.section`
   & {
-    ${tw`w-full flex flex-col mb-4`}
+    ${tw`w-full flex flex-col mb-4 px-4`}
   }
 `;
 
