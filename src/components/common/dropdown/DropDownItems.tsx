@@ -8,12 +8,14 @@ const DropDownList = ({
   handleCloseDropDown,
 }: DropDownListType) => (
   <ul>
-    {dropDownItems.map(item => (
+    {dropDownItems?.map(item => (
       <li
         role="presentation"
         key={item}
         onMouseDown={() => {
-          onChange({ name: dropDownName, value: item });
+          if (onChange !== undefined) {
+            onChange({ name: dropDownName, value: item });
+          }
           handleCloseDropDown();
         }}
       >
