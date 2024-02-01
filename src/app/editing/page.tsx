@@ -4,15 +4,15 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
-import NameList from '@/components/NameList';
+import NotificationIcon from '@/components/common/ui/NotificationIcon';
+import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/Modal';
+import Modal from '@/components/common/modal/MainInfo';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
 
-const otherInfo = 'https://open.kakao.com/o/gto74LSf';
+// const otherInfo = 'https://open.kakao.com/o/gto74LSf';
 
 const Container = styled.div`
   padding: 33px 0 0 0;
@@ -145,18 +145,20 @@ const Editing = () => {
   const [isOpenModal, setOpenModal] = useState<boolean>(false);
   /* const [gender, setGender] = useState<string | null>(null); */
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
-
+  const [address, setAddress] = useState<string>('');
   /* const handleGenderSelection = (selectedGender: string) => {
     setGender(selectedGender);
   }; */
 
   const handleIncrement = () => {
-    setNumberOfPeople(prev => {
-      const incrementedValue = prev + 1;
-      // total.num을 numberOfPeople과 동일하게 업데이트
-      total.num = incrementedValue;
-      return incrementedValue;
-    });
+    if (numberOfPeople < 4) {
+      setNumberOfPeople(prev => {
+        const incrementedValue = prev + 1;
+        // total.num을 numberOfPeople과 동일하게 업데이트
+        total.num = incrementedValue;
+        return incrementedValue;
+      });
+    }
   };
 
   const handleDecrement = () => {
@@ -179,7 +181,7 @@ const Editing = () => {
 
   const handleCopyLink = () => {
     navigator.clipboard
-      .writeText(otherInfo)
+      .writeText(address)
       .then(() => {
         alert('링크가 클립보드에 복사되었습니다.');
       })
@@ -189,12 +191,18 @@ const Editing = () => {
       });
   };
 
+  // const [kakaoLink, setKakaoLink] = useState('');
+
+  /* const handleKakaoLinkChange = newLink => {
+    setKakaoLink(newLink);
+  }; */
+
   return (
     <Container>
       <Header>
         <LogoIcon width={118} height={30} />
         <div>
-          <SearchIcon />
+          <NotificationIcon />
           <HamburgerIcon />
         </div>
       </Header>
@@ -232,9 +240,23 @@ const Editing = () => {
         <OtherInfo>
           <div className="top">
             <SubTitle>오픈채팅방 링크</SubTitle>
-            <a href={otherInfo} target="_blank" rel="noopener noreferrer">
-              {otherInfo}
-            </a>
+            {/* 주소 입력을 위한 input 요소 추가 */}
+            <input
+              type="text"
+              placeholder="  주소를 입력하세요"
+              value={address}
+              onChange={e => {
+                setAddress(e.target.value);
+                return undefined; // 명시적으로 void를 반환합니다.
+              }}
+              style={{
+                border: '2px solid #8D8D8D',
+                borderRadius: '5px',
+                width: '100%',
+                height: '35px',
+                marginBottom: '20px',
+              }}
+            />
 
             {/* <More onClick={handleMore}>더보기</More> */}
           </div>
@@ -274,5 +296,4 @@ const Editing = () => {
     </Container>
   );
 };
-
 export default Editing;

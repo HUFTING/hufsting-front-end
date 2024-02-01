@@ -4,11 +4,11 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
-import NameList from '@/components/NameList';
+import NotificationIcon from '@/components/common/ui/NotificationIcon';
+import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/Modal';
+import Modal from '@/components/common/modal/MainInfo';
 
 // 오픈 채팅방 링크
 const otherInfo = 'https://open.kakao.com/o/gto74LSf';
@@ -20,7 +20,7 @@ const Container = styled.div`
   justify-content: center;
   p {
     text-align: center; // 텍스트를 가운데 정렬
-    margin-bottom: 20px; // 아래에 여백 추가
+    //margin-bottom: 20px; // 아래에 여백 추가
   }
   .titlebox {
     padding: 2px 22px;
@@ -73,6 +73,12 @@ const Container = styled.div`
   }
   .HuftingComplete {
     color: #ff6869;
+    text-align: center;
+    font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
   }
   .SayHi {
     color: #000;
@@ -193,7 +199,7 @@ const Result = () => {
       <Header>
         <LogoIcon width={118} height={30} />
         <div>
-          <SearchIcon />
+          <NotificationIcon />
           <HamburgerIcon />
         </div>
       </Header>
@@ -201,7 +207,7 @@ const Result = () => {
         <BackIcon />
         <Title>훕팅 완료</Title>
       </div>
-      <p className="HuftingComplete">❤️훕팅완료❤️</p>
+      <p className="HuftingComplete">❤훕팅완료❤</p>
       <p className="SayHi">아래링크로 접속해 인사를 건네보세요!</p>
       {isOpenModal && (
         <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
