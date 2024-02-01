@@ -17,14 +17,14 @@ export const FollowerListPageStyle = styled.article`
 
 export const FollowerListItemStyle = styled.div`
   & {
-    ${tw`flex items-center gap-2 justify-between w-full rounded-md px-4 text-xl font-normal hover:bg-[#FF6869] cursor-pointer hover:text-white`}
+    ${tw`flex items-center gap-2 justify-between w-full rounded-md px-4 text-xl font-normal cursor-pointer`}
 
     > div.photo {
-      ${tw`flex rounded-[50%] w-10 h-10 border border-solid border-[#FF6869]`}
+      ${tw`flex rounded-[50%] w-10 h-10 border border-solid border-[#FF6869] bg-[#F3F3F3] relative overflow-hidden`}
     }
 
     > div.user {
-      ${tw`flex flex-grow items-center justify-between border-b-[2px] border-solid border-[#D9D9D9] py-3`}
+      ${tw`flex flex-grow items-center justify-between border-b-[2px] border-solid border-[#D9D9D9] py-3 px-2`}
 
       > div:first-child {
         ${tw`flex flex-col `}

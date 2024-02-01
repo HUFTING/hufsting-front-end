@@ -4,9 +4,9 @@ import { MainHeaderStyle } from '@/styles/common/layout/layoutStyles';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Logo from '../ui/LogoIcon';
-import SearchIcon from '../ui/SearchIcon';
 import HamburgerIcon from '../ui/HamburgerIcon';
 import HamburgerMenu from './HamburgerMenu';
+import NotificationIcon from '../ui/NotificationIcon';
 
 const MainHeader = () => {
   const router = useRouter();
@@ -24,7 +24,7 @@ const MainHeader = () => {
       </div>
       <div>
         <div>
-          <SearchIcon />
+          <NotificationIcon />
         </div>
         <div
           onClick={() => {
