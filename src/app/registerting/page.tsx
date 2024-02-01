@@ -5,12 +5,12 @@ import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
 import SearchIcon from '@/components/common/ui/SearchIcon';
-import NameList from '@/components/NameList';
+import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/Modal';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+import Modal from '@/components/common/modal/MainInfo';
 
 const Container = styled.div`
   padding: 33px 0 0 0;
