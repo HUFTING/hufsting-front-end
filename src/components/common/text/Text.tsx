@@ -6,6 +6,7 @@ const colorList = {
   black: 'text-[#000000]',
   gray: 'text-[#7A7A7A]',
   red: 'text-[#FF6869]',
+  white: 'text-[#FFFFFF]',
 };
 const getSize = {
   '3xl': 'text-3xl',
@@ -35,7 +36,7 @@ const getFontWeight = {
 
 const Text = ({
   content,
-  color,
+  color = 'black',
   fontSize,
   fontWeight,
   className,

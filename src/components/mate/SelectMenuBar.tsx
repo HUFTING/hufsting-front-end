@@ -21,7 +21,7 @@ const SelectMenuBar = ({ menuList, pickedMenuId }: props) => {
         <div
           key={menu.id}
           role="presentation"
-          className={`${pickedMenuId === menu.id ? 'text-pink-500 underline' : 'text-gray-500'} flex justify-center items-center py-2 cursor-pointer`}
+          className={`${pickedMenuId === menu.id ? 'text-[#FF6969] underline' : 'text-[#7A7A7A]'} flex justify-center items-center py-2 cursor-pointer`}
           style={{ width: `${100 / menuList.length}%` }}
           onClick={() => {
             if (menu.onClick !== undefined) {

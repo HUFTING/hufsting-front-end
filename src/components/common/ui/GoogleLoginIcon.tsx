@@ -1,7 +1,9 @@
+import { type IconPropsType } from '@/types/common/iconType';
 import React from 'react';
 
-const GoogleLoginIcon = () => (
+const GoogleLoginIcon = ({ className }: IconPropsType) => (
   <svg
+    className={className}
     width="175"
     height="40"
     viewBox="0 0 175 40"
