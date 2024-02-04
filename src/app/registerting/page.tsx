@@ -4,13 +4,13 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
-import NameList from '@/components/NameList';
+import NotificationIcon from '@/components/common/ui/NotificationIcon';
+import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/Modal';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+import Modal from '@/components/common/modal/MainInfo';
 
 const Container = styled.div`
   padding: 33px 0 0 0;
@@ -124,12 +124,14 @@ const Registerting = () => {
   }; */
 
   const handleIncrement = () => {
-    setNumberOfPeople(prev => {
-      const incrementedValue = prev + 1;
-      // total.num을 numberOfPeople과 동일하게 업데이트
-      total.num = incrementedValue;
-      return incrementedValue;
-    });
+    if (numberOfPeople < 4) {
+      setNumberOfPeople(prev => {
+        const incrementedValue = prev + 1;
+        // total.num을 numberOfPeople과 동일하게 업데이트
+        total.num = incrementedValue;
+        return incrementedValue;
+      });
+    }
   };
 
   const handleDecrement = () => {
@@ -155,7 +157,7 @@ const Registerting = () => {
       <Header>
         <LogoIcon width={118} height={30} />
         <div>
-          <SearchIcon />
+          <NotificationIcon />
           <HamburgerIcon />
         </div>
       </Header>
@@ -170,7 +172,7 @@ const Registerting = () => {
       <div className="otherInfo">
         <input
           type="text"
-          placeholder="제목을 입력하세요"
+          placeholder="  제목을 입력하세요"
           value={title} // title에 입력된 값이 표시되어야 함
           onChange={e => {
             setTitle(e.target.value);
@@ -211,7 +213,7 @@ const Registerting = () => {
         <SubTitle>오픈채팅방 링크 등록</SubTitle>
         <input
           type="text"
-          placeholder="카카오톡 오픈채팅방 링크 입력"
+          placeholder=" 카카오톡 오픈채팅방 링크 입력"
           value={kakaoLink} // kakaoLink에 입력된 값이 표시되어야 함
           onChange={e => {
             setKakaoLink(e.target.value);
