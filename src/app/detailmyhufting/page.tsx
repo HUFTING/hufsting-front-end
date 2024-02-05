@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
-import MainInfo from '@/components/common/modal/MainInfo';
 
 const total = {
   huftingid: 1,
@@ -46,9 +45,7 @@ const MyDetail = () => {
           <p>{total.openlink}</p>
         </OtherInfo>
       </div>
-      <div className="listbox">
-        <MainInfo isModal={false} />
-      </div>
+      <div className="listbox" />
       <BasicButtonWrapper>
         <BasicButton
           color="gray"
