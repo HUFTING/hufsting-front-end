@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
@@ -8,33 +10,60 @@ interface StyledButtonProps {
 
 interface HomeListProps {
   lists: Array<{
-    huftingid: number;
-    matching: boolean;
+    matchingPostId: number;
+    matchingStatus: boolean;
     title: string;
-    people: number;
+    desiredNumPeople: number;
     gender: string;
-    username: string;
-    upload: number;
+    authorName: string;
+    createdAt: string;
   }>;
   pathnameProp?: string;
 }
 
+// 시간 변환
+const calculateTimeAgo = (createdAt: string): string => {
+  const createdDate = new Date(createdAt);
+  const currentDate = new Date();
+  const difference = Math.round(
+    (currentDate.getTime() - createdDate.getTime()) / 1000,
+  );
+
+  if (difference < 60) {
+    return `${difference}초 전`;
+  }
+  if (difference < 3600) {
+    const minutes = Math.floor(difference / 60);
+    return `${minutes}분 전`;
+  }
+  if (difference < 86400) {
+    const hours = Math.floor(difference / 3600);
+    return `${hours}시간 전`;
+  }
+  if (difference < 604800) {
+    const days = Math.floor(difference / 86400);
+    return `${days}일 전`;
+  }
+  const weeks = Math.floor(difference / 604800);
+  return `${weeks}주 전`;
+};
+
 const List = ({ lists, pathnameProp }: HomeListProps) => (
   <Container>
     {lists.map(item => (
-      <Wrapper key={item.huftingid} backColor={item.huftingid}>
+      <Wrapper key={item.matchingPostId} backColor={item.matchingPostId}>
         <Link
-          key={item.huftingid}
+          key={item.matchingPostId}
           href={{
             pathname: pathnameProp,
-            query: { huftingid: item.huftingid },
+            query: { matchingPostId: item.matchingPostId },
           }}
           style={{ width: '100%' }}
         >
           <div className="box">
             <div className="matching">
               <p className="matchingText">
-                {item.matching ? '매칭 완료' : '매칭 대기중'}
+                {item.matchingStatus ? '매칭 완료' : '매칭 대기중'}
               </p>
             </div>
           </div>
@@ -43,11 +72,11 @@ const List = ({ lists, pathnameProp }: HomeListProps) => (
           </div>
           <div className="box">
             <div className="leftInfo">
-              <p className="info">{item.people}명 |</p>
+              <p className="info">{item.desiredNumPeople}명 |</p>
               <p className="info">{item.gender}</p>
-              <p className="info">{item.username}</p>
+              <p className="info">{item.authorName}</p>
             </div>
-            <p className="info">{item.upload}분 전</p>
+            <p className="info">{calculateTimeAgo(item.createdAt)}</p>
           </div>
         </Link>
       </Wrapper>
