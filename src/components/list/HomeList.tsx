@@ -10,7 +10,7 @@ interface StyledButtonProps {
 
 interface HomeListProps {
   lists: Array<{
-    matchingPostId: number;
+    id: number;
     matchingStatus: boolean;
     title: string;
     desiredNumPeople: number;
@@ -50,13 +50,12 @@ const calculateTimeAgo = (createdAt: string): string => {
 
 const List = ({ lists, pathnameProp }: HomeListProps) => (
   <Container>
-    {lists.map(item => (
-      <Wrapper key={item.matchingPostId} backColor={item.matchingPostId}>
+    {lists.map((item, index) => (
+      <Wrapper key={item.id} backColor={item.id}>
         <Link
-          key={item.matchingPostId}
           href={{
             pathname: pathnameProp,
-            query: { matchingPostId: item.matchingPostId },
+            query: { id: item.id },
           }}
           style={{ width: '100%' }}
         >
