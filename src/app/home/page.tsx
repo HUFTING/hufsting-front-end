@@ -12,7 +12,7 @@ import axios from 'axios';
 import List from '../../components/list/HomeList';
 
 interface ListType {
-  matchingPostId: number;
+  id: number;
   matchingStatus: boolean;
   title: string;
   desiredNumPeople: number;
