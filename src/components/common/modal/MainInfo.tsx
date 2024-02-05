@@ -1,129 +1,117 @@
-import React, { type PropsWithChildren } from 'react';
 import styled from 'styled-components';
+
+interface UserInfo {
+  id: number;
+  username: string;
+  major: string;
+  stID: number;
+  age: number;
+  mbti: string;
+  introduce: string;
+  public: boolean;
+}
 
 interface MainInfoProps {
   isModal?: boolean;
   handleMore?: () => void;
+  userInfo: UserInfo[];
 }
 
-const userInfo = [
-  {
-    id: 1,
-    gender: '여',
-    username: '김**',
-    major: 'GBT학부',
-    stID: 202100000,
-    age: 2002,
-    mbti: 'ESFJ',
-    introduce: '즐거운 훕팅 많이 많이 이용해주세요~',
-    public: true,
-  },
-  {
-    id: 2,
-    gender: '남',
-    username: '원**',
-    major: 'GBT학부',
-    stID: 202100000,
-    age: 2002,
-    mbti: 'ESFJ',
-    introduce: '즐거운 훕팅 많이 많이 이용해주세요~',
-    public: true,
-  },
-];
-
-function Modal({ isModal, handleMore }: PropsWithChildren<MainInfoProps>) {
-  return (
-    <div>
-      {isModal != null && isModal ? (
-        <ModalContainer>
-          <Header>
-            <span>상대방 정보</span>를 확인해보세요
-          </Header>
-          <List>
-            {userInfo.map((info, index) => (
-              <Wrapper key={info.id}>
-                <ListBox>
-                  <Top>
-                    <div className="name">
-                      <p>{info.username}</p>
-                    </div>
-                  </Top>
-                  <Bottom>
-                    <div className="content">
-                      <p className="category">학과*</p>
-                      <p className="value">{info.major}</p>
-                    </div>
-                    <div className="content">
-                      <p className="category">학번</p>
-                      <p className="value">{info.stID}</p>
-                    </div>
-                    <div className="content">
-                      <p className="category">나이</p>
-                      <p className="value">{info.age}</p>
-                    </div>
-                    <div className="content">
-                      <p className="category">MBTI</p>
-                      <p className="value">{info.mbti}</p>
-                    </div>
-                    <div className="content">
-                      <p className="category">소개 글(30자 제한)</p>
-                      <p className="value">{info.introduce}</p>
-                    </div>
-                  </Bottom>
-                </ListBox>
-              </Wrapper>
-            ))}
-          </List>
-          <Backdrop
-            onClick={(e: React.MouseEvent) => {
-              e.preventDefault();
-              handleMore != null && handleMore();
-            }}
-          />
-        </ModalContainer>
-      ) : (
-        <ListWrapper>
-          <List>
-            {userInfo.map((info, index) => (
-              <Wrapper key={info.id}>
-                <ListBox>
-                  <Top>
-                    <div className="name">
-                      <p>{info.username}</p>
-                    </div>
-                  </Top>
-                  <Bottom>
-                    <div className="content">
-                      <p className="category">학과*</p>
-                      <p className="value">{info.major}</p>
-                    </div>
-                    <div className="content">
-                      <p className="category">학번</p>
-                      <p className="value">{info.stID}</p>
-                    </div>
-                    <div className="content">
-                      <p className="category">나이</p>
-                      <p className="value">{info.age}</p>
-                    </div>
-                    <div className="content">
-                      <p className="category">MBTI</p>
-                      <p className="value">{info.mbti}</p>
-                    </div>
-                    <div className="content">
-                      <p className="category">소개 글(30자 제한)</p>
-                      <p className="value">{info.introduce}</p>
-                    </div>
-                  </Bottom>
-                </ListBox>
-              </Wrapper>
-            ))}
-          </List>
-        </ListWrapper>
-      )}
-    </div>
-  );
-}
-export default Modal;
+const MainInfo: React.FC<MainInfoProps> = ({
+  isModal,
+  handleMore,
+  userInfo,
+}) => (
+  <div>
+    {isModal != null && isModal ? (
+      <ModalContainer>
+        <Header>
+          <span>상대방 정보</span>를 확인해보세요
+        </Header>
+        <List>
+          {userInfo.map((info, index) => (
+            <Wrapper key={info.id}>
+              <ListBox>
+                <Top>
+                  <div className="name">
+                    <p>{info.username}</p>
+                  </div>
+                </Top>
+                <Bottom>
+                  <div className="content">
+                    <p className="category">학과*</p>
+                    <p className="value">{info.major}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">학번</p>
+                    <p className="value">{info.stID}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">나이</p>
+                    <p className="value">{info.age}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">MBTI</p>
+                    <p className="value">{info.mbti}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">소개 글(30자 제한)</p>
+                    <p className="value">{info.introduce}</p>
+                  </div>
+                </Bottom>
+              </ListBox>
+            </Wrapper>
+          ))}
+        </List>
+        <Backdrop
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault();
+            handleMore != null && handleMore();
+          }}
+        />
+      </ModalContainer>
+    ) : (
+      <ListWrapper>
+        <List>
+          {userInfo.map((info, index) => (
+            <Wrapper key={info.id}>
+              <ListBox>
+                <Top>
+                  <div className="name">
+                    <p>{info.username}</p>
+                  </div>
+                </Top>
+                <Bottom>
+                  <div className="content">
+                    <p className="category">학과*</p>
+                    <p className="value">{info.major}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">학번</p>
+                    <p className="value">{info.stID}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">나이</p>
+                    <p className="value">{info.age}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">MBTI</p>
+                    <p className="value">{info.mbti}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">소개 글(30자 제한)</p>
+                    <p className="value">{info.introduce}</p>
+                  </div>
+                </Bottom>
+              </ListBox>
+            </Wrapper>
+          ))}
+        </List>
+      </ListWrapper>
+    )}
+  </div>
+);
+export default MainInfo;
 
 const ModalContainer = styled.div<MainInfoProps>`
   width: 390px;
