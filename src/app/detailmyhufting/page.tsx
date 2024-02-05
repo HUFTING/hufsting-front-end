@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
+import ClipboardCopy from '@/components/copy/Copy';
 
 const total = {
   huftingid: 1,
@@ -14,18 +15,12 @@ const total = {
 };
 
 const MyDetail = () => {
-  // const [isOpenModal, setOpenModal] = useState<boolean>(false);
-
   const handleRemove = () => {
     alert('삭제!');
   };
 
   const handleEdit = () => {
     alert('수정!');
-  };
-
-  const handleMore = () => {
-    alert('복사되었습니다!');
   };
 
   return (
@@ -40,7 +35,7 @@ const MyDetail = () => {
         <OtherInfo>
           <div className="top">
             <SubTitle>오픈채팅방 링크</SubTitle>
-            <More onClick={handleMore}>복사하기</More>
+            <ClipboardCopy text={total.openlink} />
           </div>
           <p>{total.openlink}</p>
         </OtherInfo>
@@ -133,11 +128,6 @@ const OtherInfo = styled.div`
   .infobox p {
     font-size: 18px;
   }
-`;
-
-const More = styled.button`
-  font-size: 15px;
-  color: #8d8d8d;
 `;
 
 const BasicButtonWrapper = styled.div`
