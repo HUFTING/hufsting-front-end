@@ -4,11 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 interface NameListProps {
-  total: {
-    huftingid: number;
-    gender: string;
-    num: number;
-  };
+  desiredNumPeople: number;
 }
 
 interface UserInfo {
@@ -35,25 +31,28 @@ const myInfo = {
   public: true,
 };
 
-const NameList = ({ total }: NameListProps) => {
+const NameList = ({ desiredNumPeople }: NameListProps) => {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [edited, setEdited] = useState<boolean[]>([]);
 
   useEffect(() => {
-    const initialUserInfo = Array.from({ length: total.num }, (_, index) => ({
-      id: index + 1,
-      gender: '',
-      username: `참가자 ${index + 1}`,
-      major: '',
-      stID: null,
-      age: null,
-      mbti: '',
-      introduce: '',
-      public: false,
-    }));
+    const initialUserInfo = Array.from(
+      { length: desiredNumPeople },
+      (_, index) => ({
+        id: index + 1,
+        gender: '',
+        username: `참가자 ${index + 1}`,
+        major: '',
+        stID: null,
+        age: null,
+        mbti: '',
+        introduce: '',
+        public: false,
+      }),
+    );
     setUserInfo(initialUserInfo);
-    setEdited(Array(total.num).fill(false));
-  }, [total.num]);
+    setEdited(Array(desiredNumPeople).fill(false));
+  }, [desiredNumPeople]);
 
   const onClickEditButton = (index: number) => {
     setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
@@ -92,13 +91,6 @@ const NameList = ({ total }: NameListProps) => {
   const loadUserInfoById = (index: number) => {
     const userId = prompt('아이디를 입력하세요.');
     alert(userId);
-    // fetchUserInfoById(userId)
-    //   .then((user) => {
-    //     setUserInfo(prev => prev.map((u, i) => (i === index ? { ...u, ...user } : u)));
-    //   })
-    //   .catch((error) => {
-    //     console.error('Failed to fetch user information:', error);
-    //   });
   };
 
   return (
