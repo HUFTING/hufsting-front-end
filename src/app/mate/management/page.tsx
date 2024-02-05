@@ -24,7 +24,7 @@ export interface UserInfo {
 
 const ManageMateList = () => {
   const router = useRouter();
-  const [userList, setUserList] = useState<UserInfo[] | null>(null);
+  const [userList, setUserList] = useState<UserInfo[]>([]);
   const [openModal] = useState(false);
   const [pageType, setPageType] = useState<MatePageType>('my-mate');
 
@@ -34,6 +34,7 @@ const ManageMateList = () => {
 
   const getUserList = useCallback((searchValue: string | null) => {
     // api 호출할 때 searchValue 넣기
+    // eslint-disable-next-line no-console
     console.log(searchValue);
 
     setUserList([
@@ -75,9 +76,31 @@ const ManageMateList = () => {
     [userList],
   );
 
+  const getText = useCallback(() => {
+    if (pageType === 'my-mate') {
+      return <span className="text-[#FF6869]">훕팅 메이트</span>;
+    }
+
+    if (pageType === 'new-mate' && userList?.length > 0) {
+      return (
+        <>
+          <span className="text-[#FF6869]">훕팅 메이트</span>를 확인해보세요!
+        </>
+      );
+    }
+
+    return (
+      <>
+        <span className="text-[#FF6869]">메이트의 아이디</span>를 검색해보세요!
+      </>
+    );
+  }, [userList, pageType]);
+
   useEffect(() => {
-    getUserList(null);
-  }, []);
+    if (pageType === 'my-mate') {
+      getUserList(null);
+    }
+  }, [pageType]);
 
   return (
     <FollowerListPageStyle>
@@ -98,6 +121,7 @@ const ManageMateList = () => {
             title: '메이트 추가',
             onClick: menuObj => {
               setPageType(menuObj.id as MatePageType);
+              setUserList([]);
             },
           },
         ]}
@@ -106,9 +130,11 @@ const ManageMateList = () => {
 
       <div className="w-[90%] mb-4 mx-auto">
         <BasicInput
-          placeholder="이름 또는 이메일 입력"
-          changeHandler={e => {
-            getUserList(e.target.value);
+          placeholder={
+            pageType === 'my-mate' ? '훕팅 메이트 검색' : '사용자 ID 검색'
+          }
+          searchHandler={e => {
+            getUserList(e);
           }}
         />
       </div>
@@ -118,15 +144,7 @@ const ManageMateList = () => {
         style={{ boxShadow: '0px -2px 5px 3px rgba(0, 0, 0, 0.15)' }}
       >
         <div className="bg-[#C8C8C8] w-12 h-2 rounded-3xl my-4" />
-        <div className="font-bold text-xl mb-2">
-          {pageType === 'my-mate' ? (
-            <span className="text-[#FF6869]">훕팅 메이트</span>
-          ) : (
-            <>
-              <span className="text-[#FF6869]">훕팅 메이트</span>를 확인해보세요
-            </>
-          )}
-        </div>
+        <div className="font-bold text-xl mb-2">{getText()}</div>
 
         <section className="w-full flex flex-grow flex-col overflow-auto">
           {userList?.map(user => {

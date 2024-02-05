@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Logo from '../ui/LogoIcon';
 import HamburgerIcon from '../ui/HamburgerIcon';
 import HamburgerMenu from './HamburgerMenu';
-import NotificationIcon from '../ui/NotificationIcon';
+import NotificationIcon from '../ui/BasicNotificationIcon';
 
 const MainHeader = () => {
   const router = useRouter();
