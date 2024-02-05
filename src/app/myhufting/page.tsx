@@ -1,10 +1,9 @@
 'use client';
 
-import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
-import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import SubHeader from '@/components/common/layout/SubHeader';
+import MainHeader from '@/components/common/layout/MainHeader';
 import List from '../../components/list/HomeList';
 
 interface FilterButtonProps {
@@ -39,77 +38,85 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 const MyList = () => {
   const lists = [
     {
-      huftingid: 1,
-      matching: false,
+      id: 1,
+      matchingStatus: false,
       title: '모두 같이 훕팅해요~~',
-      people: 3,
+      desiredNumPeople: 3,
       gender: '남',
-      username: '김**',
-      upload: 1,
+      authorName: '김**',
+      createdAt: '2024-02-06T12:00:00Z',
     },
     {
-      huftingid: 2,
-      matching: false,
+      id: 2,
+      matchingStatus: false,
       title: '모두 같이',
-      people: 3,
+      desiredNumPeople: 3,
       gender: '남',
-      username: '김**',
-      upload: 1,
+      authorName: '김**',
+      createdAt: '2024-02-06T12:00:00Z',
     },
     {
-      huftingid: 3,
-      matching: false,
+      id: 3,
+      matchingStatus: false,
       title: '모두 같이 훕팅해요~~',
-      people: 3,
+      desiredNumPeople: 3,
       gender: '남',
-      username: '김**',
-      upload: 1,
+      authorName: '김**',
+      createdAt: '2024-02-06T12:00:00Z',
     },
     {
-      huftingid: 4,
-      matching: false,
+      id: 4,
+      matchingStatus: false,
       title: '안녕하세요',
-      people: 3,
+      desiredNumPeople: 3,
       gender: '남',
-      username: '김**',
-      upload: 1,
+      authorName: '김**',
+      createdAt: '2024-02-06T12:00:00Z',
     },
     {
-      huftingid: 5,
-      matching: false,
+      id: 5,
+      matchingStatus: false,
       title: 'Hello! How are you',
-      people: 3,
+      desiredNumPeople: 3,
       gender: '남',
-      username: '김**',
-      upload: 2,
+      authorName: '김**',
+      createdAt: '2024-02-06T12:00:00Z',
     },
     {
-      huftingid: 6,
-      matching: true,
+      id: 6,
+      matchingStatus: true,
       title: '넌 누구니',
-      people: 3,
+      desiredNumPeople: 3,
       gender: '남',
-      username: '김**',
-      upload: 2,
+      authorName: '김**',
+      createdAt: '2024-02-06T12:00:00Z',
     },
   ];
 
+  // 필터링
   const [filter, setFilter] = useState('all'); // 'all', 'waiting', 'completed'
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
   };
 
+  const filteredLists = lists.filter(item => {
+    if (filter === 'all') {
+      return true;
+    }
+    if (filter === 'waiting') {
+      return !item.matchingStatus; // 매칭 대기중인 경우
+    }
+    if (filter === 'completed') {
+      return item.matchingStatus; // 매칭 완료된 경우
+    }
+    return true;
+  });
+
   return (
     <Container>
-      <Header>
-        <LogoIcon width={118} height={30} />
-        <div>
-          <SearchIcon />
-          <HamburgerIcon />
-        </div>
-      </Header>
-      <Title>내가 올린 훕팅</Title>
+      <MainHeader />
+      <SubHeader title="내가 올린 훕팅" />
       <div className="filterwrapper">
         <FilterBox>
           <FilterButton
@@ -138,7 +145,7 @@ const MyList = () => {
           </FilterButton>
         </FilterBox>
       </div>
-      <List lists={lists} pathnameProp="/detailmyhufting" />
+      <List lists={filteredLists} pathnameProp="/detailmyhufting" />
     </Container>
   );
 };
@@ -151,34 +158,8 @@ const Container = styled.div`
   justify-content: center;
 
   .filterwrapper {
-    padding: 0 18px 0 18px;
+    padding: 10px 18px;
   }
-`;
-
-const Header = styled.div`
-  width: 100%;
-  padding: 0 18px 0 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 23px;
-
-  div {
-    width: 73px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
-const Title = styled.p`
-  margin-bottom: 23px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  color: black;
-  font-size: 25px;
-  font-weight: bold;
 `;
 
 const FilterBox = styled.div`
