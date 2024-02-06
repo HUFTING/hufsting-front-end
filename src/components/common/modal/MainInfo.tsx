@@ -1,127 +1,76 @@
+import NameList from '@/components/list/NameList';
 import styled from 'styled-components';
 
 interface UserInfo {
-  id: number;
-  username: string;
+  id: null | number;
+  name: string;
   major: string;
-  stID: number;
-  age: number;
+  studentNumber: null | string;
+  age: null | number;
   mbti: string;
-  introduce: string;
-  public: boolean;
+  content: string;
 }
 
 interface MainInfoProps {
+  desiredNumPeople: number;
   isModal?: boolean;
   handleMore?: () => void;
   userInfo: UserInfo[];
 }
 
 const MainInfo: React.FC<MainInfoProps> = ({
+  desiredNumPeople,
   isModal,
   handleMore,
   userInfo,
 }) => (
-  <div>
-    {isModal != null && isModal ? (
+  <Container>
+    {isModal != null && isModal && (
+      <Backdrop
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault();
+          handleMore != null && handleMore();
+        }}
+      />
+    )}
+    {isModal != null && isModal && (
       <ModalContainer>
+        <Bar>&nbsp;</Bar>
         <Header>
           <span>상대방 정보</span>를 확인해보세요
         </Header>
         <List>
-          {userInfo.map((info, index) => (
-            <Wrapper key={info.id}>
-              <ListBox>
-                <Top>
-                  <div className="name">
-                    <p>{info.username}</p>
-                  </div>
-                </Top>
-                <Bottom>
-                  <div className="content">
-                    <p className="category">학과*</p>
-                    <p className="value">{info.major}</p>
-                  </div>
-                  <div className="content">
-                    <p className="category">학번</p>
-                    <p className="value">{info.stID}</p>
-                  </div>
-                  <div className="content">
-                    <p className="category">나이</p>
-                    <p className="value">{info.age}</p>
-                  </div>
-                  <div className="content">
-                    <p className="category">MBTI</p>
-                    <p className="value">{info.mbti}</p>
-                  </div>
-                  <div className="content">
-                    <p className="category">소개 글(30자 제한)</p>
-                    <p className="value">{info.introduce}</p>
-                  </div>
-                </Bottom>
-              </ListBox>
-            </Wrapper>
-          ))}
+          <NameList
+            desiredNumPeople={desiredNumPeople}
+            participants={userInfo}
+            editable={false}
+          />
         </List>
-        <Backdrop
-          onClick={(e: React.MouseEvent) => {
-            e.preventDefault();
-            handleMore != null && handleMore();
-          }}
-        />
       </ModalContainer>
-    ) : (
-      <ListWrapper>
-        <List>
-          {userInfo.map((info, index) => (
-            <Wrapper key={info.id}>
-              <ListBox>
-                <Top>
-                  <div className="name">
-                    <p>{info.username}</p>
-                  </div>
-                </Top>
-                <Bottom>
-                  <div className="content">
-                    <p className="category">학과*</p>
-                    <p className="value">{info.major}</p>
-                  </div>
-                  <div className="content">
-                    <p className="category">학번</p>
-                    <p className="value">{info.stID}</p>
-                  </div>
-                  <div className="content">
-                    <p className="category">나이</p>
-                    <p className="value">{info.age}</p>
-                  </div>
-                  <div className="content">
-                    <p className="category">MBTI</p>
-                    <p className="value">{info.mbti}</p>
-                  </div>
-                  <div className="content">
-                    <p className="category">소개 글(30자 제한)</p>
-                    <p className="value">{info.introduce}</p>
-                  </div>
-                </Bottom>
-              </ListBox>
-            </Wrapper>
-          ))}
-        </List>
-      </ListWrapper>
     )}
-  </div>
+  </Container>
 );
 export default MainInfo;
 
-const ModalContainer = styled.div<MainInfoProps>`
-  width: 390px;
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+`;
+
+const ModalContainer = styled.div`
+  width: 370px;
+  min-height: 200px;
   height: 83vh;
+  display: flex;
   flex-direction: column;
   align-items: center;
   position: fixed;
   bottom: 0px;
-  z-index: 9998;
-  background-color: white;
+  z-index: 9999;
+  background-color: #f3f5f7;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
@@ -133,11 +82,23 @@ const Backdrop = styled.div`
   height: 100%;
   position: fixed;
   top: 0;
-  z-index: 9999;
+  left: 0;
+  z-index: 100;
+`;
+
+const Bar = styled.div`
+  min-width: 46px;
+  height: 6px;
+  background-color: #c8c8c8;
+  border-radius: 50px;
+  margin-top: 8px;
 `;
 
 const Header = styled.div`
-  margin: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
   font-size: 20px;
   font-weight: bold;
 
@@ -152,65 +113,5 @@ const List = styled.div`
   flex-direction: column;
   max-width: 390px;
   width: 100%;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 80%;
-`;
-
-const ListBox = styled.div`
-  margin-bottom: 20px;
-  padding: 25px;
-  width: 100%;
-  border-radius: 30px;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  background-color: white;
-`;
-
-const Top = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-
-  .name {
-    padding: 0px 8px;
-    border-bottom: 1px solid #ff6869;
-  }
-
-  .name p {
-    font-size: 18px;
-  }
-`;
-
-const Bottom = styled.form`
-  .content {
-    display: flex;
-  }
-
-  .content:last-child {
-    flex-direction: column;
-
-    .category {
-      width: 100%;
-    }
-  }
-
-  .category {
-    width: 40px;
-    font-size: 16px;
-    color: #ff6869;
-    margin-right: 11px;
-  }
-
-  .value {
-    flex: 1;
-    font-size: 16px;
-  }
-`;
-
-const ListWrapper = styled.div`
-  width: 100%;
+  padding: 0px 25px;
 `;
