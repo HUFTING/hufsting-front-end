@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
+import axiosInstance from '@/api/axiosInstance';
 import List from '../../components/list/HomeList';
 
 interface FilterButtonProps {
@@ -51,7 +51,7 @@ const MyList = () => {
 
   // 리스트 불러오기
   useEffect(() => {
-    axios
+    axiosInstance
       .get('http://www.hufsting.com:8080/api/v1/my-matchingposts')
       .then(res => {
         const { data } = res.data;

@@ -2,13 +2,13 @@
 
 // import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
-// import axios from 'axios';
 import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
+// import axiosInstance from '@/api/axiosInstance';
 
 const postInfo = {
   id: 1,
@@ -66,7 +66,7 @@ const Accept = () => {
   //   const [postInfo, setPostInfo] = useState<ListType | null>(null);
 
   //   useEffect(() => {
-  //     axios
+  // axiosInstance
   //       .get(`http://www.hufsting.com:8080/api/v1/matchingposts/${search}`)
   //       .then(res => {
   //         const data = res.data;
@@ -125,6 +125,12 @@ const Accept = () => {
             isActive
             width="48%"
           />
+          {/* <Link
+            href={{
+              pathname: '/result',
+              // query: { id:  },
+            }}
+          > */}
           <BasicButton
             color="red"
             assetType="Primary"
@@ -134,6 +140,7 @@ const Accept = () => {
             isActive
             width="48%"
           />
+          {/* </Link> */}
         </BasicButtonWrapper>
       </>
       {/* )} */}
@@ -195,7 +202,7 @@ const More = styled.button`
 
 const BasicButtonWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   position: fixed;
   width: 100%;

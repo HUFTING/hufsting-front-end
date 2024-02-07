@@ -2,13 +2,13 @@
 
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
+import axiosInstance from '@/api/axiosInstance';
 
 interface Participant {
   id: number;
@@ -56,7 +56,7 @@ const Detail = () => {
   const [postInfo, setPostInfo] = useState<ListType | null>(null);
 
   useEffect(() => {
-    axios
+    axiosInstance
       .get(`http://www.hufsting.com:8080/api/v1/matchingposts/${search}`)
       .then(res => {
         const { data } = res;
@@ -77,7 +77,7 @@ const Detail = () => {
       title,
     };
 
-    axios
+    axiosInstance
       .post('http://www.hufsting.com:8080/api/v1/matchingrequests', RequestData)
       .then(res => {
         // console.log(res.data);
