@@ -33,8 +33,11 @@ interface ListType {
 
 const Detail = () => {
   // 쿼리 받아오기
-  const searchParams = useSearchParams();
-  const search = searchParams.get('id');
+  const searchParam = useSearchParams();
+  const search = parseInt(searchParam.get('id') ?? '', 10);
+
+  // NameList 참여자 아이디
+  const [returnId, setReturnId] = useState<number[]>([]);
 
   // 더 보기
   const [isOpenModal, setOpenModal] = useState(false);
@@ -64,14 +67,14 @@ const Detail = () => {
   const onApplyClick = () => {
     const RequestData = {
       matchingPostId: search,
-      participantIds: [1], // 수정 필요
+      participantIds: returnId,
     };
 
     axios
       .post('http://www.hufsting.com:8080/api/v1/matchingrequests', RequestData)
       .then(res => {
         // console.log(res.data);
-        window.location.href = 'http://localhost:3000/result';
+        window.location.href = 'http://localhost:3000/home';
       })
       .catch(error => {
         alert(
@@ -123,6 +126,7 @@ const Detail = () => {
               desiredNumPeople={postInfo.desiredNumPeople}
               participants={postInfo.participants}
               editable
+              setReturnId={setReturnId}
             />
           </div>
           <BasicButtonWrapper>

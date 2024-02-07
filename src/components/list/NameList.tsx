@@ -7,6 +7,7 @@ interface NameListProps {
   desiredNumPeople: number;
   participants: UserInfo[];
   editable: boolean;
+  setReturnId?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 interface UserInfo {
@@ -31,7 +32,7 @@ const myInfo = {
 };
 
 const userID = {
-  id: 2,
+  id: 4,
   name: '라**',
   major: '아라라라',
   studentNumber: '19학번',
@@ -44,6 +45,7 @@ const NameList = ({
   desiredNumPeople,
   participants,
   editable,
+  setReturnId,
 }: NameListProps) => {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [edited, setEdited] = useState<boolean[]>([]);
@@ -92,6 +94,9 @@ const NameList = ({
     setUserInfo(prev =>
       prev.map((user, i) => (i === index ? { ...user, ...myInfo } : user)),
     );
+    if (setReturnId !== undefined) {
+      setReturnId(prevIds => [...prevIds, myInfo.id]);
+    }
   };
 
   // 아이디로 친구 정보 불러오기
@@ -100,6 +105,10 @@ const NameList = ({
     setUserInfo(prev =>
       prev.map((user, i) => (i === index ? { ...user, ...userID } : user)),
     );
+
+    if (setReturnId !== undefined) {
+      setReturnId(prevIds => [...prevIds, userID.id]);
+    }
   };
 
   // 내용 변경 감지
