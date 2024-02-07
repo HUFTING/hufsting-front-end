@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import ImportMateModal from '../common/modal/ImportMateModal';
 
 interface NameListProps {
   desiredNumPeople: number;
@@ -99,9 +100,20 @@ const NameList = ({
     }
   };
 
+  // 메이트 선택하기(모달)
+  const [isOpenModal, setOpenModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number>();
+
+  const handleMore = () => {
+    setOpenModal(!isOpenModal);
+  };
+
   // 아이디로 친구 정보 불러오기
   const loadUserInfoById = (index: number) => {
     // const userId = prompt('아이디를 입력하세요.');
+    if (selectedUserId !== null && selectedUserId !== undefined) {
+      alert(selectedUserId);
+    }
     setUserInfo(prev =>
       prev.map((user, i) => (i === index ? { ...user, ...userID } : user)),
     );
@@ -118,14 +130,13 @@ const NameList = ({
     );
   };
 
-  // 수정하기 or 친구 등록하기 버튼
+  // 수정하기 or 메이트 불러오기 버튼
   const onClickEditButton = (index: number) => {
     if (index === 0) {
       setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
       // window.location.href = 'http://localhost:3000/친구등록';
     } else {
-      alert('친구 등록 페이지로 이동');
-      // window.location.href = 'http://localhost:3000/친구등록';
+      setOpenModal(true);
     }
   };
 
@@ -140,148 +151,161 @@ const NameList = ({
   };
 
   return (
-    <Container>
-      {userInfo.map((info, index) => (
-        <Wrapper key={info.id}>
-          <ListBox>
-            <Top>
-              <div className="name">
-                {editable && edited[index] ? (
-                  <input
-                    className="p_input"
-                    value={info.name}
-                    onChange={e => {
-                      handleInputChange(index, 'name', e.target.value);
-                    }}
-                  />
-                ) : (
-                  <p>{info.name}</p>
-                )}
-              </div>
-              <div className="buttonbox">
-                {editable && (
-                  <>
-                    <button
-                      type="button"
-                      className="import"
-                      onClick={() => {
-                        handleImportClick(index);
+    <>
+      {isOpenModal && (
+        <ImportMateModal
+          handleMore={handleMore}
+          isModal={isOpenModal}
+          onUserSelect={setSelectedUserId}
+        />
+      )}
+      <Container>
+        {userInfo.map((info, index) => (
+          <Wrapper key={info.id}>
+            <ListBox>
+              <Top>
+                <div className="name">
+                  {editable && edited[index] ? (
+                    <input
+                      className="p_input"
+                      value={info.name}
+                      onChange={e => {
+                        handleInputChange(index, 'name', e.target.value);
                       }}
-                    >
-                      {index === 0 ? '내 정보 불러오기' : ''}
-                    </button>
-                    {edited[index] ? (
-                      <button
-                        type="submit"
-                        className="edit"
-                        onClick={() => {
-                          handleComplete(index);
-                        }}
-                      >
-                        완료
-                      </button>
-                    ) : (
+                    />
+                  ) : (
+                    <p>{info.name}</p>
+                  )}
+                </div>
+                <div className="buttonbox">
+                  {editable && (
+                    <>
                       <button
                         type="button"
-                        className="edit"
-                        style={{ color: index === 0 ? '#8d8d8d' : '#FF6869' }}
+                        className="import"
                         onClick={() => {
-                          onClickEditButton(index);
+                          handleImportClick(index);
                         }}
                       >
-                        {index === 0 ? '✏️' : '메이트 불러오기'}
+                        {index === 0 ? '내 정보 불러오기' : ''}
                       </button>
-                    )}
-                  </>
-                )}
-              </div>
-            </Top>
-            {edited[index] ? (
-              <Bottom>
-                <div className="content">
-                  <p className="category">학과*</p>
-                  <input
-                    className="value_input"
-                    value={info.major}
-                    onChange={e => {
-                      handleInputChange(index, 'major', e.target.value);
-                    }}
-                  />
+                      {edited[index] ? (
+                        <button
+                          type="submit"
+                          className="edit"
+                          onClick={() => {
+                            handleComplete(index);
+                          }}
+                        >
+                          완료
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="edit"
+                          style={{ color: index === 0 ? '#8d8d8d' : '#FF6869' }}
+                          onClick={() => {
+                            onClickEditButton(index);
+                          }}
+                        >
+                          {index === 0 ? '✏️' : '메이트 불러오기'}
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
-                <div className="content">
-                  <p className="category">학번</p>
-                  <input
-                    className="value_input"
-                    value={
-                      info.studentNumber !== null
-                        ? info.studentNumber.toString()
-                        : ''
-                    }
-                    onChange={e => {
-                      handleInputChange(index, 'studentNumber', e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="content">
-                  <p className="category">나이</p>
-                  <input
-                    className="value_input"
-                    value={info.age !== null ? info.age.toString() : ''}
-                    onChange={e => {
-                      handleInputChange(index, 'age', e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="content">
-                  <p className="category">MBTI</p>
-                  <input
-                    className="value_input"
-                    value={info.mbti}
-                    onChange={e => {
-                      handleInputChange(index, 'mbti', e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="content">
-                  <p className="category">소개 글(30자 제한)</p>
-                  <input
-                    className="value_input"
-                    value={info.content}
-                    onChange={e => {
-                      handleInputChange(index, 'content', e.target.value);
-                    }}
-                    maxLength={30}
-                  />
-                </div>
-              </Bottom>
-            ) : (
-              <Bottom>
-                <div className="content">
-                  <p className="category">학과*</p>
-                  <p className="value">{info.major}</p>
-                </div>
-                <div className="content">
-                  <p className="category">학번</p>
-                  <p className="value">{info.studentNumber}</p>
-                </div>
-                <div className="content">
-                  <p className="category">나이</p>
-                  <p className="value">{info.age}</p>
-                </div>
-                <div className="content">
-                  <p className="category">MBTI</p>
-                  <p className="value">{info.mbti}</p>
-                </div>
-                <div className="content">
-                  <p className="category">소개 글(30자 제한)</p>
-                  <p className="value">{info.content}</p>
-                </div>
-              </Bottom>
-            )}
-          </ListBox>
-        </Wrapper>
-      ))}
-    </Container>
+              </Top>
+              {edited[index] ? (
+                <Bottom>
+                  <div className="content">
+                    <p className="category">학과*</p>
+                    <input
+                      className="value_input"
+                      value={info.major}
+                      onChange={e => {
+                        handleInputChange(index, 'major', e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <p className="category">학번</p>
+                    <input
+                      className="value_input"
+                      value={
+                        info.studentNumber !== null
+                          ? info.studentNumber.toString()
+                          : ''
+                      }
+                      onChange={e => {
+                        handleInputChange(
+                          index,
+                          'studentNumber',
+                          e.target.value,
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <p className="category">나이</p>
+                    <input
+                      className="value_input"
+                      value={info.age !== null ? info.age.toString() : ''}
+                      onChange={e => {
+                        handleInputChange(index, 'age', e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <p className="category">MBTI</p>
+                    <input
+                      className="value_input"
+                      value={info.mbti}
+                      onChange={e => {
+                        handleInputChange(index, 'mbti', e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <p className="category">소개 글(30자 제한)</p>
+                    <input
+                      className="value_input"
+                      value={info.content}
+                      onChange={e => {
+                        handleInputChange(index, 'content', e.target.value);
+                      }}
+                      maxLength={30}
+                    />
+                  </div>
+                </Bottom>
+              ) : (
+                <Bottom>
+                  <div className="content">
+                    <p className="category">학과*</p>
+                    <p className="value">{info.major}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">학번</p>
+                    <p className="value">{info.studentNumber}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">나이</p>
+                    <p className="value">{info.age}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">MBTI</p>
+                    <p className="value">{info.mbti}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">소개 글(30자 제한)</p>
+                    <p className="value">{info.content}</p>
+                  </div>
+                </Bottom>
+              )}
+            </ListBox>
+          </Wrapper>
+        ))}
+      </Container>
+    </>
   );
 };
 
