@@ -54,7 +54,6 @@ const Detail = () => {
         setPostInfo(data);
       })
       .catch(error => {
-        // 사용자에게 오류 메시지를 표시하는 대신 다른 작업을 수행할 수 있습니다.
         alert(
           `데이터를 불러오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.${error}`,
         );
@@ -75,7 +74,6 @@ const Detail = () => {
         window.location.href = 'http://localhost:3000/result';
       })
       .catch(error => {
-        // 사용자에게 오류 메시지를 표시하는 대신 다른 작업을 수행할 수 있습니다.
         alert(
           `데이터를 불러오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.${error}`,
         );
