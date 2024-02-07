@@ -18,7 +18,7 @@ const setInterceptors = (instance: AxiosInstance) => {
 };
 
 const axiosInstance = axios.create({
-  baseURL: 'https://api.example.com',
+  baseURL: 'http://www.hufsting.com:8080',
   withCredentials: true,
 });
 
