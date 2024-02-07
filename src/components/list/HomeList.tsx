@@ -4,10 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 
-interface StyledButtonProps {
-  backColor: number;
-}
-
 interface HomeListProps {
   lists: Array<{
     id: number;
@@ -51,14 +47,15 @@ const calculateTimeAgo = (createdAt: string): string => {
 const List = ({ lists, pathnameProp }: HomeListProps) => (
   <Container>
     {lists.map((item, index) => (
-      <Wrapper key={item.id} backColor={item.id}>
-        <Link
-          href={{
-            pathname: pathnameProp,
-            query: { id: item.id },
-          }}
-          style={{ width: '100%' }}
-        >
+      <Link
+        key={item.id}
+        href={{
+          pathname: pathnameProp,
+          query: { id: item.id },
+        }}
+        style={{ width: '100%' }}
+      >
+        <Wrapper $backgroundColor={item.id}>
           <div className="box">
             <div className="matching">
               <p className="matchingText">
@@ -77,8 +74,8 @@ const List = ({ lists, pathnameProp }: HomeListProps) => (
             </div>
             <p className="info">{calculateTimeAgo(item.createdAt)}</p>
           </div>
-        </Link>
-      </Wrapper>
+        </Wrapper>
+      </Link>
     ))}
   </Container>
 );
@@ -90,12 +87,12 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Wrapper = styled.button<StyledButtonProps>`
+const Wrapper = styled.div<{ $backgroundColor: number }>`
   display: flex;
   flex-direction: column;
   padding: 12px 18px 12px 18px;
   background-color: ${props =>
-    props.backColor % 2 === 0 ? '#F9F9FB' : 'white'};
+    props.$backgroundColor % 2 === 0 ? '#F9F9FB' : 'white'};
 
   &:active {
     background-color: rgba(255, 105, 105, 0.2);
@@ -142,5 +139,5 @@ const Wrapper = styled.button<StyledButtonProps>`
   }
 
   background-color: ${props =>
-    props.backColor % 2 === 0 ? '#F9F9FB' : 'white'};
+    props.$backgroundColor % 2 !== 0 ? '#F9F9FB' : 'white'};
 `;
