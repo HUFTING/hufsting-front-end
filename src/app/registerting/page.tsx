@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
@@ -10,7 +10,18 @@ import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
-import Modal from '@/components/common/modal/MainInfo';
+
+const test = [
+  {
+    id: 100,
+    name: '김재우',
+    major: '일단 테스트',
+    studentNumber: '21학번',
+    age: '2002',
+    mbti: 'ESFJ',
+    content: 'namelist 내 정보 보내는 메시지~',
+  },
+];
 
 const Container = styled.div`
   padding: 33px 0 0 0;
@@ -113,7 +124,6 @@ const total = {
 };
 
 const Registerting = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
   // const [gender, setGender] = useState<string | null>(null);
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [title, setTitle] = useState<string>(''); // title 상태 추가
@@ -148,10 +158,18 @@ const Registerting = () => {
   const handleClick = () => {
     alert('clicked!');
   };
-  const handleMore = useCallback(() => {
-    setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
 
+  // 리스트 받아오기
+  /*  useEffect(() => {
+    axios
+      .get('http://www.hufsting.com:8080/api/v1/matchingposts')
+      .then(res => {
+        const { data } = res.data;
+        setInitialLists(data);
+        setFilteredLists(data);
+      })
+      .catch(e => e);
+  }, []); */
   return (
     <Container>
       <Header>
@@ -165,9 +183,6 @@ const Registerting = () => {
         <BackIcon />
         <Title>훕팅 등록하기</Title>
       </div>
-      {isOpenModal && (
-        <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
-      )}
 
       <div className="otherInfo">
         <input
@@ -230,9 +245,13 @@ const Registerting = () => {
       </div>
 
       <div className="listbox">
-        <NameList total={total} />
+        <NameList
+          desiredNumPeople={total.num}
+          participants={test}
+          // eslint-disable-next-line react/jsx-boolean-value
+          editable={true}
+        />
       </div>
-
       <BasicButtonWrapper>
         <BasicButton
           color="red"

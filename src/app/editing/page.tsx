@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
@@ -8,9 +8,20 @@ import NotificationIcon from '@/components/common/ui/NotificationIcon';
 import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/common/modal/MainInfo';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+
+const test = [
+  {
+    id: 100,
+    name: '김재우',
+    major: '일단 테스트',
+    studentNumber: '21학번',
+    age: '2002',
+    mbti: 'ESFJ',
+    content: 'namelist 내 정보 보내는 메시지~',
+  },
+];
 
 // const otherInfo = 'https://open.kakao.com/o/gto74LSf';
 
@@ -142,7 +153,6 @@ const total = {
 };
 
 const Editing = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
   /* const [gender, setGender] = useState<string | null>(null); */
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [address, setAddress] = useState<string>('');
@@ -175,9 +185,6 @@ const Editing = () => {
   const handleClick = () => {
     alert('clicked!');
   };
-  const handleMore = useCallback(() => {
-    setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
 
   const handleCopyLink = () => {
     navigator.clipboard
@@ -210,9 +217,6 @@ const Editing = () => {
         <BackIcon />
         <Title>훕팅 수정</Title>
       </div>
-      {isOpenModal && (
-        <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
-      )}
       <div className="otherInfo">
         <SubTitle>희망 인원 수</SubTitle>
         <div className="flex">
@@ -267,7 +271,12 @@ const Editing = () => {
         </OtherInfo>
       </div>
       <div className="listbox">
-        <NameList total={total} />
+        <NameList
+          desiredNumPeople={total.num}
+          participants={test}
+          // eslint-disable-next-line react/jsx-boolean-value
+          editable={true}
+        />
       </div>
       <BasicButtonWrapper
         style={{ display: 'flex', justifyContent: 'space-evenly' }}
