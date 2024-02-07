@@ -33,8 +33,17 @@ interface ListType {
 
 const Detail = () => {
   // 쿼리 받아오기
-  const searchParams = useSearchParams();
-  const search = searchParams.get('id');
+  const searchParam = useSearchParams();
+  const search = parseInt(searchParam.get('id') ?? '', 10);
+
+  // NameList 참여자 아이디
+  const [returnId, setReturnId] = useState<number[]>([]);
+
+  // 타이틀 입력
+  const [title, setTitle] = useState('');
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
 
   // 더 보기
   const [isOpenModal, setOpenModal] = useState(false);
@@ -64,14 +73,15 @@ const Detail = () => {
   const onApplyClick = () => {
     const RequestData = {
       matchingPostId: search,
-      participantIds: [1], // 수정 필요
+      participantIds: returnId,
+      title,
     };
 
     axios
       .post('http://www.hufsting.com:8080/api/v1/matchingrequests', RequestData)
       .then(res => {
         // console.log(res.data);
-        window.location.href = 'http://localhost:3000/result';
+        window.location.href = 'http://localhost:3000/home';
       })
       .catch(error => {
         alert(
@@ -94,8 +104,13 @@ const Detail = () => {
               userInfo={postInfo.participants}
             />
           )}
-
-          <Title>{postInfo.title}</Title>
+          <div className="titlebox">
+            <Title
+              placeholder="제목을 입력해주세요."
+              value={title}
+              onChange={handleTitleChange}
+            />
+          </div>
           <div className="otherInfo">
             <SubTitle>성별</SubTitle>
             <div className="genderbox">
@@ -123,6 +138,7 @@ const Detail = () => {
               desiredNumPeople={postInfo.desiredNumPeople}
               participants={postInfo.participants}
               editable
+              setReturnId={setReturnId}
             />
           </div>
           <BasicButtonWrapper>
@@ -153,7 +169,8 @@ const Container = styled.div`
   margin-bottom: 50px;
 
   .titlebox {
-    padding: 2px 22px;
+    margin: 10px 0px;
+    padding: 0px 22px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -191,10 +208,13 @@ const Container = styled.div`
   }
 `;
 
-const Title = styled.p`
-  padding: 10px 22px;
-  font-size: 20px;
+const Title = styled.input`
+  width: 100%;
+  padding: 10px 17px;
+  font-size: 18px;
   font-weight: bold;
+  border-radius: 10px;
+  border: 1px solid #8d8d8d;
 `;
 
 const SubTitle = styled.p`
