@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
 import BasicButton from '@/components/common/button/Button';
@@ -9,6 +8,7 @@ import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import ClipboardCopy from '@/components/copy/Copy';
 import NameList from '@/components/list/NameList';
+import axiosInstance from '@/api/axiosInstance';
 
 interface Participant {
   id: number;
@@ -41,7 +41,7 @@ const MyDetail = () => {
   const [postInfo, setPostInfo] = useState<ListType | null>(null);
 
   useEffect(() => {
-    axios
+    axiosInstance
       .get(`http://www.hufsting.com:8080/api/v1/matchingposts/${search}`)
       .then(res => {
         const { data } = res;
