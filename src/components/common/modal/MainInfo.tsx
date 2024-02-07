@@ -2,11 +2,11 @@ import NameList from '@/components/list/NameList';
 import styled from 'styled-components';
 
 interface UserInfo {
-  id: null | number;
+  id: number;
   name: string;
   major: string;
   studentNumber: null | string;
-  age: null | number;
+  age: string;
   mbti: string;
   content: string;
 }
