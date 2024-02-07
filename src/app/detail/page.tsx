@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+// import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/common/modal/MainInfo';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
+import MainInfo from '@/components/common/modal/MainInfo';
 
 const otherInfo = [
   {
@@ -27,22 +28,83 @@ const total = {
   num: 2,
 };
 
-const Detail = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
+const userInfo = [
+  {
+    id: 1,
+    gender: '여',
+    username: '김**',
+    major: 'GBT학부',
+    stID: 202100000,
+    age: 2002,
+    mbti: 'ESFJ',
+    introduce: '즐거운 훕팅 많이 많이 이용해주세요~',
+    public: true,
+  },
+  {
+    id: 2,
+    gender: '남',
+    username: '원**',
+    major: 'GBT학부',
+    stID: 202100000,
+    age: 2002,
+    mbti: 'ESFJ',
+    introduce: '즐거운 훕팅 많이 많이 이용해주세요~',
+    public: true,
+  },
+];
 
-  const handleClick = () => {
-    alert('clicked!');
+const Detail = () => {
+  // const router = useRouter();
+  // const { query } = router;
+  // const matchingPostId = query.matchingPostId;
+  // console.log(matchingPostId);
+
+  // 더 보기
+  const [isOpenModal, setOpenModal] = useState(false);
+
+  const handleMore = () => {
+    setOpenModal(!isOpenModal);
   };
 
-  const handleMore = useCallback(() => {
-    setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
+  // 리스트 받아오기
+  // useEffect(() => {
+  //   // get
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `http://www.hufsting.com:8080/api/v1/matchingposts/${matchingPostId}`,
+  //         {
+  //           method: 'GET',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //         },
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error('error');
+  //       }
+
+  //       const data = await response.json();
+
+  //     } catch (error) {
+  //       console.error('데이터를 가져오는 동안 오류 발생:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return (
     <Container>
       <MainHeader />
       <SubHeader title="훕팅 참여하기" />
-      {isOpenModal && <Modal handleMore={handleMore} isModal />}
+      {isOpenModal && (
+        <MainInfo
+          handleMore={handleMore}
+          isModal={isOpenModal}
+          userInfo={userInfo}
+        />
+      )}
       <div className="otherInfo">
         <SubTitle>성별</SubTitle>
         <div className="genderbox">
@@ -72,7 +134,7 @@ const Detail = () => {
           assetType="Primary"
           size="M"
           content="매칭하기"
-          onClickEvent={handleClick}
+          onClickEvent={null}
           isActive
           buttonType="button"
           width="100%"
@@ -139,7 +201,7 @@ const OtherInfo = styled.div`
   .top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .infobox p {
