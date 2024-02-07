@@ -3,7 +3,12 @@
 import Filter, {
   type SelectedFilters,
 } from '@/components/common/dropdown/HomeFilter';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  type ChangeEvent,
+} from 'react';
 import styled from 'styled-components';
 import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
@@ -66,12 +71,21 @@ const Home = () => {
     [filterLists, initialLists],
   );
 
+  // 검색 필터링
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    const updatedLists = initialLists.filter(item =>
+      item.title.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+    setFilteredLists(updatedLists);
+  };
+
   return (
     <Container>
       <MainHeader />
       <SubHeader title="훕팅 목록" />
       <div className="searchbox">
-        <BasicInput placeholder="제목 검색" />
+        <BasicInput placeholder="제목 검색" changeHandler={handleInputChange} />
       </div>
       {initialLists.length === 0 ? (
         <NoDataMessage>훕팅 리스트가 없습니다.</NoDataMessage>
