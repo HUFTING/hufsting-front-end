@@ -168,7 +168,7 @@ const NameList = ({
                         handleImportClick(index);
                       }}
                     >
-                      {index === 0 ? '내 정보 불러오기' : '아이디로 불러오기'}
+                      {index === 0 ? '내 정보 불러오기' : ''}
                     </button>
                     {edited[index] ? (
                       <button
@@ -189,7 +189,7 @@ const NameList = ({
                           onClickEditButton(index);
                         }}
                       >
-                        {index === 0 ? '✏️' : '친구 등록하기'}
+                        {index === 0 ? '✏️' : '메이트 불러오기'}
                       </button>
                     )}
                   </>
