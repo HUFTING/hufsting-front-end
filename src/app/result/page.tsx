@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
@@ -8,7 +7,18 @@ import NotificationIcon from '@/components/common/ui/NotificationIcon';
 import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/common/modal/MainInfo';
+
+const test = [
+  {
+    id: 100,
+    name: '김재우',
+    major: '일단 테스트',
+    studentNumber: '21학번',
+    age: '2002',
+    mbti: 'ESFJ',
+    content: 'namelist 내 정보 보내는 메시지~',
+  },
+];
 
 // 오픈 채팅방 링크
 const otherInfo = 'https://open.kakao.com/o/gto74LSf';
@@ -168,15 +178,9 @@ const total = {
 };
 
 const Result = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
-
   /* const handleClick = () => {
     alert('clicked!');
   }; */
-
-  const handleMore = useCallback(() => {
-    setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
 
   const handleCopyLink = () => {
     navigator.clipboard
@@ -209,9 +213,6 @@ const Result = () => {
       </div>
       <p className="HuftingComplete">❤훕팅완료❤</p>
       <p className="SayHi">아래링크로 접속해 인사를 건네보세요!</p>
-      {isOpenModal && (
-        <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
-      )}
       <div className="otherInfo">
         {/* <SubTitle>성별</SubTitle>
         <div className="genderbox">
@@ -234,7 +235,12 @@ const Result = () => {
       </div>
       <div className="listbox">
         <p className="essential">필수 참가 인원 {total.num}인</p>
-        <NameList total={total} />
+        <NameList
+          desiredNumPeople={total.num}
+          participants={test}
+          // eslint-disable-next-line react/jsx-boolean-value
+          editable={true}
+        />
       </div>
       <BasicButtonWrapper>
         <BasicButton
