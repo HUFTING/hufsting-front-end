@@ -1,16 +1,26 @@
 'use client';
 
-import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
-import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
+import SubHeader from '@/components/common/layout/SubHeader';
+import MainHeader from '@/components/common/layout/MainHeader';
 import List from '../../components/list/HomeList';
 
 interface FilterButtonProps {
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
+}
+
+interface ListType {
+  id: number;
+  matchingStatus: boolean;
+  title: string;
+  desiredNumPeople: number;
+  gender: string;
+  authorName: string;
+  createdAt: string;
 }
 
 const FilterButton: React.FC<FilterButtonProps> = ({
@@ -37,108 +47,79 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 );
 
 const MyList = () => {
-  const lists = [
-    {
-      huftingid: 1,
-      matching: false,
-      title: '모두 같이 훕팅해요~~',
-      people: 3,
-      gender: '남',
-      username: '김**',
-      upload: 1,
-    },
-    {
-      huftingid: 2,
-      matching: false,
-      title: '모두 같이',
-      people: 3,
-      gender: '남',
-      username: '김**',
-      upload: 1,
-    },
-    {
-      huftingid: 3,
-      matching: false,
-      title: '모두 같이 훕팅해요~~',
-      people: 3,
-      gender: '남',
-      username: '김**',
-      upload: 1,
-    },
-    {
-      huftingid: 4,
-      matching: false,
-      title: '안녕하세요',
-      people: 3,
-      gender: '남',
-      username: '김**',
-      upload: 1,
-    },
-    {
-      huftingid: 5,
-      matching: false,
-      title: 'Hello! How are you',
-      people: 3,
-      gender: '남',
-      username: '김**',
-      upload: 2,
-    },
-    {
-      huftingid: 6,
-      matching: true,
-      title: '넌 누구니',
-      people: 3,
-      gender: '남',
-      username: '김**',
-      upload: 2,
-    },
-  ];
+  const [lists, setLists] = useState<ListType[]>([]);
 
+  // 리스트 불러오기
+  useEffect(() => {
+    axios
+      .get('http://www.hufsting.com:8080/api/v1/matchingposts')
+      .then(res => {
+        const { data } = res.data;
+        setLists(data);
+      })
+      .catch(e => e);
+  }, []);
+
+  // 필터링
   const [filter, setFilter] = useState('all'); // 'all', 'waiting', 'completed'
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
   };
 
+  const filteredLists = lists.filter(item => {
+    if (filter === 'all') {
+      return true;
+    }
+    if (filter === 'waiting') {
+      return !item.matchingStatus; // 매칭 대기중인 경우
+    }
+    if (filter === 'completed') {
+      return item.matchingStatus; // 매칭 완료된 경우
+    }
+    return true;
+  });
+
   return (
     <Container>
-      <Header>
-        <LogoIcon width={118} height={30} />
-        <div>
-          <SearchIcon />
-          <HamburgerIcon />
-        </div>
-      </Header>
-      <Title>내가 올린 훕팅</Title>
-      <div className="filterwrapper">
-        <FilterBox>
-          <FilterButton
-            active={filter === 'all'}
-            onClick={() => {
-              handleFilterChange('all');
-            }}
-          >
-            전체
-          </FilterButton>
-          <FilterButton
-            active={filter === 'waiting'}
-            onClick={() => {
-              handleFilterChange('waiting');
-            }}
-          >
-            매칭 대기중
-          </FilterButton>
-          <FilterButton
-            active={filter === 'completed'}
-            onClick={() => {
-              handleFilterChange('completed');
-            }}
-          >
-            매칭 완료
-          </FilterButton>
-        </FilterBox>
-      </div>
-      <List lists={lists} pathnameProp="/detailmyhufting" />
+      <MainHeader />
+      <SubHeader title="내가 올린 훕팅" />
+      {lists.length === 0 ? (
+        <NoDataMessage>훕팅 리스트가 없습니다.</NoDataMessage>
+      ) : (
+        <>
+          <div className="filterwrapper">
+            <FilterBox>
+              <FilterButton
+                active={filter === 'all'}
+                onClick={() => {
+                  handleFilterChange('all');
+                }}
+              >
+                전체
+              </FilterButton>
+              <FilterButton
+                active={filter === 'waiting'}
+                onClick={() => {
+                  handleFilterChange('waiting');
+                }}
+              >
+                매칭 대기중
+              </FilterButton>
+              <FilterButton
+                active={filter === 'completed'}
+                onClick={() => {
+                  handleFilterChange('completed');
+                }}
+              >
+                매칭 완료
+              </FilterButton>
+            </FilterBox>
+          </div>
+
+          <List lists={filteredLists} pathnameProp="/detailmyhufting" />
+        </>
+      )}
     </Container>
   );
 };
@@ -151,37 +132,22 @@ const Container = styled.div`
   justify-content: center;
 
   .filterwrapper {
-    padding: 0 18px 0 18px;
+    padding: 10px 18px;
   }
-`;
-
-const Header = styled.div`
-  width: 100%;
-  padding: 0 18px 0 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 23px;
-
-  div {
-    width: 73px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
-const Title = styled.p`
-  margin-bottom: 23px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  color: black;
-  font-size: 25px;
-  font-weight: bold;
 `;
 
 const FilterBox = styled.div`
   display: flex;
   margin-bottom: 10px;
+`;
+
+const NoDataMessage = styled.div`
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: lightgray;
 `;

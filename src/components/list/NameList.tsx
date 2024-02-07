@@ -4,59 +4,68 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 interface NameListProps {
-  total: {
-    huftingid: number;
-    gender: string;
-    num: number;
-  };
+  desiredNumPeople: number;
+  participants: UserInfo[];
+  editable: boolean;
 }
 
 interface UserInfo {
-  id: number;
-  gender: string;
-  username: string;
+  id: null | number;
+  name: string;
   major: string;
-  stID: null | number;
+  studentNumber: null | string;
   age: null | number;
   mbti: string;
-  introduce: string;
-  public: boolean;
+  content: string;
 }
 
 const myInfo = {
   id: 1,
-  gender: '여',
-  username: '김예은',
+  name: '김**',
   major: 'GBT학부',
-  stID: 202100000,
+  studentNumber: '202100000',
   age: 2002,
   mbti: 'ESFJ',
-  introduce: '즐거운 훕팅 많이 많이 이용해주세요~',
-  public: true,
+  content: 'namelist 내 정보 보내는 메시지~',
 };
 
-const NameList = ({ total }: NameListProps) => {
+const NameList = ({
+  desiredNumPeople,
+  participants,
+  editable,
+}: NameListProps) => {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [edited, setEdited] = useState<boolean[]>([]);
 
   useEffect(() => {
-    const initialUserInfo = Array.from({ length: total.num }, (_, index) => ({
-      id: index + 1,
-      gender: '',
-      username: `참가자 ${index + 1}`,
-      major: '',
-      stID: null,
-      age: null,
-      mbti: '',
-      introduce: '',
-      public: false,
-    }));
-    setUserInfo(initialUserInfo);
-    setEdited(Array(total.num).fill(false));
-  }, [total.num]);
+    if (editable) {
+      const initialUserInfo = Array.from(
+        { length: desiredNumPeople },
+        (_, index) => ({
+          id: null,
+          name: `참가자 ${index + 1}`,
+          major: '',
+          studentNumber: null,
+          age: null,
+          mbti: '',
+          content: '',
+        }),
+      );
+      setUserInfo(initialUserInfo);
+      setEdited(Array(desiredNumPeople).fill(false));
+    } else {
+      setUserInfo(participants);
+    }
+  }, [desiredNumPeople, editable, participants]);
 
   const onClickEditButton = (index: number) => {
-    setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
+    if (index === 0) {
+      setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
+      // window.location.href = 'http://localhost:3000/친구등록';
+    } else {
+      alert('친구 등록 페이지로 이동');
+      // window.location.href = 'http://localhost:3000/친구등록';
+    }
   };
 
   const handleInputChange = (index: number, field: string, value: string) => {
@@ -92,13 +101,6 @@ const NameList = ({ total }: NameListProps) => {
   const loadUserInfoById = (index: number) => {
     const userId = prompt('아이디를 입력하세요.');
     alert(userId);
-    // fetchUserInfoById(userId)
-    //   .then((user) => {
-    //     setUserInfo(prev => prev.map((u, i) => (i === index ? { ...u, ...user } : u)));
-    //   })
-    //   .catch((error) => {
-    //     console.error('Failed to fetch user information:', error);
-    //   });
   };
 
   return (
@@ -108,48 +110,52 @@ const NameList = ({ total }: NameListProps) => {
           <ListBox>
             <Top>
               <div className="name">
-                {edited[index] ? (
+                {editable && edited[index] ? (
                   <input
                     className="p_input"
-                    value={info.username}
+                    value={info.name}
                     onChange={e => {
                       handleInputChange(index, 'username', e.target.value);
                     }}
                   />
                 ) : (
-                  <p>{info.username}</p>
+                  <p>{info.name}</p>
                 )}
               </div>
               <div className="buttonbox">
-                <button
-                  type="button"
-                  className="import"
-                  onClick={() => {
-                    handleImportClick(index);
-                  }}
-                >
-                  {index === 0 ? '내 정보 불러오기' : '아이디로 불러오기'}
-                </button>
-                {edited[index] ? (
-                  <button
-                    type="submit"
-                    className="edit"
-                    onClick={() => {
-                      handleComplete(index);
-                    }}
-                  >
-                    완료
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="edit"
-                    onClick={() => {
-                      onClickEditButton(index);
-                    }}
-                  >
-                    ✏️
-                  </button>
+                {editable && (
+                  <>
+                    <button
+                      type="button"
+                      className="import"
+                      onClick={() => {
+                        handleImportClick(index);
+                      }}
+                    >
+                      {index === 0 ? '내 정보 불러오기' : '아이디로 불러오기'}
+                    </button>
+                    {edited[index] ? (
+                      <button
+                        type="submit"
+                        className="edit"
+                        onClick={() => {
+                          handleComplete(index);
+                        }}
+                      >
+                        완료
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="edit"
+                        onClick={() => {
+                          onClickEditButton(index);
+                        }}
+                      >
+                        {index === 0 ? '✏️' : '친구 등록하기'}
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </Top>
@@ -169,7 +175,11 @@ const NameList = ({ total }: NameListProps) => {
                   <p className="category">학번</p>
                   <input
                     className="value_input"
-                    value={info.stID !== null ? info.stID.toString() : ''}
+                    value={
+                      info.studentNumber !== null
+                        ? info.studentNumber.toString()
+                        : ''
+                    }
                     onChange={e => {
                       handleInputChange(index, 'stID', e.target.value);
                     }}
@@ -199,7 +209,7 @@ const NameList = ({ total }: NameListProps) => {
                   <p className="category">소개 글(30자 제한)</p>
                   <input
                     className="value_input"
-                    value={info.introduce}
+                    value={info.content}
                     onChange={e => {
                       handleInputChange(index, 'introduce', e.target.value);
                     }}
@@ -215,7 +225,7 @@ const NameList = ({ total }: NameListProps) => {
                 </div>
                 <div className="content">
                   <p className="category">학번</p>
-                  <p className="value">{info.stID}</p>
+                  <p className="value">{info.studentNumber}</p>
                 </div>
                 <div className="content">
                   <p className="category">나이</p>
@@ -227,7 +237,7 @@ const NameList = ({ total }: NameListProps) => {
                 </div>
                 <div className="content">
                   <p className="category">소개 글(30자 제한)</p>
-                  <p className="value">{info.introduce}</p>
+                  <p className="value">{info.content}</p>
                 </div>
               </Bottom>
             )}
