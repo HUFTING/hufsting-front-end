@@ -3,7 +3,7 @@
 import Filter, {
   type SelectedFilters,
 } from '@/components/common/dropdown/HomeFilter';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
@@ -37,28 +37,34 @@ const Home = () => {
       .catch(e => e);
   }, []);
 
-  // 필터 선택 감지
-  const handleFilterChange = (selectedFilters: SelectedFilters) => {
-    const updatedLists = filterLists(selectedFilters, initialLists);
-    setFilteredLists(updatedLists);
-  };
-
   // 선택된 필터에 따라 리스트를 필터링하는 함수
-  const filterLists = (filters: SelectedFilters, lists: ListType[]) => {
-    const filteredByGender =
-      filters.gender !== ''
-        ? lists.filter(item => item.gender === filters.gender)
-        : lists;
+  const filterLists = useCallback(
+    (filters: SelectedFilters, lists: ListType[]) => {
+      const filteredByGender =
+        filters.gender !== ''
+          ? lists.filter(item => item.gender === filters.gender)
+          : lists;
 
-    const filteredByCount =
-      filters.count !== ''
-        ? filteredByGender.filter(
-            item => `${item.desiredNumPeople.toString()}명` === filters.count,
-          )
-        : filteredByGender;
+      const filteredByCount =
+        filters.count !== ''
+          ? filteredByGender.filter(
+              item => `${item.desiredNumPeople.toString()}명` === filters.count,
+            )
+          : filteredByGender;
 
-    return filteredByCount;
-  };
+      return filteredByCount;
+    },
+    [],
+  );
+
+  // 필터 선택 감지
+  const handleFilterChange = useCallback(
+    (selectedFilters: SelectedFilters) => {
+      const updatedLists = filterLists(selectedFilters, initialLists);
+      setFilteredLists(updatedLists);
+    },
+    [filterLists, initialLists],
+  );
 
   return (
     <Container>

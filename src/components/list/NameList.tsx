@@ -10,23 +10,34 @@ interface NameListProps {
 }
 
 interface UserInfo {
-  id: null | number;
+  id: number;
   name: string;
   major: string;
   studentNumber: null | string;
-  age: null | number;
+  age: string;
   mbti: string;
   content: string;
 }
 
+// 임시 데이터(내 정보, 친구 정보)
 const myInfo = {
   id: 1,
   name: '김**',
   major: 'GBT학부',
-  studentNumber: '202100000',
-  age: 2002,
+  studentNumber: '21학번',
+  age: '2002',
   mbti: 'ESFJ',
   content: 'namelist 내 정보 보내는 메시지~',
+};
+
+const userID = {
+  id: 2,
+  name: '라**',
+  major: '아라라라',
+  studentNumber: '19학번',
+  age: '2002',
+  mbti: 'ESFJ',
+  content: 'Namelist 친구 정보 ~~',
 };
 
 const NameList = ({
@@ -37,16 +48,17 @@ const NameList = ({
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [edited, setEdited] = useState<boolean[]>([]);
 
+  // 초기 유저 정보
   useEffect(() => {
     if (editable) {
       const initialUserInfo = Array.from(
         { length: desiredNumPeople },
         (_, index) => ({
-          id: null,
+          id: index,
           name: `참가자 ${index + 1}`,
           major: '',
           studentNumber: null,
-          age: null,
+          age: '',
           mbti: '',
           content: '',
         }),
@@ -54,10 +66,50 @@ const NameList = ({
       setUserInfo(initialUserInfo);
       setEdited(Array(desiredNumPeople).fill(false));
     } else {
-      setUserInfo(participants);
+      const modifiedParticipants = participants.map(participant => ({
+        ...participant,
+        age:
+          typeof participant.age !== 'undefined'
+            ? `${participant.age.split('-')[0]}년`
+            : '',
+      }));
+      setUserInfo(modifiedParticipants);
     }
   }, [desiredNumPeople, editable, participants]);
 
+  // 정보 불러오기 버튼
+  const handleImportClick = (index: number) => {
+    if (index === 0) {
+      loadMyInfo(index);
+    } else {
+      // 아이디로 상대방 정보 불러오는 api
+      loadUserInfoById(index);
+    }
+  };
+
+  // 내 정보 불러오기
+  const loadMyInfo = (index: number) => {
+    setUserInfo(prev =>
+      prev.map((user, i) => (i === index ? { ...user, ...myInfo } : user)),
+    );
+  };
+
+  // 아이디로 친구 정보 불러오기
+  const loadUserInfoById = (index: number) => {
+    // const userId = prompt('아이디를 입력하세요.');
+    setUserInfo(prev =>
+      prev.map((user, i) => (i === index ? { ...user, ...userID } : user)),
+    );
+  };
+
+  // 내용 변경 감지
+  const handleInputChange = (index: number, field: string, value: string) => {
+    setUserInfo(prev =>
+      prev.map((user, i) => (i === index ? { ...user, [field]: value } : user)),
+    );
+  };
+
+  // 수정하기 or 친구 등록하기 버튼
   const onClickEditButton = (index: number) => {
     if (index === 0) {
       setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
@@ -68,12 +120,7 @@ const NameList = ({
     }
   };
 
-  const handleInputChange = (index: number, field: string, value: string) => {
-    setUserInfo(prev =>
-      prev.map((user, i) => (i === index ? { ...user, [field]: value } : user)),
-    );
-  };
-
+  // 정보 수정 후 완료
   const handleComplete = (index: number) => {
     const currentInfo = userInfo[index];
     if (currentInfo.major === '') {
@@ -81,26 +128,6 @@ const NameList = ({
       return;
     }
     setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
-  };
-
-  const handleImportClick = (index: number) => {
-    if (index === 0) {
-      loadMyInfo(index);
-    } else {
-      // 아이디로 상대방 정보 불러오는 api
-      loadUserInfoById(index);
-    }
-  };
-
-  const loadMyInfo = (index: number) => {
-    setUserInfo(prev =>
-      prev.map((user, i) => (i === index ? { ...user, ...myInfo } : user)),
-    );
-  };
-
-  const loadUserInfoById = (index: number) => {
-    const userId = prompt('아이디를 입력하세요.');
-    alert(userId);
   };
 
   return (
@@ -115,7 +142,7 @@ const NameList = ({
                     className="p_input"
                     value={info.name}
                     onChange={e => {
-                      handleInputChange(index, 'username', e.target.value);
+                      handleInputChange(index, 'name', e.target.value);
                     }}
                   />
                 ) : (
@@ -148,6 +175,7 @@ const NameList = ({
                       <button
                         type="button"
                         className="edit"
+                        style={{ color: index === 0 ? '#8d8d8d' : '#FF6869' }}
                         onClick={() => {
                           onClickEditButton(index);
                         }}
@@ -181,7 +209,7 @@ const NameList = ({
                         : ''
                     }
                     onChange={e => {
-                      handleInputChange(index, 'stID', e.target.value);
+                      handleInputChange(index, 'studentNumber', e.target.value);
                     }}
                   />
                 </div>
@@ -211,7 +239,7 @@ const NameList = ({
                     className="value_input"
                     value={info.content}
                     onChange={e => {
-                      handleInputChange(index, 'introduce', e.target.value);
+                      handleInputChange(index, 'content', e.target.value);
                     }}
                     maxLength={30}
                   />
@@ -299,7 +327,7 @@ const Top = styled.div`
     align-items: center;
 
     .import {
-      margin-right: 20px;
+      margin-right: 14px;
       font-size: 13px;
       color: #8d8d8d;
     }
