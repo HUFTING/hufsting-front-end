@@ -1,46 +1,100 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import ClipboardCopy from '@/components/copy/Copy';
+import NameList from '@/components/list/NameList';
 
-const total = {
-  huftingid: 1,
-  gender: '남',
-  num: 2,
-  openlink: 'open.kakao.com/o/gto74LSf',
-};
+interface Participant {
+  id: number;
+  name: string;
+  major: string;
+  studentNumber: string;
+  age: string;
+  mbti: string;
+  content: string;
+}
+
+interface ListType {
+  id: number;
+  content: string;
+  matchingStatus: boolean;
+  title: string;
+  desiredNumPeople: number;
+  gender: string;
+  authorName: string;
+  openTalkLink: string;
+  participants: Participant[];
+}
 
 const MyDetail = () => {
+  // 쿼리 받아오기
+  const searchParams = useSearchParams();
+  const search = searchParams.get('id');
+
+  // 리스트 받아오기
+  const [postInfo, setPostInfo] = useState<ListType | null>(null);
+
+  useEffect(() => {
+    axios
+      .get(`http://www.hufsting.com:8080/api/v1/matchingposts/${search}`)
+      .then(res => {
+        const { data } = res;
+        setPostInfo(data);
+      })
+      .catch(error => {
+        // 사용자에게 오류 메시지를 표시하는 대신 다른 작업을 수행할 수 있습니다.
+        alert(
+          `데이터를 불러오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.${error}`,
+        );
+      });
+  }, [search]);
+
+  // 매칭 글 삭제
   const handleRemove = () => {
-    alert('삭제!');
+    // axios.delete(`http://www.hufsting.com:8080/api/v1/matchingposts/${search}`);
   };
 
   const handleEdit = () => {
-    alert('수정!');
+    window.location.href = 'http://localhost:3000/editing';
   };
 
   return (
     <Container>
       <MainHeader />
       <SubHeader title="내가 올린 훕팅" />
-      <div className="otherInfo">
-        <SubTitle>희망 인원 수</SubTitle>
-        <div className="genderbox">
-          <p>{total.num}</p>
-        </div>
-        <OtherInfo>
-          <div className="top">
-            <SubTitle>오픈채팅방 링크</SubTitle>
-            <ClipboardCopy text={total.openlink} />
+      {postInfo !== null && (
+        <div className="otherInfo">
+          <SubTitle>희망 인원 수</SubTitle>
+          <div className="desiredNumPeople">
+            <p>{postInfo.desiredNumPeople}</p>
           </div>
-          <p>{total.openlink}</p>
-        </OtherInfo>
-      </div>
-      <div className="listbox" />
+          <OtherInfo>
+            <div className="top">
+              <SubTitle>오픈채팅방 링크</SubTitle>
+              <ClipboardCopy text={postInfo.openTalkLink} />
+            </div>
+            <p>{postInfo.openTalkLink}</p>
+            <div className="bottom">
+              <SubTitle>훕팅 신청 ?건</SubTitle>
+            </div>
+          </OtherInfo>
+        </div>
+      )}
+      {postInfo !== null && (
+        <div className="listbox">
+          <NameList
+            desiredNumPeople={postInfo.desiredNumPeople}
+            participants={postInfo.participants}
+            editable={false}
+          />
+        </div>
+      )}
       <BasicButtonWrapper>
         <BasicButton
           color="gray"
@@ -73,17 +127,10 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
 
-  .titlebox {
-    padding: 2px 22px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-  }
-
   .otherInfo {
     padding: 25px 22px;
 
-    .genderbox {
+    .desiredNumPeople {
       margin-bottom: 20px;
       display: flex;
       justify-content: center;
@@ -102,13 +149,6 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    .essential {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ff324b;
-      margin-bottom: 30px;
-    }
   }
 `;
 
@@ -125,8 +165,8 @@ const OtherInfo = styled.div`
     align-items: center;
   }
 
-  .infobox p {
-    font-size: 18px;
+  .bottom {
+    margin-top: 15px;
   }
 `;
 
