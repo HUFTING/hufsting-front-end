@@ -19,14 +19,25 @@ interface UserInfo {
   content: string;
 }
 
+// 임시 데이터(내 정보, 친구 정보)
 const myInfo = {
   id: 1,
   name: '김**',
   major: 'GBT학부',
-  studentNumber: '202100000',
+  studentNumber: '21학번',
   age: '2002',
   mbti: 'ESFJ',
   content: 'namelist 내 정보 보내는 메시지~',
+};
+
+const userID = {
+  id: 2,
+  name: '라**',
+  major: '아라라라',
+  studentNumber: '19학번',
+  age: '2002',
+  mbti: 'ESFJ',
+  content: 'Namelist 친구 정보 ~~',
 };
 
 const NameList = ({
@@ -43,7 +54,7 @@ const NameList = ({
       const initialUserInfo = Array.from(
         { length: desiredNumPeople },
         (_, index) => ({
-          id: 0,
+          id: index,
           name: `참가자 ${index + 1}`,
           major: '',
           studentNumber: null,
@@ -85,8 +96,10 @@ const NameList = ({
 
   // 아이디로 친구 정보 불러오기
   const loadUserInfoById = (index: number) => {
-    const userId = prompt('아이디를 입력하세요.');
-    alert(userId);
+    // const userId = prompt('아이디를 입력하세요.');
+    setUserInfo(prev =>
+      prev.map((user, i) => (i === index ? { ...user, ...userID } : user)),
+    );
   };
 
   // 내용 변경 감지
@@ -314,7 +327,7 @@ const Top = styled.div`
     align-items: center;
 
     .import {
-      margin-right: 20px;
+      margin-right: 14px;
       font-size: 13px;
       color: #8d8d8d;
     }
