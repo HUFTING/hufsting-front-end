@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
 import BasicInput from '@/components/common/BasicInput';
-import axios from 'axios';
+import axiosInstance from '@/api/axiosInstance';
 import List from '../../components/list/HomeList';
 
 interface ListType {
@@ -32,7 +32,7 @@ const Home = () => {
 
   // 리스트 받아오기
   useEffect(() => {
-    axios
+    axiosInstance
       .get('http://www.hufsting.com:8080/api/v1/matchingposts')
       .then(res => {
         const { data } = res.data;
