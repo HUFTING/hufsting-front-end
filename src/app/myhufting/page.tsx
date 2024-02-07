@@ -52,7 +52,7 @@ const MyList = () => {
   // 리스트 불러오기
   useEffect(() => {
     axios
-      .get('http://www.hufsting.com:8080/api/v1/matchingposts')
+      .get('http://www.hufsting.com:8080/api/v1/my-matchingposts')
       .then(res => {
         const { data } = res.data;
         setLists(data);
