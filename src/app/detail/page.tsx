@@ -39,6 +39,12 @@ const Detail = () => {
   // NameList 참여자 아이디
   const [returnId, setReturnId] = useState<number[]>([]);
 
+  // 타이틀 입력
+  const [title, setTitle] = useState('');
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
   // 더 보기
   const [isOpenModal, setOpenModal] = useState(false);
 
@@ -68,6 +74,7 @@ const Detail = () => {
     const RequestData = {
       matchingPostId: search,
       participantIds: returnId,
+      title,
     };
 
     axios
@@ -97,8 +104,13 @@ const Detail = () => {
               userInfo={postInfo.participants}
             />
           )}
-
-          <Title>{postInfo.title}</Title>
+          <div className="titlebox">
+            <Title
+              placeholder="제목을 입력해주세요."
+              value={title}
+              onChange={handleTitleChange}
+            />
+          </div>
           <div className="otherInfo">
             <SubTitle>성별</SubTitle>
             <div className="genderbox">
@@ -157,7 +169,8 @@ const Container = styled.div`
   margin-bottom: 50px;
 
   .titlebox {
-    padding: 2px 22px;
+    margin: 10px 0px;
+    padding: 0px 22px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -195,10 +208,13 @@ const Container = styled.div`
   }
 `;
 
-const Title = styled.p`
-  padding: 10px 22px;
-  font-size: 20px;
+const Title = styled.input`
+  width: 100%;
+  padding: 10px 17px;
+  font-size: 18px;
   font-weight: bold;
+  border-radius: 10px;
+  border: 1px solid #8d8d8d;
 `;
 
 const SubTitle = styled.p`
