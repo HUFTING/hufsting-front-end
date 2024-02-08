@@ -56,7 +56,7 @@ const MyDetail = () => {
 
   // 매칭 글 삭제
   const handleRemove = () => {
-    // axios.delete(`http://www.hufsting.com:8080/api/v1/matchingposts/${search}`);
+    // axiosInstance.delete(`/api/v1/matchingposts/${search}`);
   };
 
   const handleEdit = () => {
