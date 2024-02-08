@@ -1,7 +1,8 @@
 /* eslint-disable no-return-await */
 import axiosInstance from '@/api/axiosInstance';
+import { type LoginUserDataType } from '@/types/user';
 
-export const loginAPI = async (code: string) => {
+export const loginAPI = async (code: string): Promise<LoginUserDataType> => {
   const { data } = await axiosInstance.get(
     `/auth/google/callback?code=${code}`,
   );

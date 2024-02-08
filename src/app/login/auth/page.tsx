@@ -21,7 +21,7 @@ export default function LoginAuthPage() {
   const [genderAgree, setGenderAgree] = useState(false);
   const [majorAgree, setMajorAgree] = useState(false);
   const [emailAgree, setEmailAgree] = useState(false);
-  const { setUserData } = useUserDataStore();
+  const { setUserData, userData } = useUserDataStore();
 
   const handleInputChange = (
     setState: React.Dispatch<React.SetStateAction<boolean>>,
@@ -45,7 +45,14 @@ export default function LoginAuthPage() {
   }
   const handleOnClick = async () => {
     const data = await loginAPI(code);
-    setUserData(data);
+    const loginUserData = {
+      ...userData,
+      email: data.email,
+      name: data.name,
+      major: data.major,
+    };
+
+    setUserData(loginUserData);
     router.push('/');
   };
   const checkBoxes = [
