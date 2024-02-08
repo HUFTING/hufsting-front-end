@@ -10,6 +10,7 @@ import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+import axiosInstance from '@/api/axiosInstance';
 
 const test = [
   {
@@ -22,8 +23,6 @@ const test = [
     content: 'namelist 내 정보 보내는 메시지~',
   },
 ];
-
-// const otherInfo = 'https://open.kakao.com/o/gto74LSf';
 
 const Container = styled.div`
   padding: 33px 0 0 0;
@@ -155,10 +154,61 @@ const total = {
 const Editing = () => {
   /* const [gender, setGender] = useState<string | null>(null); */
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
-  const [address, setAddress] = useState<string>('');
+  const [kakaoLink, setKakaoLink] = useState<string>('');
+  const [returnId, setReturnId] = useState<number[]>([]);
   /* const handleGenderSelection = (selectedGender: string) => {
     setGender(selectedGender);
   }; */
+
+  const handleSubmit = async () => {
+    try {
+      if (returnId.length === numberOfPeople) {
+        const data = {
+          gender: total.gender, // 적절한 방식으로 gender 값 설정
+          desiredNumPeople: numberOfPeople,
+          openTalkLink: kakaoLink,
+          participants: returnId,
+        };
+        // eslint-disable-next-line no-console
+        console.log(data);
+
+        const response = await axiosInstance.patch(
+          '/apis/api/v1/matchingposts',
+          data,
+        );
+        // eslint-disable-next-line no-console
+        console.log(response);
+
+        const roomId = response.data.matchingPostId;
+        localStorage.setItem('roomId', roomId);
+        // eslint-disable-next-line no-console
+        console.log('Post request successful');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Error in handleSubmit:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (returnId.length === numberOfPeople) {
+        const response = await axiosInstance.delete(
+          '/apis/api/v1/matchingposts/{matchingPostId}',
+        );
+        // eslint-disable-next-line no-console
+        console.log(response);
+
+        const roomId = response.data.matchingPostId;
+        localStorage.setItem('roomId', roomId);
+        // eslint-disable-next-line no-console
+        console.log('Post request successful');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Error in handleSubmit:', error);
+    }
+  };
 
   const handleIncrement = () => {
     if (numberOfPeople < 4) {
@@ -182,13 +232,9 @@ const Editing = () => {
     }
   };
 
-  const handleClick = () => {
-    alert('clicked!');
-  };
-
   const handleCopyLink = () => {
     navigator.clipboard
-      .writeText(address)
+      .writeText(kakaoLink)
       .then(() => {
         alert('링크가 클립보드에 복사되었습니다.');
       })
@@ -248,9 +294,9 @@ const Editing = () => {
             <input
               type="text"
               placeholder="  주소를 입력하세요"
-              value={address}
+              value={kakaoLink}
               onChange={e => {
-                setAddress(e.target.value);
+                setKakaoLink(e.target.value);
                 return undefined; // 명시적으로 void를 반환합니다.
               }}
               style={{
@@ -276,6 +322,7 @@ const Editing = () => {
           participants={test}
           // eslint-disable-next-line react/jsx-boolean-value
           editable={true}
+          setReturnId={setReturnId}
         />
       </div>
       <BasicButtonWrapper
@@ -286,7 +333,8 @@ const Editing = () => {
           assetType="Primary"
           size="S"
           content="삭제하기"
-          onClickEvent={handleClick}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClickEvent={handleDelete}
           isActive
           buttonType="button"
           width="40"
@@ -296,7 +344,8 @@ const Editing = () => {
           assetType="Primary"
           size="S"
           content="수정완료"
-          onClickEvent={handleClick}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClickEvent={handleSubmit}
           isActive
           buttonType="button"
           width="40%"

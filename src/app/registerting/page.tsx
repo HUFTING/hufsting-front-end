@@ -10,6 +10,7 @@ import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+import axiosInstance from '@/api/axiosInstance';
 
 const test = [
   {
@@ -128,10 +129,41 @@ const Registerting = () => {
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [title, setTitle] = useState<string>(''); // title 상태 추가
   const [kakaoLink, setKakaoLink] = useState<string>('');
+  const [returnId, setReturnId] = useState<number[]>([]);
 
   /* const handleGenderSelection = (selectedGender: string) => {
     setGender(selectedGender);
   }; */
+  const handleSubmit = async () => {
+    try {
+      if (returnId.length === numberOfPeople) {
+        const data = {
+          title,
+          gender: total.gender, // 적절한 방식으로 gender 값 설정
+          desiredNumPeople: numberOfPeople,
+          openTalkLink: kakaoLink,
+          participants: returnId,
+        };
+        // eslint-disable-next-line no-console
+        console.log(data);
+
+        const response = await axiosInstance.post(
+          '/apis/api/v1/matchingposts',
+          data,
+        );
+        // eslint-disable-next-line no-console
+        console.log(response);
+
+        const roomId = response.data.matchingPostId;
+        localStorage.setItem('roomId', roomId);
+        // eslint-disable-next-line no-console
+        console.log('Post request successful');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Error in handleSubmit:', error);
+    }
+  };
 
   const handleIncrement = () => {
     if (numberOfPeople < 4) {
@@ -153,10 +185,6 @@ const Registerting = () => {
         return decrementedValue;
       });
     }
-  };
-
-  const handleClick = () => {
-    alert('clicked!');
   };
 
   // 리스트 받아오기
@@ -250,6 +278,7 @@ const Registerting = () => {
           participants={test}
           // eslint-disable-next-line react/jsx-boolean-value
           editable={true}
+          setReturnId={setReturnId}
         />
       </div>
       <BasicButtonWrapper>
@@ -258,7 +287,8 @@ const Registerting = () => {
           assetType="Primary"
           size="M"
           content="매칭하기"
-          onClickEvent={handleClick}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClickEvent={handleSubmit}
           isActive
           buttonType="button"
           width="100%"
