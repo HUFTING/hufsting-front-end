@@ -5,7 +5,9 @@ import styled from 'styled-components';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import axiosInstance from '@/api/axiosInstance';
+import LoginAlert from '@/components/common/modal/LoginAlert';
 import List from '../../components/list/HomeList';
+// import useUserDataStore from '@/store/user';
 
 interface FilterButtonProps {
   active: boolean;
@@ -48,17 +50,30 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 
 const MyList = () => {
   const [lists, setLists] = useState<ListType[]>([]);
+  // const userData = useUserDataStore(state => state.userData);
+  const userData = {
+    birth: '2000-02-07',
+    classOf: '19학번',
+    email: 'kye1115z@hufs.ac.kr',
+    gender: '여',
+    introduce: 'hi',
+    major: 'GlobalBusiness&Technology전공',
+    mbti: 'ENFP',
+    name: '김예은',
+  };
 
   // 리스트 불러오기
   useEffect(() => {
-    axiosInstance
-      .get('/api/v1/my-matchingposts')
-      .then(res => {
-        const { data } = res.data;
-        setLists(data);
-      })
-      .catch(e => e);
-  }, []);
+    if (userData.email !== null) {
+      axiosInstance
+        .get('/apis/api/v1/my-matchingposts')
+        .then(res => {
+          const { data } = res.data;
+          setLists(data);
+        })
+        .catch(e => e);
+    }
+  }, [userData.email]);
 
   // 필터링
   const [filter, setFilter] = useState('all'); // 'all', 'waiting', 'completed'
@@ -72,20 +87,22 @@ const MyList = () => {
       return true;
     }
     if (filter === 'waiting') {
-      return !item.matchingStatus; // 매칭 대기중인 경우
+      return !item.matchingStatus;
     }
     if (filter === 'completed') {
-      return item.matchingStatus; // 매칭 완료된 경우
+      return item.matchingStatus;
     }
     return true;
   });
 
-  return (
+  return userData.email === null || userData.gender === null ? (
+    <LoginAlert />
+  ) : (
     <Container>
       <MainHeader />
       <SubHeader title="내가 올린 훕팅" />
       {lists.length === 0 ? (
-        <NoDataMessage>훕팅 리스트가 없습니다.</NoDataMessage>
+        <NoDataMessage>훕팅 목록이 존재하지 않습니다.</NoDataMessage>
       ) : (
         <>
           <div className="filterwrapper">
