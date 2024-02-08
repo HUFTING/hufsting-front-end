@@ -6,13 +6,13 @@ import {
   ProfileDropDownData,
   ProfileDropDownInitalState,
 } from '@/constants/dropdown';
-import Logo from '../common/ui/LogoIcon';
-import Text from '../common/text/Text';
-import BasicButton from '../common/button/Button';
-import SignUpHeader from './SignUpHeader';
-import SignUpContainer from './SignUpContainer';
-import UserProfileInput from '../common/input/UserProfileInput';
-import UserProfileTextArea from '../common/input/UserProfileTextArea';
+import SignUpHeader from '@/components/register/SignUpHeader';
+import Text from '@/components/common/text/Text';
+import SignUpContainer from '@/components/register/SignUpContainer';
+import Logo from '@/components/common/ui/LogoIcon';
+import UserProfileInput from '@/components/common/input/UserProfileInput';
+import UserProfileTextArea from '@/components/common/input/UserProfileTextArea';
+import BasicButton from '@/components/common/button/Button';
 
 const Register = () => {
   const [dropDownState, setDropDownState] = useDropdownForm(

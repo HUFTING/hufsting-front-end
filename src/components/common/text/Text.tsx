@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { TitleTextProps, getTextStyleType } from '@/types/common/TextType';
+import type { TitleTextProps } from '@/types/common/TextType';
 
 const colorList = {
   black: 'text-[#000000]',
@@ -18,13 +18,6 @@ const getSize = {
   sm: 'text-sm',
   xs: 'text-xs',
 };
-const getTextStyle = ({
-  color,
-  fontSize,
-  fontWeight,
-  className,
-}: getTextStyleType) =>
-  `${getSize[fontSize]} ${colorList[color]} h-fit whitespace-pre-wrap ${getFontWeight[fontWeight]} ${className}`;
 
 const getFontWeight = {
   Regular: 'font-Pretendard-Regular',
@@ -37,22 +30,27 @@ const getFontWeight = {
 const Text = ({
   content,
   color = 'black',
-  fontSize,
-  fontWeight,
+  fontSize = 'lg',
+  fontWeight = 'Regular',
   className,
   onClick,
-}: TitleTextProps) => (
-  <div
-    role="presentation"
-    className={getTextStyle({ color, fontSize, fontWeight, className })}
-    onClick={() => {
-      if (onClick !== undefined) {
-        onClick();
-      }
-    }}
-  >
-    {content}
-  </div>
-);
+}: TitleTextProps) => {
+  const getTextStyle = () =>
+    `${getSize[fontSize]} ${colorList[color]} h-fit whitespace-pre-wrap ${getFontWeight[fontWeight]} ${className}`;
+
+  return (
+    <div
+      role="presentation"
+      className={getTextStyle()}
+      onClick={() => {
+        if (onClick !== undefined) {
+          onClick();
+        }
+      }}
+    >
+      {content}
+    </div>
+  );
+};
 
 export default Text;
