@@ -23,4 +23,5 @@ const axiosInstance = axios.create({
 });
 
 setInterceptors(axiosInstance);
+
 export default axiosInstance;
