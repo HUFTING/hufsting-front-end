@@ -6,6 +6,14 @@ const nextConfig = {
   images: {
     domains: ['post-phinf.pstatic.net'],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: process.env.NEXT_PUBLIC_API_URL + '/:path*',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

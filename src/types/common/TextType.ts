@@ -5,9 +5,9 @@ type fontWeightType = 'Regular' | 'ExtraBold' | 'SemiBold';
 type fontSizeType = '3xl' | '2xl' | 'xl' | 'lg' | 'md' | 'base' | 'sm' | 'xs';
 export interface TitleTextProps {
   content: ReactNode;
-  color: colorType;
-  fontSize: fontSizeType;
-  fontWeight: fontWeightType;
+  color?: colorType;
+  fontSize?: fontSizeType;
+  fontWeight?: fontWeightType;
   className?: string;
   onClick?: () => void;
 }
