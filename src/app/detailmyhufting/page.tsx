@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
@@ -9,8 +9,9 @@ import MainHeader from '@/components/common/layout/MainHeader';
 import ClipboardCopy from '@/components/copy/Copy';
 import NameList from '@/components/list/NameList';
 import axiosInstance from '@/api/axiosInstance';
+// import ApplyList from '@/components/list/ApplyList';
 
-interface Participant {
+interface Hosts {
   id: number;
   name: string;
   major: string;
@@ -20,16 +21,23 @@ interface Participant {
   content: string;
 }
 
+interface ApplyLists {
+  matchingRequestId: number;
+  matchingRequestTitle: string;
+}
+
 interface ListType {
   id: number;
   content: string;
-  matchingStatus: boolean;
+  matchingStatus: string; //
   title: string;
-  desiredNumPeople: number;
-  gender: string;
+  desiredNumPeople: number; //
+  gender: string; //
   authorName: string;
-  openTalkLink: string;
-  participants: Participant[];
+  openKakaoTalk: string; //
+  matchingHosts: Hosts[]; //
+  matchingRequestsCount: number;
+  matchingRequests: ApplyLists[]; //
 }
 
 const MyDetail = () => {
@@ -37,12 +45,15 @@ const MyDetail = () => {
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
 
+  // router
+  const router = useRouter();
+
   // 리스트 받아오기
   const [postInfo, setPostInfo] = useState<ListType | null>(null);
 
   useEffect(() => {
     axiosInstance
-      .get(`/api/v1/matchingposts/${search}`)
+      .put(`/apis/api/v1/matchingrequests/${search}`)
       .then(res => {
         const { data } = res;
         setPostInfo(data);
@@ -60,7 +71,7 @@ const MyDetail = () => {
   };
 
   const handleEdit = () => {
-    window.location.href = 'http://localhost:3000/editing';
+    router.push('/editing');
   };
 
   return (
@@ -76,11 +87,15 @@ const MyDetail = () => {
           <OtherInfo>
             <div className="top">
               <SubTitle>오픈채팅방 링크</SubTitle>
-              <ClipboardCopy text={postInfo.openTalkLink} />
+              <ClipboardCopy text={postInfo.openKakaoTalk} />
             </div>
-            <p>{postInfo.openTalkLink}</p>
+            <p>{postInfo.openKakaoTalk}</p>
             <div className="bottom">
-              <SubTitle>훕팅 신청 0건</SubTitle>
+              <SubTitle>훕팅 신청 {postInfo.matchingRequestsCount}건</SubTitle>
+              {/* <ApplyList
+                lists={postInfo.matchingRequests}
+                pathnameProp="/accept"
+              /> */}
             </div>
           </OtherInfo>
         </div>
@@ -89,7 +104,7 @@ const MyDetail = () => {
         <div className="listbox">
           <NameList
             desiredNumPeople={postInfo.desiredNumPeople}
-            participants={postInfo.participants}
+            participants={postInfo.matchingHosts}
             editable={false}
           />
         </div>
