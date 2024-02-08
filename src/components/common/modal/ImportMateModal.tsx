@@ -4,14 +4,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { FollowerListItemStyle } from '@/styles/followerStyles';
 import styled from 'styled-components';
+import axiosInstance from '@/api/axiosInstance';
 
 export interface UserInfo {
   id: number;
   name: string;
   email: string;
   photo: string;
-  profile: string;
-  isFollowing: boolean;
+  content: string;
 }
 
 interface MainInfoProps {
@@ -27,28 +27,13 @@ const ImportMateModal: React.FC<MainInfoProps> = ({
 }) => {
   const [userList, setUserList] = useState<UserInfo[] | null>(null);
 
-  const photolink =
-    'https://post-phinf.pstatic.net/MjAxOTA0MjVfMjYz/MDAxNTU2MTgyMDcxMjA3.5swDAjuEttvddnRBOvv8_7DG1KpVLdDQ7GaA-7lEnMYg.xB3rxsq0u1vVb3Jh5DJTHWCdYuFnc535Zvw5UXtkizcg.JPEG/IXmR_mz8JgIj4ScGz0Ve1yCbTQkY.jpg?type=w400';
-
   const getUserList = useCallback(() => {
-    setUserList([
-      {
-        id: 1,
-        name: '김예은',
-        email: 'email',
-        photo: photolink,
-        profile: 'hi',
-        isFollowing: true,
-      },
-      {
-        id: 2,
-        name: '김강민',
-        email: 'email',
-        photo: photolink,
-        profile: 'hi',
-        isFollowing: false,
-      },
-    ]);
+    axiosInstance
+      .get('/apis/api/v1/followingList/')
+      .then(res => {
+        setUserList(res.data);
+      })
+      .catch(e => e);
   }, []);
 
   useEffect(() => {
@@ -93,7 +78,7 @@ const ImportMateModal: React.FC<MainInfoProps> = ({
               <div className="user">
                 <div>
                   <div>{user.name}</div>
-                  <div>{user.profile}</div>
+                  <div>{user.content}</div>
                 </div>
               </div>
             </FollowerListItemStyle>
