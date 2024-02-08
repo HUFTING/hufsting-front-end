@@ -4,7 +4,7 @@ import { type LoginUserDataType } from '@/types/user';
 
 export const loginAPI = async (code: string): Promise<LoginUserDataType> => {
   const { data } = await axiosInstance.get(
-    `/api/auth/google/callback?code=${code}`,
+    `/apis/auth/google/callback?code=${code}`,
   );
   return data;
 };
