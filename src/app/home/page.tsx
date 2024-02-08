@@ -33,7 +33,7 @@ const Home = () => {
   // 리스트 받아오기
   useEffect(() => {
     axiosInstance
-      .get('http://www.hufsting.com:8080/api/v1/matchingposts')
+      .get('/api/v1/matchingposts')
       .then(res => {
         const { data } = res.data;
         setInitialLists(data);

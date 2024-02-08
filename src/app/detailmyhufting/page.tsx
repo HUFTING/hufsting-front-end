@@ -42,7 +42,7 @@ const MyDetail = () => {
 
   useEffect(() => {
     axiosInstance
-      .get(`http://www.hufsting.com:8080/api/v1/matchingposts/${search}`)
+      .get(`/api/v1/matchingposts/${search}`)
       .then(res => {
         const { data } = res;
         setPostInfo(data);
