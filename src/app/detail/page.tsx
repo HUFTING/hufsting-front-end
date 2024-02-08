@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
@@ -36,6 +36,9 @@ const Detail = () => {
   const searchParam = useSearchParams();
   const search = parseInt(searchParam.get('id') ?? '', 10);
 
+  // router
+  const router = useRouter();
+
   // NameList 참여자 아이디
   const [returnId, setReturnId] = useState<number[]>([]);
 
@@ -57,7 +60,7 @@ const Detail = () => {
 
   useEffect(() => {
     axiosInstance
-      .get(`/api/v1/matchingposts/${search}`)
+      .get(`apis/api/v1/matchingposts/${search}`)
       .then(res => {
         const { data } = res;
         setPostInfo(data);
@@ -78,10 +81,9 @@ const Detail = () => {
     };
 
     axiosInstance
-      .post('http://www.hufsting.com:8080/api/v1/matchingrequests', RequestData)
+      .post('/apis/api/v1/matchingrequests', RequestData)
       .then(res => {
-        // console.log(res.data);
-        window.location.href = 'http://localhost:3000/home';
+        router.push('/');
       })
       .catch(error => {
         alert(
