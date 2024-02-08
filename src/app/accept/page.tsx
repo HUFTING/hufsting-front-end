@@ -1,6 +1,5 @@
 'use client';
 
-// import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
@@ -8,6 +7,8 @@ import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
+// import { useRouter } from 'next/navigation';
+// import { useSearchParams } from 'next/navigation';
 // import axiosInstance from '@/api/axiosInstance';
 
 const postInfo = {
@@ -55,6 +56,8 @@ const Accept = () => {
   // const searchParams = useSearchParams();
   // const search = searchParams.get('id');
 
+  // const router = useRouter();
+
   // 더 보기
   const [isOpenModal, setOpenModal] = useState(false);
 
@@ -67,7 +70,7 @@ const Accept = () => {
 
   //   useEffect(() => {
   // axiosInstance
-  //       .get(`http://www.hufsting.com:8080/api/v1/matchingposts/${search}`)
+  //       .get(`/api/v1/matchingposts/${search}`)
   //       .then(res => {
   //         const data = res.data;
   //         setPostInfo(data);
@@ -76,6 +79,16 @@ const Accept = () => {
   //     //   console.error('Error fetching data:', error);
   //     // });
   //   }, [search]);
+
+  // 거절하기
+  const handleReject = () => {
+    // axiosInstance.patch(`/api/v1/matchingrequests/${search}/reject`).then(res => {router.push(`/myhufting`);})
+  };
+
+  // 수락하기
+  const handleAccept = () => {
+    // axiosInstance.patch(`/api/v1/matchingrequests/${search}/accept`).then(res => {router.push(`/result?id=${search}`);})
+  };
 
   return (
     <Container>
@@ -91,7 +104,6 @@ const Accept = () => {
             userInfo={userInfo}
           />
         )}
-
         <Title>{postInfo.title}</Title>
         <div className="otherInfo">
           <OtherInfo>
@@ -121,26 +133,19 @@ const Accept = () => {
             assetType="Primary"
             size="M"
             content="거절하기"
-            onClickEvent={() => {}}
+            onClickEvent={handleReject}
             isActive
             width="48%"
           />
-          {/* <Link
-            href={{
-              pathname: '/result',
-              // query: { id:  },
-            }}
-          > */}
           <BasicButton
             color="red"
             assetType="Primary"
             size="M"
             content="수락하기"
-            onClickEvent={() => {}}
+            onClickEvent={handleAccept}
             isActive
             width="48%"
           />
-          {/* </Link> */}
         </BasicButtonWrapper>
       </>
       {/* )} */}

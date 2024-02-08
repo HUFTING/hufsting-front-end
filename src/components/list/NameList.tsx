@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axiosInstance from '@/api/axiosInstance';
 import ImportMateModal from '../common/modal/ImportMateModal';
 
 interface NameListProps {
@@ -15,32 +16,12 @@ interface UserInfo {
   id: number;
   name: string;
   major: string;
+  gender?: string;
   studentNumber: null | string;
   age: string;
   mbti: string;
   content: string;
 }
-
-// 임시 데이터(내 정보, 친구 정보)
-const myInfo = {
-  id: 1,
-  name: '김**',
-  major: 'GBT학부',
-  studentNumber: '21학번',
-  age: '2002',
-  mbti: 'ESFJ',
-  content: 'namelist 내 정보 보내는 메시지~',
-};
-
-const userID = {
-  id: 4,
-  name: '라**',
-  major: '아라라라',
-  studentNumber: '19학번',
-  age: '2002',
-  mbti: 'ESFJ',
-  content: 'Namelist 친구 정보 ~~',
-};
 
 const NameList = ({
   desiredNumPeople,
@@ -60,6 +41,7 @@ const NameList = ({
           id: index,
           name: `참가자 ${index + 1}`,
           major: '',
+          gender: '',
           studentNumber: null,
           age: '',
           mbti: '',
@@ -84,20 +66,23 @@ const NameList = ({
   const handleImportClick = (index: number) => {
     if (index === 0) {
       loadMyInfo(index);
-    } else {
-      // 아이디로 상대방 정보 불러오는 api
-      loadUserInfoById(index);
     }
   };
 
   // 내 정보 불러오기
   const loadMyInfo = (index: number) => {
-    setUserInfo(prev =>
-      prev.map((user, i) => (i === index ? { ...user, ...myInfo } : user)),
-    );
-    if (setReturnId !== undefined) {
-      setReturnId(prevIds => [...prevIds, myInfo.id]);
-    }
+    axiosInstance
+      .get('/apis/api/v1/profile')
+      .then(res => {
+        const { data } = res;
+        setUserInfo(prev =>
+          prev.map((user, i) => (i === index ? { ...user, ...data } : user)),
+        );
+        if (setReturnId !== undefined) {
+          setReturnId(prevIds => [...prevIds, data.id]);
+        }
+      })
+      .catch(e => e);
   };
 
   // 메이트 선택하기(모달)
@@ -110,17 +95,19 @@ const NameList = ({
 
   // 아이디로 친구 정보 불러오기
   const loadUserInfoById = (index: number) => {
-    // const userId = prompt('아이디를 입력하세요.');
-    if (selectedUserId !== null && selectedUserId !== undefined) {
-      alert(selectedUserId);
-    }
-    setUserInfo(prev =>
-      prev.map((user, i) => (i === index ? { ...user, ...userID } : user)),
-    );
-
-    if (setReturnId !== undefined) {
-      setReturnId(prevIds => [...prevIds, userID.id]);
-    }
+    axiosInstance
+      .get(`/apis/api/v1/member/${selectedUserId}`)
+      .then(res => {
+        const { data } = res;
+        setUserInfo(prev =>
+          prev.map((user, i) => (i === index ? { ...user, ...data } : user)),
+        );
+        if (setReturnId !== undefined) {
+          // 데이터는 지우기
+          setReturnId(prevIds => [...prevIds, data.id]);
+        }
+      })
+      .catch(e => e);
   };
 
   // 내용 변경 감지
@@ -139,6 +126,13 @@ const NameList = ({
       setOpenModal(true);
     }
   };
+
+  // 메이트 정보 불러오기
+  useEffect(() => {
+    if (selectedUserId !== undefined) {
+      loadUserInfoById(selectedUserId);
+    }
+  }, [selectedUserId]);
 
   // 정보 수정 후 완료
   const handleComplete = (index: number) => {
