@@ -10,8 +10,7 @@ import ClipboardCopy from '@/components/copy/Copy';
 import NameList from '@/components/list/NameList';
 import axiosInstance from '@/api/axiosInstance';
 import ApplyList from '@/components/list/ApplyList';
-// import useUserDataStore from '@/store/user';
-// import LoginAlert from '@/components/common/modal/LoginAlert';
+import useUserDataStore from '@/store/user';
 
 interface Hosts {
   id: number;
@@ -31,15 +30,16 @@ interface ApplyLists {
 interface ListType {
   id: number;
   content: string;
-  matchingStatus: string; //
+  matchingStatus: string;
   title: string;
-  desiredNumPeople: number; //
-  gender: string; //
+  desiredNumPeople: number;
+  gender: string;
   authorName: string;
-  openKakaoTalk: string; //
-  matchingHosts: Hosts[]; //
+  openKakaoTalk: string;
+  matchingHosts: Hosts[];
   matchingRequestsCount: number;
-  matchingRequests: ApplyLists[]; //
+  matchingRequests: ApplyLists[];
+  representativeEmail: string;
 }
 
 const MyDetail = () => {
@@ -47,7 +47,7 @@ const MyDetail = () => {
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
 
-  // const userData = useUserDataStore(state => state.userData);
+  const userData = useUserDataStore(state => state.userData);
 
   // router
   const router = useRouter();
@@ -111,6 +111,7 @@ const MyDetail = () => {
               <ApplyList
                 lists={postInfo.matchingRequests}
                 pathnameProp="/accept"
+                representativeEmail={postInfo.representativeEmail}
               />
             </div>
           </OtherInfo>
@@ -125,26 +126,28 @@ const MyDetail = () => {
           />
         </div>
       )}
-      <BasicButtonWrapper>
-        <BasicButton
-          color="gray"
-          assetType="Primary"
-          size="M"
-          content="삭제하기"
-          onClickEvent={handleRemove}
-          isActive
-          width="48%"
-        />
-        <BasicButton
-          color="red"
-          assetType="Primary"
-          size="M"
-          content="수정하기"
-          onClickEvent={handleEdit}
-          isActive
-          width="48%"
-        />
-      </BasicButtonWrapper>
+      {postInfo !== null && postInfo.representativeEmail === userData.email && (
+        <BasicButtonWrapper>
+          <BasicButton
+            color="gray"
+            assetType="Primary"
+            size="M"
+            content="삭제하기"
+            onClickEvent={handleRemove}
+            isActive
+            width="45"
+          />
+          <BasicButton
+            color="red"
+            assetType="Primary"
+            size="M"
+            content="수정하기"
+            onClickEvent={handleEdit}
+            isActive
+            width="45"
+          />
+        </BasicButtonWrapper>
+      )}
     </Container>
   );
 };
