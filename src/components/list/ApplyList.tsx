@@ -9,11 +9,13 @@ interface ApplyListProps {
   }>;
   pathnameProp?: string;
   representativeEmail: string;
+  matchingStatus: string;
 }
 const ApplyList = ({
   lists,
   pathnameProp,
   representativeEmail,
+  matchingStatus,
 }: ApplyListProps) => {
   const userData = useUserDataStore(state => state.userData);
   return (
@@ -21,7 +23,8 @@ const ApplyList = ({
       <Container>
         {lists.map((item, index) => (
           <div key={item.matchingRequestId}>
-            {representativeEmail === userData.email ? (
+            {representativeEmail === userData.email ||
+            matchingStatus === '매칭 대기' ? (
               <Link
                 href={{
                   pathname: pathnameProp,

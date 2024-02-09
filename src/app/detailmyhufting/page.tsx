@@ -62,11 +62,7 @@ const MyDetail = () => {
         const { data } = res;
         setPostInfo(data);
       })
-      .catch(error => {
-        alert(
-          `데이터를 불러오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.${error}`,
-        );
-      });
+      .catch(e => e);
   }, [search]);
 
   // 매칭 글 삭제
@@ -112,6 +108,7 @@ const MyDetail = () => {
                 lists={postInfo.matchingRequests}
                 pathnameProp="/accept"
                 representativeEmail={postInfo.representativeEmail}
+                matchingStatus={postInfo.matchingStatus}
               />
             </div>
           </OtherInfo>
@@ -126,28 +123,29 @@ const MyDetail = () => {
           />
         </div>
       )}
-      {postInfo !== null && postInfo.representativeEmail === userData.email && (
-        <BasicButtonWrapper>
-          <BasicButton
-            color="gray"
-            assetType="Primary"
-            size="M"
-            content="삭제하기"
-            onClickEvent={handleRemove}
-            isActive
-            width="45"
-          />
-          <BasicButton
-            color="red"
-            assetType="Primary"
-            size="M"
-            content="수정하기"
-            onClickEvent={handleEdit}
-            isActive
-            width="45"
-          />
-        </BasicButtonWrapper>
-      )}
+      {(postInfo !== null && postInfo.representativeEmail === userData.email) ||
+        (postInfo?.matchingStatus === '매칭 완료' && (
+          <BasicButtonWrapper>
+            <BasicButton
+              color="gray"
+              assetType="Primary"
+              size="M"
+              content="삭제하기"
+              onClickEvent={handleRemove}
+              isActive
+              width="45"
+            />
+            <BasicButton
+              color="red"
+              assetType="Primary"
+              size="M"
+              content="수정하기"
+              onClickEvent={handleEdit}
+              isActive
+              width="45"
+            />
+          </BasicButtonWrapper>
+        ))}
     </Container>
   );
 };
