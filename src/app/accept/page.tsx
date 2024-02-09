@@ -94,7 +94,7 @@ const Accept = () => {
                 <SubTitle>상대 정보</SubTitle>
                 <More onClick={handleMore}>더 보기</More>
               </div>
-              {postInfo.hosts.map(info => (
+              {postInfo.participants.map(info => (
                 <div className="infobox" key={info.id}>
                   <p>
                     {info.name} _ {info.major}
