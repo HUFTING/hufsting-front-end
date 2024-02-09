@@ -19,7 +19,6 @@ const ApplyList = ({ lists, pathnameProp }: ApplyListProps) =>
             pathname: pathnameProp,
             query: { id: item.matchingRequestId },
           }}
-          style={{ width: '100%' }}
         >
           <p>{item.matchingRequestTitle}</p>
         </Link>
@@ -32,5 +31,7 @@ export default ApplyList;
 const Container = styled.div`
   p {
     font-size: 15px;
+    text-decoration: underline;
+    text-underline-offset: 5px;
   }
 `;
