@@ -4,10 +4,10 @@ import { persist } from 'zustand/middleware';
 interface UserDataType {
   email: string | null;
   name: string | null;
-  birth: string | null;
+  birthday: string | null;
   mbti: string | null;
-  introduce: string | null;
-  classOf: string | null;
+  content: string | null;
+  studentNumber: string | null;
   major: string | null;
   gender: '남' | '여' | null;
 }
@@ -24,11 +24,11 @@ const useUserDataStore = create(
         email: null,
         name: null,
         major: null,
-        classOf: null,
+        studentNumber: null,
         gender: null,
-        birth: null,
+        birthday: null,
         mbti: null,
-        introduce: null,
+        content: null,
       },
       setUserData: userData => {
         set(state => ({ ...state.userData, userData }));
