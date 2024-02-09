@@ -52,11 +52,11 @@ const MyList = () => {
   const [lists, setLists] = useState<ListType[]>([]);
   // const userData = useUserDataStore(state => state.userData);
   const userData = {
-    birth: '2000-02-07',
-    classOf: '19학번',
+    birthday: '2000-02-07',
+    studentNumber: '19학번',
     email: 'kye1115z@hufs.ac.kr',
     gender: '여',
-    introduce: 'hi',
+    content: 'hi',
     major: 'GlobalBusiness&Technology전공',
     mbti: 'ENFP',
     name: '김예은',

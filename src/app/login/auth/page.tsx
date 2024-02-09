@@ -53,6 +53,10 @@ export default function LoginAuthPage() {
     };
 
     setUserData(loginUserData);
+    if (!data.profileSetUpStatus) {
+      router.push('/register');
+      return;
+    }
     router.push('/');
   };
   const checkBoxes = [
