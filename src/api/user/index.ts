@@ -1,6 +1,6 @@
 /* eslint-disable no-return-await */
 import axiosInstance from '@/api/axiosInstance';
-import { type LoginUserDataType } from '@/types/user';
+import { type ProfileDataType, type LoginUserDataType } from '@/types/user';
 
 export const loginAPI = async (code: string): Promise<LoginUserDataType> => {
   const { data } = await axiosInstance.get(
@@ -10,4 +10,5 @@ export const loginAPI = async (code: string): Promise<LoginUserDataType> => {
 };
 // http://www.hufsting.com:8080/auth/google/callback?code
 
-export const logoutAPI = async () => await axiosInstance.get('/auth/logout');
+export const profileSaveAPI = async (profileData: ProfileDataType) =>
+  await axiosInstance.post('/apis/api/v1/profile', profileData);

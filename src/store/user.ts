@@ -9,7 +9,7 @@ interface UserDataType {
   content: string | null;
   studentNumber: string | null;
   major: string | null;
-  gender: '남' | '여' | null;
+  gender: string | null;
 }
 
 interface IUseUserDataStore {
@@ -31,7 +31,7 @@ const useUserDataStore = create(
         content: null,
       },
       setUserData: userData => {
-        set(state => ({ ...state.userData, userData }));
+        set({ userData });
       },
     }),
     {

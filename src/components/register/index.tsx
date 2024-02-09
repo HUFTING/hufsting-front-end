@@ -13,12 +13,28 @@ import Logo from '@/components/common/ui/LogoIcon';
 import UserProfileInput from '@/components/common/input/UserProfileInput';
 import UserProfileTextArea from '@/components/common/input/UserProfileTextArea';
 import BasicButton from '@/components/common/button/Button';
+import { profileSaveAPI } from '@/api/user';
+import { useRouter } from 'next/navigation';
+import useUserDataStore from '@/store/user';
 
+// Import the necessary type
 const Register = () => {
   const [dropDownState, setDropDownState] = useDropdownForm(
     ProfileDropDownInitalState,
   );
   const [textValue, setTextValue] = useState('');
+  const { userData, setUserData } = useUserDataStore();
+  const router = useRouter();
+  const handleOnClick = async () => {
+    await profileSaveAPI(dropDownState);
+    const profileData = {
+      ...userData,
+      ...dropDownState,
+      content: textValue,
+    };
+    setUserData(profileData);
+    router.push('/');
+  };
   return (
     <SignUpContainer>
       <SignUpHeader>
@@ -63,10 +79,12 @@ const Register = () => {
           color="red"
           assetType="Primary"
           size="M"
-          onClickEvent={() => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClickEvent={async () => {
+            await handleOnClick();
             // eslint-disable-next-line no-console
           }}
-          isActive
+          isActive={dropDownState.gender !== null}
         />
       </div>
     </SignUpContainer>

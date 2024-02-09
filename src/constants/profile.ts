@@ -1,6 +1,4 @@
-import { type DropDownDataType } from '@/types/common/profile';
-
-export const ProfileData: DropDownDataType[] = [
+export const ProfileData = [
   { dropDownTitle: '이름', dropDownName: 'name', disabled: true },
   { dropDownTitle: '학과', dropDownName: 'major', disabled: true },
   { dropDownTitle: '이메일 주소', dropDownName: 'email', disabled: true },

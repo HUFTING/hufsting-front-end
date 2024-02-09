@@ -8,7 +8,7 @@ import SignUpHeader from '@/components/register/SignUpHeader';
 import SignUpContainer from '@/components/register/SignUpContainer';
 import Logo from '@/components/common/ui/LogoIcon';
 import BasicButton from '@/components/common/button/Button';
-import { loginAPI } from '@/api/auth';
+import { loginAPI } from '@/api/user';
 import useUserDataStore from '@/store/user';
 
 export default function LoginAuthPage() {
@@ -51,13 +51,14 @@ export default function LoginAuthPage() {
       name: data.name,
       major: data.major,
     };
-
     setUserData(loginUserData);
     if (!data.profileSetUpStatus) {
       router.push('/register');
       return;
     }
-    router.push('/');
+    if (data.profileSetUpStatus) {
+      router.push('/');
+    }
   };
   const checkBoxes = [
     { label: '[필수] 이름', state: nameAgree, setState: setNameAgree },

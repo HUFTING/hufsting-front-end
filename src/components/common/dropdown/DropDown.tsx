@@ -28,7 +28,7 @@ const DropDown = ({
         onClick={handleOpenDropDown}
         onBlur={handleCloseDropDown}
       >
-        {dropDownState.length > 0 ? dropDownState : '미선택'}
+        {dropDownState ?? '미선택'}
         {!disabled && <DownIcon />}
       </button>
       {openDropDown && !disabled && (
