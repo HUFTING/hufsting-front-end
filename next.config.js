@@ -4,7 +4,7 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ['https://lh3.googleusercontent.com', 'post-phinf.pstatic.net'],
+    domains: ['lh3.googleusercontent.com'],
   },
   async rewrites() {
     return [
