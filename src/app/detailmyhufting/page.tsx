@@ -9,7 +9,7 @@ import MainHeader from '@/components/common/layout/MainHeader';
 import ClipboardCopy from '@/components/copy/Copy';
 import NameList from '@/components/list/NameList';
 import axiosInstance from '@/api/axiosInstance';
-// import ApplyList from '@/components/list/ApplyList';
+import ApplyList from '@/components/list/ApplyList';
 
 interface Hosts {
   id: number;
@@ -53,7 +53,7 @@ const MyDetail = () => {
 
   useEffect(() => {
     axiosInstance
-      .put(`/apis/api/v1/matchingrequests/${search}`)
+      .get(`/apis/api/v1/my-matchingposts/${search}`)
       .then(res => {
         const { data } = res;
         setPostInfo(data);
@@ -67,11 +67,14 @@ const MyDetail = () => {
 
   // 매칭 글 삭제
   const handleRemove = () => {
-    // axiosInstance.delete(`/api/v1/matchingposts/${search}`);
+    axiosInstance
+      .delete(`/apis/api/v1/matchingposts/${search}`)
+      .then(res => res)
+      .catch(e => e);
   };
 
   const handleEdit = () => {
-    router.push('/editing');
+    router.push(`/editing?id=${search}`);
   };
 
   return (
@@ -92,10 +95,10 @@ const MyDetail = () => {
             <p>{postInfo.openKakaoTalk}</p>
             <div className="bottom">
               <SubTitle>훕팅 신청 {postInfo.matchingRequestsCount}건</SubTitle>
-              {/* <ApplyList
+              <ApplyList
                 lists={postInfo.matchingRequests}
                 pathnameProp="/accept"
-              /> */}
+              />
             </div>
           </OtherInfo>
         </div>
