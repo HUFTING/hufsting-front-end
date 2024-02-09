@@ -1,5 +1,6 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
@@ -8,9 +9,11 @@ import NotificationIcon from '@/components/common/ui/NotificationIcon';
 import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
-import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
-import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+// import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
+// import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
 import axiosInstance from '@/api/axiosInstance';
+import useUserDataStore from '@/store/user';
+// git add
 
 const test = [
   {
@@ -153,19 +156,28 @@ const total = {
 
 const Editing = () => {
   /* const [gender, setGender] = useState<string | null>(null); */
-  const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
+  // const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [kakaoLink, setKakaoLink] = useState<string>('');
   const [returnId, setReturnId] = useState<number[]>([]);
-  /* const handleGenderSelection = (selectedGender: string) => {
-    setGender(selectedGender);
-  }; */
+
+  const userData = useUserDataStore(state => state.userData);
+  const genderData = userData.gender;
+
+  const searchParams = useSearchParams();
+
+  const matchingPostId = searchParams.get('id'); // 방의 아이디
+
+  const DesiredNumPeople = searchParams.get('count');
+
+  const numberOfPeople = returnId.length;
 
   const handleSubmit = async () => {
     try {
       if (returnId.length === numberOfPeople) {
         const data = {
-          gender: total.gender, // 적절한 방식으로 gender 값 설정
-          desiredNumPeople: numberOfPeople,
+          // id: matchingPostId,
+          gender: genderData, // @/store/user에서 로그인 했을때 저장된 gender값을 가져옴
+          desiredNumPeople: DesiredNumPeople,
           openTalkLink: kakaoLink,
           participants: returnId,
         };
@@ -173,7 +185,7 @@ const Editing = () => {
         console.log(data);
 
         const response = await axiosInstance.patch(
-          '/apis/api/v1/matchingposts',
+          `/api/v1/matchingposts/${matchingPostId}`,
           data,
         );
         // eslint-disable-next-line no-console
@@ -194,15 +206,10 @@ const Editing = () => {
     try {
       if (returnId.length === numberOfPeople) {
         const response = await axiosInstance.delete(
-          '/apis/api/v1/matchingposts/{matchingPostId}',
+          `/apis/api/v1/matchingposts/${matchingPostId}`,
         );
         // eslint-disable-next-line no-console
         console.log(response);
-
-        const roomId = response.data.matchingPostId;
-        localStorage.setItem('roomId', roomId);
-        // eslint-disable-next-line no-console
-        console.log('Post request successful');
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -210,7 +217,7 @@ const Editing = () => {
     }
   };
 
-  const handleIncrement = () => {
+  /* const handleIncrement = () => {
     if (numberOfPeople < 4) {
       setNumberOfPeople(prev => {
         const incrementedValue = prev + 1;
@@ -230,7 +237,7 @@ const Editing = () => {
         return decrementedValue;
       });
     }
-  };
+  }; */
 
   const handleCopyLink = () => {
     navigator.clipboard
@@ -270,7 +277,7 @@ const Editing = () => {
             <span>{numberOfPeople}</span>
           </div>
           <div className="SmallButtonContainer">
-            <SmallButtonMinus
+            {/* <SmallButtonMinus
               content="-"
               onClickEvent={() => {
                 handleDecrement();
@@ -283,7 +290,7 @@ const Editing = () => {
                 handleIncrement();
               }}
               isActive
-            />
+            /> */}
           </div>
         </div>
 
@@ -331,7 +338,7 @@ const Editing = () => {
         <BasicButton
           color="red"
           assetType="Primary"
-          size="S"
+          size="M"
           content="삭제하기"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClickEvent={handleDelete}
@@ -342,7 +349,7 @@ const Editing = () => {
         <BasicButton
           color="red"
           assetType="Primary"
-          size="S"
+          size="M"
           content="수정완료"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClickEvent={handleSubmit}
