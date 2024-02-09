@@ -7,6 +7,7 @@ import MainHeader from '@/components/common/layout/MainHeader';
 import axiosInstance from '@/api/axiosInstance';
 import LoginAlert from '@/components/common/modal/LoginAlert';
 import useUserDataStore from '@/store/user';
+import RegisterButton from '@/components/common/button/RegisterButton';
 import List from '../../components/list/HomeList';
 
 interface FilterButtonProps {
@@ -89,6 +90,7 @@ const MyList = () => {
     <LoginAlert />
   ) : (
     <Container>
+      <RegisterButton />
       <MainHeader />
       <SubHeader title="내가 올린 훕팅" />
       {lists.length === 0 ? (

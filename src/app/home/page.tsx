@@ -14,6 +14,7 @@ import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
 import BasicInput from '@/components/common/BasicInput';
 import axiosInstance from '@/api/axiosInstance';
+import RegisterButton from '@/components/common/button/RegisterButton';
 import List from '../../components/list/HomeList';
 
 interface ListType {
@@ -82,6 +83,7 @@ const Home = () => {
 
   return (
     <Container>
+      <RegisterButton />
       <MainHeader />
       <SubHeader title="훕팅 목록" />
       <div className="searchbox">
