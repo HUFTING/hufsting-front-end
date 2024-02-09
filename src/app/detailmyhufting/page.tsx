@@ -85,7 +85,15 @@ const MyDetail = () => {
   return (
     <Container>
       <MainHeader />
-      <SubHeader title="내가 올린 훕팅" />
+      <SubHeader
+        title="내가 올린 훕팅"
+        rightButton={{
+          content: '❮',
+          clickEvent: () => {
+            router.back();
+          },
+        }}
+      />
       {postInfo !== null && (
         <div className="otherInfo">
           <SubTitle>희망 인원 수</SubTitle>
