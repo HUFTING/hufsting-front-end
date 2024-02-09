@@ -79,7 +79,7 @@ const MyDetail = () => {
 
   const handleEdit = () => {
     postInfo !== null &&
-      router.push(`/editing?id=${search}?count=${postInfo.desiredNumPeople}`);
+      router.push(`/editing?id=${search}&count=${postInfo.desiredNumPeople}`);
   };
 
   return (
