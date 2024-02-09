@@ -74,6 +74,15 @@ const Detail = () => {
 
   // 훕팅 신청 api
   const onApplyClick = () => {
+    if (title.trim() === '') {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+    if (postInfo !== null && returnId.length < postInfo.desiredNumPeople) {
+      alert('정보를 모두 입력해주세요.');
+      return;
+    }
+
     const RequestData = {
       matchingPostId: search,
       participantIds: returnId,
@@ -152,7 +161,6 @@ const Detail = () => {
               onClickEvent={onApplyClick}
               isActive
               buttonType="button"
-              width="100%"
             />
           </BasicButtonWrapper>
         </>

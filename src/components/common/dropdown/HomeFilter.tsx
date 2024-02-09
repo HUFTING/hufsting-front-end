@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import ResetIcon from '../ui/ResetIcon';
 
 export interface SelectedFilters {
   count: string;
@@ -55,7 +56,9 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
           }}
         />
       </div>
-      <ResetBtn onClick={handleResetFilters}>초기화</ResetBtn>
+      <ResetBtn onClick={handleResetFilters}>
+        <ResetIcon />
+      </ResetBtn>
     </Container>
   );
 };
@@ -122,8 +125,8 @@ const ResetBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 10px;
-  border-radius: 15px;
+  padding: 7px 6px;
+  border-radius: 50%;
   border: 0.5px solid #a3b6cc;
 `;
 

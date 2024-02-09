@@ -16,11 +16,11 @@ interface UserInfo {
   id: number;
   name: string;
   major: string;
-  gender?: string;
+  gender?: null | string;
   studentNumber: null | string;
-  age: string;
-  mbti: string;
-  content: string;
+  age: null | number | string;
+  mbti: undefined | string;
+  content: undefined | string;
 }
 
 const NameList = ({
@@ -43,7 +43,7 @@ const NameList = ({
           major: '',
           gender: '',
           studentNumber: null,
-          age: '',
+          age: null,
           mbti: '',
           content: '',
         }),
@@ -53,10 +53,10 @@ const NameList = ({
     } else {
       const modifiedParticipants = participants.map(participant => ({
         ...participant,
-        age:
-          typeof participant.age !== 'undefined'
-            ? `${participant.age.split('-')[0]}년`
-            : '',
+        age: participant.age !== null ? participant.age.toString() : '비공개',
+        studentNumber: participant.studentNumber ?? '비공개',
+        mbti: participant.mbti ?? '비공개',
+        content: participant.content ?? '비공개',
       }));
       setUserInfo(modifiedParticipants);
     }

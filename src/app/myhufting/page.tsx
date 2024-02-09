@@ -6,8 +6,9 @@ import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import axiosInstance from '@/api/axiosInstance';
 import LoginAlert from '@/components/common/modal/LoginAlert';
+import useUserDataStore from '@/store/user';
+import RegisterButton from '@/components/common/button/RegisterButton';
 import List from '../../components/list/HomeList';
-// import useUserDataStore from '@/store/user';
 
 interface FilterButtonProps {
   active: boolean;
@@ -50,17 +51,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 
 const MyList = () => {
   const [lists, setLists] = useState<ListType[]>([]);
-  // const userData = useUserDataStore(state => state.userData);
-  const userData = {
-    birthday: '2000-02-07',
-    studentNumber: '19학번',
-    email: 'kye1115z@hufs.ac.kr',
-    gender: '여',
-    content: 'hi',
-    major: 'GlobalBusiness&Technology전공',
-    mbti: 'ENFP',
-    name: '김예은',
-  };
+  const userData = useUserDataStore(state => state.userData);
 
   // 리스트 불러오기
   useEffect(() => {
@@ -95,10 +86,11 @@ const MyList = () => {
     return true;
   });
 
-  return userData.email === null || userData.gender === null ? (
+  return userData.email !== null && userData.gender !== null ? (
     <LoginAlert />
   ) : (
     <Container>
+      <RegisterButton />
       <MainHeader />
       <SubHeader title="내가 올린 훕팅" />
       {lists.length === 0 ? (
