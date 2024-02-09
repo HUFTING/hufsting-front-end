@@ -17,11 +17,11 @@ interface UserInfo {
   id: number;
   name: string;
   major: string;
-  gender?: null | string;
-  studentNumber: null | string;
-  age: null | number | string;
-  mbti: undefined | string;
-  content: undefined | string;
+  gender?: string;
+  studentNumber: string;
+  age: string;
+  mbti: string;
+  content: string;
 }
 
 const NameList = ({
@@ -44,8 +44,8 @@ const NameList = ({
           name: `참가자 ${index + 1}`,
           major: '',
           gender: '',
-          studentNumber: null,
-          age: null,
+          studentNumber: '',
+          age: '',
           mbti: '',
           content: '',
         }),
@@ -55,10 +55,7 @@ const NameList = ({
     } else {
       const modifiedParticipants = participants.map(participant => ({
         ...participant,
-        age:
-          participant.age !== null
-            ? `${participant.age.toString()}년`
-            : '비공개',
+        age: participant.age !== null ? `${participant.age}년` : '비공개',
         studentNumber: participant.studentNumber ?? '비공개',
         mbti: participant.mbti ?? '비공개',
         content: participant.content ?? '비공개',
@@ -95,6 +92,7 @@ const NameList = ({
   // 메이트 선택하기(모달)
   const [isOpenModal, setOpenModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number>();
+  const [mateIndex, setMateIndex] = useState<number>(1);
 
   const handleMore = () => {
     setOpenModal(!isOpenModal);
@@ -110,7 +108,6 @@ const NameList = ({
           prev.map((user, i) => (i === index ? { ...user, ...data } : user)),
         );
         if (setReturnId !== undefined) {
-          // 데이터는 지우기
           setReturnId(prevIds => [...prevIds, data.id]);
         }
       })
@@ -130,8 +127,8 @@ const NameList = ({
   const onClickEditButton = (index: number) => {
     if (index === 0) {
       setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
-      // window.location.href = 'http://localhost:3000/친구등록';
     } else {
+      setMateIndex(index);
       setOpenModal(true);
     }
   };
@@ -139,7 +136,7 @@ const NameList = ({
   // 메이트 정보 불러오기
   useEffect(() => {
     if (selectedUserId !== undefined) {
-      loadUserInfoById(selectedUserId);
+      loadUserInfoById(mateIndex);
     }
   }, [selectedUserId]);
 
