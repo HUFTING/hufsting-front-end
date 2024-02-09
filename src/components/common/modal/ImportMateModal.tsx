@@ -29,7 +29,7 @@ const ImportMateModal: React.FC<MainInfoProps> = ({
 
   const getUserList = useCallback(() => {
     axiosInstance
-      .get('/apis/api/v1/followingList/')
+      .get('/apis/api/v1/followingList')
       .then(res => {
         setUserList(res.data);
       })
