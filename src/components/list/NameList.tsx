@@ -53,7 +53,10 @@ const NameList = ({
     } else {
       const modifiedParticipants = participants.map(participant => ({
         ...participant,
-        age: participant.age !== null ? participant.age.toString() : '비공개',
+        age:
+          participant.age !== null
+            ? `${participant.age.toString()}년`
+            : '비공개',
         studentNumber: participant.studentNumber ?? '비공개',
         mbti: participant.mbti ?? '비공개',
         content: participant.content ?? '비공개',
