@@ -148,12 +148,6 @@ const BasicButtonWrapper = styled.div`
   z-index: 1000;
 `;
 
-const total = {
-  huftingid: 1,
-  gender: '남',
-  num: 1,
-};
-
 const Editing = () => {
   /* const [gender, setGender] = useState<string | null>(null); */
   // const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
@@ -167,7 +161,9 @@ const Editing = () => {
 
   const matchingPostId = searchParams.get('id'); // 방의 아이디
 
-  const DesiredNumPeople = searchParams.get('count');
+  const countNumPeople = searchParams.get('count');
+  // eslint-disable-next-line no-console
+  console.log(countNumPeople);
 
   const numberOfPeople = returnId.length;
 
@@ -175,9 +171,9 @@ const Editing = () => {
     try {
       if (returnId.length === numberOfPeople) {
         const data = {
-          // id: matchingPostId,
+          id: matchingPostId,
           gender: genderData, // @/store/user에서 로그인 했을때 저장된 gender값을 가져옴
-          desiredNumPeople: DesiredNumPeople,
+          desiredNumPeople: countNumPeople,
           openTalkLink: kakaoLink,
           participants: returnId,
         };
@@ -274,7 +270,7 @@ const Editing = () => {
         <SubTitle>희망 인원 수</SubTitle>
         <div className="flex">
           <div className="numberContainer">
-            <span>{numberOfPeople}</span>
+            <span>{countNumPeople}</span>
           </div>
           <div className="SmallButtonContainer">
             {/* <SmallButtonMinus
@@ -325,7 +321,9 @@ const Editing = () => {
       </div>
       <div className="listbox">
         <NameList
-          desiredNumPeople={total.num}
+          desiredNumPeople={
+            countNumPeople !== null ? parseInt(countNumPeople, 10) : 0
+          }
           participants={test}
           // eslint-disable-next-line react/jsx-boolean-value
           editable={true}
@@ -344,7 +342,7 @@ const Editing = () => {
           onClickEvent={handleDelete}
           isActive
           buttonType="button"
-          width="40"
+          width="45"
         />
         <BasicButton
           color="red"
@@ -355,7 +353,7 @@ const Editing = () => {
           onClickEvent={handleSubmit}
           isActive
           buttonType="button"
-          width="40%"
+          width="45"
         />
       </BasicButtonWrapper>
     </Container>
