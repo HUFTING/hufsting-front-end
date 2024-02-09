@@ -10,6 +10,8 @@ import ClipboardCopy from '@/components/copy/Copy';
 import NameList from '@/components/list/NameList';
 import axiosInstance from '@/api/axiosInstance';
 import ApplyList from '@/components/list/ApplyList';
+// import useUserDataStore from '@/store/user';
+// import LoginAlert from '@/components/common/modal/LoginAlert';
 
 interface Hosts {
   id: number;
@@ -45,6 +47,8 @@ const MyDetail = () => {
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
 
+  // const userData = useUserDataStore(state => state.userData);
+
   // router
   const router = useRouter();
 
@@ -74,7 +78,8 @@ const MyDetail = () => {
   };
 
   const handleEdit = () => {
-    router.push(`/editing?id=${search}`);
+    postInfo !== null &&
+      router.push(`/editing?id=${search}?count=${postInfo.desiredNumPeople}`);
   };
 
   return (
