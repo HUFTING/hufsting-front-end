@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axiosInstance from '@/api/axiosInstance';
 import ImportMateModal from '../common/modal/ImportMateModal';
+import LoginAlert from '../common/modal/LoginAlert';
 
 interface NameListProps {
   desiredNumPeople: number;
@@ -31,6 +32,7 @@ const NameList = ({
 }: NameListProps) => {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [edited, setEdited] = useState<boolean[]>([]);
+  const [isLoginRequired, setIsLoginRequired] = useState<boolean>(false);
 
   // 초기 유저 정보
   useEffect(() => {
@@ -53,7 +55,10 @@ const NameList = ({
     } else {
       const modifiedParticipants = participants.map(participant => ({
         ...participant,
-        age: participant.age !== null ? participant.age.toString() : '비공개',
+        age:
+          participant.age !== null
+            ? `${participant.age.toString()}년`
+            : '비공개',
         studentNumber: participant.studentNumber ?? '비공개',
         mbti: participant.mbti ?? '비공개',
         content: participant.content ?? '비공개',
@@ -82,7 +87,9 @@ const NameList = ({
           setReturnId(prevIds => [...prevIds, data.id]);
         }
       })
-      .catch(e => e);
+      .catch(e => {
+        setIsLoginRequired(true);
+      });
   };
 
   // 메이트 선택하기(모달)
@@ -107,7 +114,9 @@ const NameList = ({
           setReturnId(prevIds => [...prevIds, data.id]);
         }
       })
-      .catch(e => e);
+      .catch(e => {
+        setIsLoginRequired(true);
+      });
   };
 
   // 내용 변경 감지
@@ -298,6 +307,7 @@ const NameList = ({
             </ListBox>
           </Wrapper>
         ))}
+        {isLoginRequired && <LoginAlert />}
       </Container>
     </>
   );
