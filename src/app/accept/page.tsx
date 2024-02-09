@@ -7,8 +7,7 @@ import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
-// import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axiosInstance from '@/api/axiosInstance';
 
 interface ParticipantInfo {
@@ -33,7 +32,7 @@ const Accept = () => {
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
 
-  // const router = useRouter();
+  const router = useRouter();
 
   // 더 보기
   const [isOpenModal, setOpenModal] = useState(false);
@@ -56,12 +55,22 @@ const Accept = () => {
 
   // 거절하기
   const handleReject = () => {
-    // axiosInstance.patch(`/api/v1/matchingrequests/${search}/reject`).then(res => {router.push(`/myhufting`);})
+    axiosInstance
+      .patch(`/apis/api/v1/matchingrequests/${search}/reject`)
+      .then(res => {
+        router.push(`/myhufting`);
+      })
+      .catch(e => e);
   };
 
   // 수락하기
   const handleAccept = () => {
-    // axiosInstance.patch(`/api/v1/matchingrequests/${search}/accept`).then(res => {router.push(`/result?id=${search}`);})
+    axiosInstance
+      .patch(`/apis/api/v1/matchingrequests/${search}/accept`)
+      .then(res => {
+        router.push(`/result?id=${search}`);
+      })
+      .catch(e => e);
   };
 
   return (
