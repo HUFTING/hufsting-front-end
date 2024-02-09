@@ -95,7 +95,7 @@ const NameList = ({
   const [mateIndex, setMateIndex] = useState<number>(1);
 
   const handleMore = () => {
-    setOpenModal(!isOpenModal);
+    setOpenModal(prev => !prev);
   };
 
   // 아이디로 친구 정보 불러오기
