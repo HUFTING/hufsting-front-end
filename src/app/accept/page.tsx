@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
@@ -8,53 +8,30 @@ import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
 // import { useRouter } from 'next/navigation';
-// import { useSearchParams } from 'next/navigation';
-// import axiosInstance from '@/api/axiosInstance';
+import { useSearchParams } from 'next/navigation';
+import axiosInstance from '@/api/axiosInstance';
 
-const postInfo = {
-  id: 1,
-  content: '야호',
-  matchingStatus: '매칭 대기 중',
-  title: 'string',
-  desiredNumPeople: 3,
-  gender: '남',
-  authorName: 'string',
-};
+interface ParticipantInfo {
+  id: number;
+  name: string;
+  major: string;
+  studentNumber: string;
+  age: string;
+  mbti: string;
+  content: string;
+}
 
-const userInfo = [
-  {
-    id: 1,
-    name: '김**',
-    major: 'GBT학부',
-    studentNumber: '202100000',
-    age: '2002',
-    mbti: 'ESFJ',
-    content: '디테일에서 보내는 메시지~',
-  },
-  {
-    id: 2,
-    name: '원**',
-    major: 'GBT학부',
-    studentNumber: '202100000',
-    age: '2002',
-    mbti: 'ESFJ',
-    content: '즐거운 훕팅 많이 많이 이용해주세요~',
-  },
-  {
-    id: 3,
-    name: '밍**',
-    major: '묘묘',
-    studentNumber: '2323',
-    age: '2002',
-    mbti: 'ESFJ',
-    content: '세 번째 데이터~',
-  },
-];
+interface PostInfo {
+  matchingRequestId: number;
+  matchingRequestTitle: string;
+  participants: ParticipantInfo[];
+  hosts: ParticipantInfo[];
+}
 
 const Accept = () => {
   // 쿼리 받아오기
-  // const searchParams = useSearchParams();
-  // const search = searchParams.get('id');
+  const searchParams = useSearchParams();
+  const search = searchParams.get('id');
 
   // const router = useRouter();
 
@@ -64,21 +41,18 @@ const Accept = () => {
   const handleMore = () => {
     setOpenModal(!isOpenModal);
   };
-
   // 리스트 받아오기
-  //   const [postInfo, setPostInfo] = useState<ListType | null>(null);
+  const [postInfo, setPostInfo] = useState<PostInfo | null>(null);
 
-  //   useEffect(() => {
-  // axiosInstance
-  //       .get(`/api/v1/matchingposts/${search}`)
-  //       .then(res => {
-  //         const data = res.data;
-  //         setPostInfo(data);
-  //       });
-  //     // .catch(error => {
-  //     //   console.error('Error fetching data:', error);
-  //     // });
-  //   }, [search]);
+  useEffect(() => {
+    axiosInstance
+      .get(`/apis/api/v1/come-matchingrequests/${search}`)
+      .then(res => {
+        const { data } = res;
+        setPostInfo(data);
+      })
+      .catch(e => e);
+  }, [search]);
 
   // 거절하기
   const handleReject = () => {
@@ -94,61 +68,61 @@ const Accept = () => {
     <Container>
       <MainHeader />
       <SubHeader title="훕팅 신청 목록" />
-      {/* {postInfo && ( */}
-      <>
-        {isOpenModal && (
-          <MainInfo
-            desiredNumPeople={postInfo.desiredNumPeople}
-            handleMore={handleMore}
-            isModal={isOpenModal}
-            userInfo={userInfo}
-          />
-        )}
-        <Title>{postInfo.title}</Title>
-        <div className="otherInfo">
-          <OtherInfo>
-            <div className="top">
-              <SubTitle>상대 정보</SubTitle>
-              <More onClick={handleMore}>더 보기</More>
-            </div>
-            {userInfo.map(info => (
-              <div className="infobox" key={info.id}>
-                <p>
-                  {info.name} _ {info.major}
-                </p>
+      {postInfo !== null && (
+        <>
+          {isOpenModal && (
+            <MainInfo
+              desiredNumPeople={postInfo.participants.length}
+              handleMore={handleMore}
+              isModal={isOpenModal}
+              userInfo={postInfo.participants}
+            />
+          )}
+          <Title>{postInfo.matchingRequestTitle}</Title>
+          <div className="otherInfo">
+            <OtherInfo>
+              <div className="top">
+                <SubTitle>상대 정보</SubTitle>
+                <More onClick={handleMore}>더 보기</More>
               </div>
-            ))}
-          </OtherInfo>
-        </div>
-        <div className="listbox">
-          <NameList
-            desiredNumPeople={userInfo.length}
-            participants={userInfo}
-            editable={false}
-          />
-        </div>
-        <BasicButtonWrapper>
-          <BasicButton
-            color="gray"
-            assetType="Primary"
-            size="M"
-            content="거절하기"
-            onClickEvent={handleReject}
-            isActive
-            width="48%"
-          />
-          <BasicButton
-            color="red"
-            assetType="Primary"
-            size="M"
-            content="수락하기"
-            onClickEvent={handleAccept}
-            isActive
-            width="48%"
-          />
-        </BasicButtonWrapper>
-      </>
-      {/* )} */}
+              {postInfo.hosts.map(info => (
+                <div className="infobox" key={info.id}>
+                  <p>
+                    {info.name} _ {info.major}
+                  </p>
+                </div>
+              ))}
+            </OtherInfo>
+          </div>
+          <div className="listbox">
+            <NameList
+              desiredNumPeople={postInfo.hosts.length}
+              participants={postInfo.hosts}
+              editable={false}
+            />
+          </div>
+          <BasicButtonWrapper>
+            <BasicButton
+              color="gray"
+              assetType="Primary"
+              size="M"
+              content="거절하기"
+              onClickEvent={handleReject}
+              isActive
+              width="48%"
+            />
+            <BasicButton
+              color="red"
+              assetType="Primary"
+              size="M"
+              content="수락하기"
+              onClickEvent={handleAccept}
+              isActive
+              width="48%"
+            />
+          </BasicButtonWrapper>
+        </>
+      )}
     </Container>
   );
 };
