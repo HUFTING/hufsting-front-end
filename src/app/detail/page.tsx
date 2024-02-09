@@ -104,7 +104,15 @@ const Detail = () => {
   return (
     <Container>
       <MainHeader />
-      <SubHeader title="훕팅 참여하기" />
+      <SubHeader
+        title="훕팅 참여하기"
+        rightButton={{
+          content: '❮',
+          clickEvent: () => {
+            router.back();
+          },
+        }}
+      />
       {postInfo !== null && (
         <>
           {isOpenModal && (
