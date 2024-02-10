@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import axiosInstance from '@/api/axiosInstance';
-import LoginAlert from '@/components/common/modal/LoginAlert';
 import RegisterButton from '@/components/common/button/RegisterButton';
 import List from '../../components/list/HomeList';
 
@@ -17,7 +16,7 @@ interface FilterButtonProps {
 
 interface ListType {
   id: number;
-  matchingStatus: boolean;
+  matchingStatus: string;
   title: string;
   desiredNumPeople: number;
   gender: string;
@@ -50,7 +49,6 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 
 const MyList = () => {
   const [lists, setLists] = useState<ListType[]>([]);
-  const [isLoginRequired, setIsLoginRequired] = useState<boolean>(false);
 
   // 리스트 불러오기
   useEffect(() => {
@@ -60,9 +58,7 @@ const MyList = () => {
         const { data } = res.data;
         setLists(data);
       })
-      .catch(e => {
-        setIsLoginRequired(true);
-      });
+      .catch(e => e);
   }, []);
 
   // 필터링
@@ -77,17 +73,17 @@ const MyList = () => {
       return true;
     }
     if (filter === 'waiting') {
-      return !item.matchingStatus;
+      return item.matchingStatus === '매칭 대기';
     }
     if (filter === 'completed') {
-      return item.matchingStatus;
+      return item.matchingStatus === '매칭 완료';
     }
     return true;
   });
 
   return (
     <Container>
-      {!isLoginRequired && <RegisterButton />}
+      <RegisterButton />
       <MainHeader />
       <SubHeader title="내가 올린 훕팅" />
       {lists.length === 0 ? (
@@ -126,7 +122,6 @@ const MyList = () => {
           <List lists={filteredLists} pathnameProp="/detailmyhufting" />
         </>
       )}
-      {isLoginRequired && <LoginAlert />}
     </Container>
   );
 };

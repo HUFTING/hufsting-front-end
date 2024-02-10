@@ -7,7 +7,7 @@ import styled from 'styled-components';
 interface HomeListProps {
   lists: Array<{
     id: number;
-    matchingStatus: boolean;
+    matchingStatus: string;
     title: string;
     desiredNumPeople: number;
     gender: string;
@@ -58,9 +58,7 @@ const List = ({ lists, pathnameProp }: HomeListProps) => (
         <Wrapper $backgroundColor={item.id}>
           <div className="box">
             <div className="matching">
-              <p className="matchingText">
-                {item.matchingStatus ? '매칭 완료' : '매칭 대기중'}
-              </p>
+              <p className="matchingText">{item.matchingStatus}</p>
             </div>
           </div>
           <div className="box">

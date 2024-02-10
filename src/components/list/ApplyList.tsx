@@ -23,7 +23,7 @@ const ApplyList = ({
       <Container>
         {lists.map((item, index) => (
           <div key={item.matchingRequestId}>
-            {representativeEmail === userData.email ||
+            {representativeEmail === userData.email &&
             matchingStatus === '매칭 대기' ? (
               <Link
                 href={{
