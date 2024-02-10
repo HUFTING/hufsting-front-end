@@ -42,6 +42,13 @@ interface ListType {
   representativeEmail: string;
 }
 
+interface TextType {
+  isEdit: boolean;
+  subtitle: string;
+  buttonleft: string;
+  buttonright: string;
+}
+
 const MyDetail = () => {
   // 쿼리 받아오기
   const searchParams = useSearchParams();
@@ -49,11 +56,23 @@ const MyDetail = () => {
 
   const userData = useUserDataStore(state => state.userData);
 
+  // NameList 참여자 아이디
+  const [returnId, setReturnId] = useState<number[]>([]);
+
   // router
   const router = useRouter();
 
+  // 텍스트 설정
+  const [text, setText] = useState<TextType>({
+    isEdit: false,
+    subtitle: '내가 올린 훕팅',
+    buttonleft: '삭제하기',
+    buttonright: '수정하기',
+  });
+
   // 리스트 받아오기
   const [postInfo, setPostInfo] = useState<ListType | null>(null);
+  const [openTalkLink, setOpenTalkLink] = useState(postInfo?.openKakaoTalk);
 
   useEffect(() => {
     axiosInstance
@@ -73,16 +92,54 @@ const MyDetail = () => {
       .catch(e => e);
   };
 
+  // 매칭 글 수정
   const handleEdit = () => {
-    postInfo !== null &&
-      router.push(`/editing?id=${search}&count=${postInfo.desiredNumPeople}`);
+    setOpenTalkLink(postInfo?.openKakaoTalk);
+    setText({
+      isEdit: true,
+      subtitle: '훕팅 수정',
+      buttonleft: '취소하기',
+      buttonright: '수정완료',
+    });
+  };
+
+  // 수정 저장
+  const handleSave = () => {
+    setText({
+      isEdit: false,
+      subtitle: '내가 올린 훕팅',
+      buttonleft: '삭제하기',
+      buttonright: '수정하기',
+    });
+    const requestData = {
+      id: postInfo?.id,
+      gender: postInfo?.gender,
+      desiredNumPeople: postInfo?.desiredNumPeople,
+      openTalkLink,
+      participants: returnId,
+    };
+
+    axiosInstance
+      .put(`/api/v1/matchingposts/${search}`, requestData)
+      .then(res => res)
+      .catch(e => e);
+  };
+
+  // 수정 취소
+  const handleCancel = () => {
+    setText({
+      isEdit: false,
+      subtitle: '내가 올린 훕팅',
+      buttonleft: '삭제하기',
+      buttonright: '수정하기',
+    });
   };
 
   return (
     <Container>
       <MainHeader />
       <SubHeader
-        title="내가 올린 훕팅"
+        title={text.subtitle}
         rightButton={{
           content: '❮',
           clickEvent: () => {
@@ -97,20 +154,40 @@ const MyDetail = () => {
             <p>{postInfo.desiredNumPeople}</p>
           </div>
           <OtherInfo>
-            <div className="top">
-              <SubTitle>오픈채팅방 링크</SubTitle>
-              <ClipboardCopy text={postInfo.openKakaoTalk} />
-            </div>
-            <p>{postInfo.openKakaoTalk}</p>
-            <div className="bottom">
-              <SubTitle>훕팅 신청 {postInfo.matchingRequestsCount}건</SubTitle>
-              <ApplyList
-                lists={postInfo.matchingRequests}
-                pathnameProp="/accept"
-                representativeEmail={postInfo.representativeEmail}
-                matchingStatus={postInfo.matchingStatus}
-              />
-            </div>
+            {text.isEdit ? (
+              <div className="editTop">
+                <SubTitle>오픈채팅방 링크</SubTitle>
+                <input
+                  type="text"
+                  value={openTalkLink}
+                  placeholder="카카오톡 오픈채팅방 링크 입력"
+                  onChange={e => {
+                    setOpenTalkLink(e.target.value);
+                  }}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="top">
+                  <SubTitle>오픈채팅방 링크</SubTitle>
+                  <ClipboardCopy text={postInfo.openKakaoTalk} />
+                </div>
+                <p>{postInfo.openKakaoTalk}</p>
+              </>
+            )}
+            {!text.isEdit && (
+              <div className="bottom">
+                <SubTitle>
+                  훕팅 신청 {postInfo.matchingRequestsCount}건
+                </SubTitle>
+                <ApplyList
+                  lists={postInfo.matchingRequests}
+                  pathnameProp="/accept"
+                  representativeEmail={postInfo.representativeEmail}
+                  matchingStatus={postInfo.matchingStatus}
+                />
+              </div>
+            )}
           </OtherInfo>
         </div>
       )}
@@ -119,7 +196,9 @@ const MyDetail = () => {
           <NameList
             desiredNumPeople={postInfo.desiredNumPeople}
             participants={postInfo.matchingHosts}
-            editable={false}
+            editable={text.isEdit}
+            setReturnId={setReturnId}
+            onEditButton
           />
         </div>
       )}
@@ -131,8 +210,14 @@ const MyDetail = () => {
               color="gray"
               assetType="Primary"
               size="M"
-              content="삭제하기"
-              onClickEvent={handleRemove}
+              content={text.buttonleft}
+              onClickEvent={() => {
+                if (text.isEdit) {
+                  handleCancel();
+                } else {
+                  handleRemove();
+                }
+              }}
               isActive
               width="48%"
             />
@@ -140,8 +225,14 @@ const MyDetail = () => {
               color="red"
               assetType="Primary"
               size="M"
-              content="수정하기"
-              onClickEvent={handleEdit}
+              content={text.buttonright}
+              onClickEvent={() => {
+                if (text.isEdit) {
+                  handleSave();
+                } else {
+                  handleEdit();
+                }
+              }}
               isActive
               width="48%"
             />
@@ -191,6 +282,12 @@ const SubTitle = styled.p`
 `;
 
 const OtherInfo = styled.div`
+  .editTop {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid black;
+  }
   .top {
     display: flex;
     justify-content: space-between;
