@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
@@ -13,7 +13,7 @@ import BasicButton from '@/components/common/button/Button';
 // import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
 import axiosInstance from '@/api/axiosInstance';
 import useUserDataStore from '@/store/user';
-// git add
+import EffectivenessAlert from '@/components/common/modal/EffectivenessAlert';
 
 const test = [
   {
@@ -131,11 +131,6 @@ const OtherInfo = styled.div`
   }
 `;
 
-/* const More = styled.button`
-  font-size: 15px;
-  color: #8d8d8d;
-`; */
-
 const BasicButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -153,6 +148,34 @@ const Editing = () => {
   // const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [kakaoLink, setKakaoLink] = useState<string>('');
   const [returnId, setReturnId] = useState<number[]>([]);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [showAlertNumMatch, setShowAlertNumMatch] = useState<boolean>(false);
+  const [linkCopyAlert, setLinkCopyAlert] = useState<boolean>(false);
+
+  const alertModal = () => {
+    setShowAlert(true);
+  };
+
+  const alertModalNumMatch = () => {
+    setShowAlertNumMatch(true);
+  };
+
+  const router = useRouter();
+  const handleClickEditComplete = () => {
+    router.push('/detailmyhufting');
+  };
+
+  const handleClickDelete = () => {
+    router.push('/myhufting');
+  };
+
+  /*  const alertLink = () => {
+    alert('올바른 오픈 카톡 링크를 입력해주세요.');
+  };
+
+  const alertNumMatch = () => {
+    alert('희망 인원 수와 참가자의 수가 일치하지 않습니다.');
+  }; */
 
   const userData = useUserDataStore(state => state.userData);
   const genderData = userData.gender;
@@ -169,6 +192,36 @@ const Editing = () => {
 
   const handleSubmit = async () => {
     try {
+      // Gender 유효성 검사
+      /* if (genderData !== '남' && genderData !== '여') {
+        console.log('성별은 남 또는 여 중 하나여야 합니다.');
+        return;
+      } */
+
+      // DesiredNumPeople 유효성 검사
+      if (numberOfPeople < 1 || numberOfPeople > 4) {
+        // eslint-disable-next-line no-console
+        console.log('희망 인원 수는 1부터 4까지의 값이어야 합니다.');
+        return;
+      }
+
+      // OpenTalkLink 유효성 검사
+      const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
+      if (!kakaoLinkRegex.test(kakaoLink)) {
+        // eslint-disable-next-line no-console
+        console.log('올바른 오픈 카톡 링크를 입력해주세요.');
+        alertModal();
+        return;
+      }
+
+      // ReturnId와 DesiredNumPeople 유효성 검사
+      if (returnId.length !== numberOfPeople) {
+        // eslint-disable-next-line no-console
+        console.log('희망 인원 수와 참가자의 수가 일치하지 않습니다.');
+        alertModalNumMatch();
+        return;
+      }
+
       if (returnId.length === numberOfPeople) {
         const data = {
           id: matchingPostId,
@@ -189,12 +242,15 @@ const Editing = () => {
 
         const roomId = response.data.matchingPostId;
         localStorage.setItem('roomId', roomId);
+
         // eslint-disable-next-line no-console
-        console.log('Post request successful');
+        console.log('훕팅수정 PATCH 요청 성공');
+
+        handleClickEditComplete(); // detailmyhufting으로의 페이지 이동은 patch 요청이 성공했을때 작동
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('Error in handleSubmit:', error);
+      console.log('훕팅수정 PATCH 요청 실패:', error);
     }
   };
 
@@ -206,6 +262,10 @@ const Editing = () => {
         );
         // eslint-disable-next-line no-console
         console.log(response);
+        // eslint-disable-next-line no-console
+        console.log('훕팅 수정에서 DELETE 요청 성공');
+
+        handleClickDelete(); // myhufting으로의 페이지 이동은 patch 요청이 성공했을때 작동
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -213,45 +273,18 @@ const Editing = () => {
     }
   };
 
-  /* const handleIncrement = () => {
-    if (numberOfPeople < 4) {
-      setNumberOfPeople(prev => {
-        const incrementedValue = prev + 1;
-        // total.num을 numberOfPeople과 동일하게 업데이트
-        total.num = incrementedValue;
-        return incrementedValue;
-      });
-    }
-  };
-
-  const handleDecrement = () => {
-    if (numberOfPeople > 1) {
-      setNumberOfPeople(prev => {
-        const decrementedValue = prev - 1;
-        // total.num을 numberOfPeople과 동일하게 업데이트
-        total.num = decrementedValue;
-        return decrementedValue;
-      });
-    }
-  }; */
-
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(kakaoLink)
       .then(() => {
-        alert('링크가 클립보드에 복사되었습니다.');
+        // alert('링크가 클립보드에 복사되었습니다.');
+        setLinkCopyAlert(true);
       })
       .catch(error => {
         // eslint-disable-next-line no-console
         console.error('링크 복사에 실패했습니다.', error);
       });
   };
-
-  // const [kakaoLink, setKakaoLink] = useState('');
-
-  /* const handleKakaoLinkChange = newLink => {
-    setKakaoLink(newLink);
-  }; */
 
   return (
     <Container>
@@ -296,18 +329,21 @@ const Editing = () => {
             {/* 주소 입력을 위한 input 요소 추가 */}
             <input
               type="text"
-              placeholder="  주소를 입력하세요"
+              placeholder="카카오톡 오픈채팅방 링크 입력"
               value={kakaoLink}
               onChange={e => {
                 setKakaoLink(e.target.value);
                 return undefined; // 명시적으로 void를 반환합니다.
               }}
               style={{
-                border: '2px solid #8D8D8D',
-                borderRadius: '5px',
+                border: 'none',
+                borderBottom: '2px solid #8D8D8D', // 밑줄 설정
+                borderRadius: '0',
                 width: '100%',
                 height: '35px',
-                marginBottom: '20px',
+                paddingLeft: '5px',
+                marginTop: '5px',
+                marginBottom: '11px',
               }}
             />
 
@@ -342,7 +378,7 @@ const Editing = () => {
           onClickEvent={handleDelete}
           isActive
           buttonType="button"
-          width="45"
+          width="48%"
         />
         <BasicButton
           color="red"
@@ -353,9 +389,53 @@ const Editing = () => {
           onClickEvent={handleSubmit}
           isActive
           buttonType="button"
-          width="45"
+          width="48%"
         />
       </BasicButtonWrapper>
+      {/* 모달 렌더링 */}
+      {showAlert && (
+        <EffectivenessAlert
+          message={
+            <>
+              올바른 오픈 카톡 링크를
+              <br />
+              입력해주세요.
+            </>
+          }
+          onClose={() => {
+            setShowAlert(false);
+          }}
+        />
+      )}
+      {/* 모달 렌더링 */}
+      {showAlertNumMatch && (
+        <EffectivenessAlert
+          message={
+            <>
+              희망 인원 수와 참가자의 수가
+              <br />
+              일치하지 않습니다.
+            </>
+          }
+          onClose={() => {
+            setShowAlertNumMatch(false);
+          }}
+        />
+      )}
+      {linkCopyAlert && (
+        <EffectivenessAlert
+          message={
+            <>
+              링크가 클립보드에
+              <br />
+              복사되었습니다.
+            </>
+          }
+          onClose={() => {
+            setLinkCopyAlert(false);
+          }}
+        />
+      )}
     </Container>
   );
 };
