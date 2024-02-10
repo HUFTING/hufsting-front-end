@@ -10,6 +10,7 @@ interface NameListProps {
   participants: UserInfo[];
   editable: boolean;
   setReturnId?: React.Dispatch<React.SetStateAction<number[]>>;
+  onEditButton?: boolean;
 }
 
 interface UserInfo {
@@ -28,13 +29,18 @@ const NameList = ({
   participants,
   editable,
   setReturnId,
+  onEditButton = false,
 }: NameListProps) => {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [edited, setEdited] = useState<boolean[]>([]);
 
   // 초기 유저 정보
   useEffect(() => {
-    if (editable) {
+    if (editable && onEditButton) {
+      const modifiedParticipants = modifyParticipants(participants);
+      setUserInfo(modifiedParticipants);
+      setEdited(Array(desiredNumPeople).fill(false));
+    } else if (editable && !onEditButton) {
       const initialUserInfo = Array.from(
         { length: desiredNumPeople },
         (_, index) => ({
@@ -51,16 +57,24 @@ const NameList = ({
       setUserInfo(initialUserInfo);
       setEdited(Array(desiredNumPeople).fill(false));
     } else {
-      const modifiedParticipants = participants.map(participant => ({
-        ...participant,
-        age: participant.age !== null ? `${participant.age}년` : '비공개',
-        studentNumber: participant.studentNumber ?? '비공개',
-        mbti: participant.mbti ?? '비공개',
-        content: participant.content ?? '비공개',
-      }));
+      const modifiedParticipants = modifyParticipants(participants);
       setUserInfo(modifiedParticipants);
     }
-  }, [desiredNumPeople, editable, participants]);
+  }, [desiredNumPeople, editable, participants, onEditButton ?? false]);
+
+  // 개인 정보 수정해서 반환
+  const modifyUserInfo = (data: UserInfo) => ({
+    ...data,
+    gender: data.gender ?? '비공개',
+    studentNumber: data.studentNumber ?? '비공개',
+    mbti: data.mbti ?? '비공개',
+    content: data.content ?? '비공개',
+    age: data.age !== null ? `${data.age}년` : '비공개',
+  });
+
+  // 참가자'들' 정보 수정해서 반환
+  const modifyParticipants = (partips: UserInfo[]) =>
+    partips.map(partip => modifyUserInfo(partip));
 
   // 정보 불러오기 버튼
   const handleImportClick = (index: number) => {
@@ -75,8 +89,11 @@ const NameList = ({
       .get('/apis/api/v1/profile')
       .then(res => {
         const { data } = res;
+        const modifiedData = modifyUserInfo(data);
         setUserInfo(prev =>
-          prev.map((user, i) => (i === index ? { ...user, ...data } : user)),
+          prev.map((user, i) =>
+            i === index ? { ...user, ...modifiedData } : user,
+          ),
         );
         if (setReturnId !== undefined) {
           setReturnId(prevIds => [...prevIds, data.id]);
@@ -100,8 +117,11 @@ const NameList = ({
       .get(`/apis/api/v1/member/${selectedUserId}`)
       .then(res => {
         const { data } = res;
+        const modifiedData = modifyUserInfo(data);
         setUserInfo(prev =>
-          prev.map((user, i) => (i === index ? { ...user, ...data } : user)),
+          prev.map((user, i) =>
+            i === index ? { ...user, ...modifiedData } : user,
+          ),
         );
         if (setReturnId !== undefined) {
           setReturnId(prevIds => [...prevIds, data.id]);
@@ -142,6 +162,15 @@ const NameList = ({
       return;
     }
     setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
+    updateProfile(currentInfo);
+  };
+
+  // 프로필 수정 함수
+  const updateProfile = (updatedInfo: UserInfo) => {
+    axiosInstance
+      .put('/apis/api/v1/profile', updatedInfo)
+      .then(res => res)
+      .catch(e => e);
   };
 
   return (
