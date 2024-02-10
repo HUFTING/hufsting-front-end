@@ -15,6 +15,7 @@ interface UserDataType {
 interface IUseUserDataStore {
   userData: UserDataType;
   setUserData: (userData: UserDataType) => void;
+  resetUserData: () => void;
 }
 
 const useUserDataStore = create(
@@ -32,6 +33,20 @@ const useUserDataStore = create(
       },
       setUserData: userData => {
         set({ userData });
+      },
+      resetUserData: () => {
+        set({
+          userData: {
+            email: null,
+            name: null,
+            major: null,
+            studentNumber: null,
+            gender: null,
+            birthday: null,
+            mbti: null,
+            content: null,
+          },
+        });
       },
     }),
     {

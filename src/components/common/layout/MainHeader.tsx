@@ -20,7 +20,7 @@ const MainHeader = () => {
       <div
         role="presentation"
         onClick={() => {
-          router.push('/home');
+          router.push('/');
         }}
       >
         <Logo width={118} height={30} />

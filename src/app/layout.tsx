@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import StyledComponentsRegistry from '@/lib/registry';
 import Head from 'next/head';
+import AxiosInterceptor from '@/api/AxiosInterceptor';
 
 export const metadata: Metadata = {
   title: 'Hufting',
@@ -22,7 +23,9 @@ export default function RootLayout({
         <div className=" top-0 bottom-0 right-0 left-0 fixed ">
           <div className=" h-full w-full max-h-full flex justify-center bg-slate-500">
             <div className=" bg-white max-w-[390px] w-full h-full overflow-y-auto overflow-x-hidden ">
-              <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+              <StyledComponentsRegistry>
+                <AxiosInterceptor>{children}</AxiosInterceptor>
+              </StyledComponentsRegistry>
             </div>
           </div>
         </div>
