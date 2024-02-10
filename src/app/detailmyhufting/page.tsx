@@ -112,6 +112,7 @@ const MyDetail = () => {
       buttonright: '수정하기',
     });
     const requestData = {
+      title: postInfo?.title,
       id: postInfo?.id,
       gender: postInfo?.gender,
       desiredNumPeople: postInfo?.desiredNumPeople,
@@ -120,7 +121,7 @@ const MyDetail = () => {
     };
 
     axiosInstance
-      .put(`/api/v1/matchingposts/${search}`, requestData)
+      .put(`/apis/api/v1/matchingposts/${search}`, requestData)
       .then(res => res)
       .catch(e => e);
   };
