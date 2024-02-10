@@ -123,8 +123,9 @@ const MyDetail = () => {
           />
         </div>
       )}
-      {(postInfo !== null && postInfo.representativeEmail === userData.email) ||
-        (postInfo?.matchingStatus === '매칭 완료' && (
+      {postInfo !== null &&
+        postInfo.representativeEmail === userData.email &&
+        postInfo?.matchingStatus === '매칭 대기' && (
           <BasicButtonWrapper>
             <BasicButton
               color="gray"
@@ -133,7 +134,7 @@ const MyDetail = () => {
               content="삭제하기"
               onClickEvent={handleRemove}
               isActive
-              width="45"
+              width="48%"
             />
             <BasicButton
               color="red"
@@ -142,10 +143,10 @@ const MyDetail = () => {
               content="수정하기"
               onClickEvent={handleEdit}
               isActive
-              width="45"
+              width="48%"
             />
           </BasicButtonWrapper>
-        ))}
+        )}
     </Container>
   );
 };

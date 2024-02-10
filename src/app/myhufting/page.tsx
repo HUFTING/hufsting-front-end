@@ -16,7 +16,7 @@ interface FilterButtonProps {
 
 interface ListType {
   id: number;
-  matchingStatus: boolean;
+  matchingStatus: string;
   title: string;
   desiredNumPeople: number;
   gender: string;
@@ -73,10 +73,10 @@ const MyList = () => {
       return true;
     }
     if (filter === 'waiting') {
-      return !item.matchingStatus;
+      return item.matchingStatus === '매칭 대기';
     }
     if (filter === 'completed') {
-      return item.matchingStatus;
+      return item.matchingStatus === '매칭 완료';
     }
     return true;
   });
