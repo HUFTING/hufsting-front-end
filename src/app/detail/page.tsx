@@ -65,11 +65,7 @@ const Detail = () => {
         const { data } = res;
         setPostInfo(data);
       })
-      .catch(error => {
-        alert(
-          `데이터를 불러오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.${error}`,
-        );
-      });
+      .catch(e => e);
   }, [search]);
 
   // 훕팅 신청 api
@@ -94,11 +90,7 @@ const Detail = () => {
       .then(res => {
         router.push('/');
       })
-      .catch(error => {
-        alert(
-          `데이터를 불러오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.${error}`,
-        );
-      });
+      .catch(e => e);
   };
 
   return (
