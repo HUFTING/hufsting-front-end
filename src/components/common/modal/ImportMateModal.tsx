@@ -34,7 +34,7 @@ const ImportMateModal: React.FC<MainInfoProps> = ({
         setUserList(res.data);
       })
       .catch(e => e);
-  }, []);
+  }, [isModal]);
 
   useEffect(() => {
     getUserList();
