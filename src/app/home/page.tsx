@@ -19,7 +19,7 @@ import List from '../../components/list/HomeList';
 
 interface ListType {
   id: number;
-  matchingStatus: boolean;
+  matchingStatus: string;
   title: string;
   desiredNumPeople: number;
   gender: string;
