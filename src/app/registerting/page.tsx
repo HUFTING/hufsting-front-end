@@ -11,6 +11,9 @@ import BasicButton from '@/components/common/button/Button';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
 import axiosInstance from '@/api/axiosInstance';
+import useUserDataStore from '@/store/user';
+import { useRouter } from 'next/navigation';
+import EffectivenessAlert from '@/components/common/modal/EffectivenessAlert';
 
 const test = [
   {
@@ -125,27 +128,105 @@ const total = {
 };
 
 const Registerting = () => {
+  const router = useRouter();
   // const [gender, setGender] = useState<string | null>(null);
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [title, setTitle] = useState<string>(''); // title 상태 추가
   const [kakaoLink, setKakaoLink] = useState<string>('');
   const [returnId, setReturnId] = useState<number[]>([]);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [showAlertNumMatch, setShowAlertNumMatch] = useState<boolean>(false);
+  const [titleAlert, setTitleAlert] = useState<boolean>(false);
+  const [linkCopyAlert, setLinkCopyAlert] = useState<boolean>(false);
 
+  const handleCopyLink = () => {
+    navigator.clipboard
+      .writeText(kakaoLink)
+      .then(() => {
+        // alert('링크가 클립보드에 복사되었습니다.');
+        setLinkCopyAlert(true);
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.error('링크 복사에 실패했습니다.', error);
+      });
+  };
+
+  const alertModal = () => {
+    setShowAlert(true);
+  };
+
+  const alertModalNumMatch = () => {
+    setShowAlertNumMatch(true);
+  };
+
+  const alertTitle = () => {
+    setTitleAlert(true);
+  };
+
+  const userData = useUserDataStore(state => state.userData);
+  const genderData = userData.gender;
+
+  /* const alertLink = () => {
+    alert('올바른 오픈 카톡 링크를 입력해주세요.');
+  }; */
+
+  const handleClick = () => {
+    // eslint-disable-next-line no-console
+    console.log('이동하는 함수 호출');
+    router.push('/myhufting');
+  };
   /* const handleGenderSelection = (selectedGender: string) => {
     setGender(selectedGender);
   }; */
   const handleSubmit = async () => {
     try {
+      // 제목 유효성 검사
+      if (title.trim() === '') {
+        // eslint-disable-next-line no-console
+        console.log('제목을 입력하세요!');
+        alertTitle();
+        return;
+      }
+
+      // Gender 유효성 검사
+      /* if (genderData !== '남' && genderData !== '여') {
+        console.log('성별은 남 또는 여 중 하나여야 합니다.');
+        return;
+      } */
+
+      // DesiredNumPeople 유효성 검사
+      if (numberOfPeople < 1 || numberOfPeople > 4) {
+        // eslint-disable-next-line no-console
+        console.log('희망 인원 수는 1부터 4까지의 값이어야 합니다.');
+        return;
+      }
+
+      // OpenTalkLink 유효성 검사
+      const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
+      if (!kakaoLinkRegex.test(kakaoLink)) {
+        // eslint-disable-next-line no-console
+        console.log('올바른 오픈 카톡 링크를 입력해주세요.');
+        alertModal();
+        return;
+      }
+
+      // ReturnId와 DesiredNumPeople 유효성 검사
+      if (returnId.length !== numberOfPeople) {
+        // eslint-disable-next-line no-console
+        console.log('희망 인원 수와 참가자의 수가 일치하지 않습니다.');
+        alertModalNumMatch();
+        return;
+      }
+
       if (returnId.length === numberOfPeople) {
         const data = {
           title,
-          gender: total.gender, // 적절한 방식으로 gender 값 설정
+          gender: genderData, // 적절한 방식으로 gender 값 설정
           desiredNumPeople: numberOfPeople,
           openTalkLink: kakaoLink,
           participants: returnId,
         };
-        // eslint-disable-next-line no-console
-        console.log(data);
 
         const response = await axiosInstance.post(
           '/apis/api/v1/matchingposts',
@@ -157,11 +238,12 @@ const Registerting = () => {
         const roomId = response.data.matchingPostId;
         localStorage.setItem('roomId', roomId);
         // eslint-disable-next-line no-console
-        console.log('Post request successful');
+        console.log('훕팅 등록 포스트 요청 성공');
+        handleClick(); // myhufting으로의 페이지 이동은 post 요청이 성공했을때 작동
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('Error in handleSubmit:', error);
+      console.log('훕팅 등록 버튼 에러', error);
     }
   };
 
@@ -211,11 +293,10 @@ const Registerting = () => {
         <BackIcon />
         <Title>훕팅 등록하기</Title>
       </div>
-
       <div className="otherInfo">
         <input
           type="text"
-          placeholder="  제목을 입력하세요"
+          placeholder="제목을 입력하세요"
           value={title} // title에 입력된 값이 표시되어야 함
           onChange={e => {
             setTitle(e.target.value);
@@ -227,6 +308,7 @@ const Registerting = () => {
             width: '100%',
             height: '35px',
             marginBottom: '20px',
+            paddingLeft: '8px',
           }}
         />
         <SubTitle>희망 인원 수</SubTitle>
@@ -256,7 +338,7 @@ const Registerting = () => {
         <SubTitle>오픈채팅방 링크 등록</SubTitle>
         <input
           type="text"
-          placeholder=" 카카오톡 오픈채팅방 링크 입력"
+          placeholder="카카오톡 오픈채팅방 링크 입력"
           value={kakaoLink} // kakaoLink에 입력된 값이 표시되어야 함
           onChange={e => {
             setKakaoLink(e.target.value);
@@ -268,8 +350,13 @@ const Registerting = () => {
             borderRadius: '0',
             width: '100%',
             height: '35px',
+            paddingLeft: '8px',
+            marginBottom: '11px',
           }}
         />
+        <button type="button" onClick={handleCopyLink}>
+          주소 복사
+        </button>
       </div>
 
       <div className="listbox">
@@ -286,7 +373,7 @@ const Registerting = () => {
           color="red"
           assetType="Primary"
           size="M"
-          content="매칭하기"
+          content="훕팅 등록"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClickEvent={handleSubmit}
           isActive
@@ -294,6 +381,58 @@ const Registerting = () => {
           width="100%"
         />
       </BasicButtonWrapper>
+      {/* 모달 렌더링 */}
+      {showAlert && (
+        <EffectivenessAlert
+          message={
+            <>
+              올바른 오픈 카톡 링크를
+              <br />
+              입력해주세요.
+            </>
+          }
+          onClose={() => {
+            setShowAlert(false);
+          }}
+        />
+      )}
+      {/* 모달 렌더링 */}
+      {showAlertNumMatch && (
+        <EffectivenessAlert
+          message={
+            <>
+              희망 인원 수와 참가자의 수가
+              <br />
+              일치하지 않습니다.
+            </>
+          }
+          onClose={() => {
+            setShowAlertNumMatch(false);
+          }}
+        />
+      )}
+      {titleAlert && (
+        <EffectivenessAlert
+          message={<>제목을 입력해주세요!</>}
+          onClose={() => {
+            setTitleAlert(false);
+          }}
+        />
+      )}
+      {linkCopyAlert && (
+        <EffectivenessAlert
+          message={
+            <>
+              링크가 클립보드에
+              <br />
+              복사되었습니다.
+            </>
+          }
+          onClose={() => {
+            setLinkCopyAlert(false);
+          }}
+        />
+      )}
     </Container>
   );
 };
