@@ -107,6 +107,7 @@ const MyDetail = () => {
 
   // 수정 저장
   const handleSave = async () => {
+    setUpdatedParticipants([]);
     setText({
       isEdit: false,
       subtitle: '내가 올린 훕팅',
