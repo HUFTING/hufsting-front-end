@@ -1,9 +1,12 @@
 import axiosInstance from '@/api/axiosInstance';
-import { type AlarmType } from '@/types/alarm';
+import { type AlarmListType, type AlarmType } from '@/types/alarm';
 
-const getAlarmAPI = async (): Promise<AlarmType[]> => {
+export const getAlarmListAPI = async (): Promise<AlarmListType> => {
   const { data } = await axiosInstance.get(`/apis/api/v1/alarms`);
   return data;
 };
 
-export default getAlarmAPI;
+export const getAlarmInfoAPI = async (id: string): Promise<AlarmType> => {
+  const { data } = await axiosInstance.get(`/apis/api/v1/alarms/${id}`);
+  return data;
+};

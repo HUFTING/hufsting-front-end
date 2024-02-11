@@ -2,6 +2,7 @@
 
 import axiosInstance from '@/api/axiosInstance';
 import useUserDataStore from '@/store/user';
+import isAuthError from '@/utils/isAuthError';
 import axios, { type AxiosResponse } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, type ReactNode } from 'react';
@@ -13,10 +14,7 @@ const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
     const resInterceptor = (response: AxiosResponse) => response;
 
     const errInterceptor = async (error: { response: { status: number } }) => {
-      if (
-        axios.isAxiosError(error) &&
-        (error.response?.status === 401 || error.response?.status === 403)
-      ) {
+      if (axios.isAxiosError(error) && isAuthError(error)) {
         resetUserData();
         router.replace('/login/alert');
       }

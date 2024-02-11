@@ -9,7 +9,6 @@ const relativeDate = (date: Date) => {
   dayjs.locale('ko');
   dayjs.extend(relativeTime);
   dayjs.extend(timezone);
-
   return dayjs().to(
     dayjs(date).utc().tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss'),
   );

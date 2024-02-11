@@ -29,6 +29,7 @@ const getFontWeight = {
 
 const Text = ({
   content,
+  children,
   color = 'black',
   fontSize = 'lg',
   fontWeight = 'Regular',
@@ -48,6 +49,7 @@ const Text = ({
         }
       }}
     >
+      {children}
       {content}
     </div>
   );
