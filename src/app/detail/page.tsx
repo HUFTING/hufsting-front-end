@@ -117,7 +117,7 @@ const Detail = () => {
           )}
           <div className="titlebox">
             <Title
-              placeholder="제목을 입력해주세요."
+              placeholder="한 줄 소개를 작성해주세요."
               value={title}
               onChange={handleTitleChange}
             />

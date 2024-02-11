@@ -3,6 +3,7 @@ import './globals.css';
 import StyledComponentsRegistry from '@/lib/registry';
 import Head from 'next/head';
 import AxiosInterceptor from '@/api/AxiosInterceptor';
+import StyledToast from '@/styles/common/ToastStyles';
 
 export const metadata: Metadata = {
   title: 'Hufting',
@@ -24,7 +25,10 @@ export default function RootLayout({
           <div className=" h-full w-full max-h-full flex justify-center bg-white">
             <div className=" bg-white max-w-[390px] w-full h-full overflow-y-auto overflow-x-hidden ">
               <StyledComponentsRegistry>
-                <AxiosInterceptor>{children}</AxiosInterceptor>
+                <AxiosInterceptor>
+                  {children}
+                  <StyledToast />
+                </AxiosInterceptor>
               </StyledComponentsRegistry>
             </div>
           </div>

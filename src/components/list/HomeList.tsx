@@ -21,36 +21,63 @@ interface HomeListProps {
 const List = ({ lists, pathnameProp }: HomeListProps) => (
   <Container>
     {lists.map((item, index) => (
-      <Link
-        key={item.id}
-        href={{
-          pathname: pathnameProp,
-          query: { id: item.id },
-        }}
-        style={{ width: '100%' }}
-      >
-        <Wrapper
-          $backgroundColor={item.id}
-          $matchingStatus={item.matchingStatus}
-        >
-          <div className="box">
-            <div className="matching">
-              <p className="matchingText">{item.matchingStatus}</p>
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      <>
+        {item.matchingStatus === '매칭 대기' ? (
+          <Link
+            className="link"
+            key={item.id}
+            href={{
+              pathname: pathnameProp,
+              query: { id: item.id },
+            }}
+          >
+            <Wrapper
+              $backgroundColor={item.id}
+              $matchingStatus={item.matchingStatus}
+            >
+              <div className="box">
+                <div className="matching">
+                  <p className="matchingText">{item.matchingStatus}</p>
+                </div>
+              </div>
+              <div className="box">
+                <p className="title">{item.title}</p>
+              </div>
+              <div className="box">
+                <div className="leftInfo">
+                  <p className="info">{item.desiredNumPeople}명 |</p>
+                  <p className="info">{item.gender}</p>
+                  <p className="info">{item.authorName}</p>
+                </div>
+                <p className="info">{relativeDate(item.createdAt)}</p>
+              </div>
+            </Wrapper>
+          </Link>
+        ) : (
+          <Wrapper
+            $backgroundColor={item.id}
+            $matchingStatus={item.matchingStatus}
+          >
+            <div className="box">
+              <div className="matching">
+                <p className="matchingText">{item.matchingStatus}</p>
+              </div>
             </div>
-          </div>
-          <div className="box">
-            <p className="title">{item.title}</p>
-          </div>
-          <div className="box">
-            <div className="leftInfo">
-              <p className="info">{item.desiredNumPeople}명 |</p>
-              <p className="info">{item.gender}</p>
-              <p className="info">{item.authorName}</p>
+            <div className="box">
+              <p className="title">{item.title}</p>
             </div>
-            <p className="info">{relativeDate(item.createdAt)}</p>
-          </div>
-        </Wrapper>
-      </Link>
+            <div className="box">
+              <div className="leftInfo">
+                <p className="info">{item.desiredNumPeople}명 |</p>
+                <p className="info">{item.gender}</p>
+                <p className="info">{item.authorName}</p>
+              </div>
+              <p className="info">{relativeDate(item.createdAt)}</p>
+            </div>
+          </Wrapper>
+        )}
+      </>
     ))}
   </Container>
 );
@@ -72,14 +99,15 @@ const Wrapper = styled.div<{
   background-color: ${props =>
     props.$matchingStatus === '매칭 완료'
       ? '#F9F9FB' // 매칭 완료일 경우
-      : 'white'}; // 매칭 대기일 경우
+      : 'white'}; // 매칭 대기
 
   &:active {
     background-color: rgba(255, 105, 105, 0.2);
   }
 
   &:hover {
-    background-color: rgba(255, 105, 105, 0.2);
+    background-color: ${props =>
+      props.$matchingStatus === '매칭 완료' ? 'none' : '#ff696933'};
   }
 
   .box {
