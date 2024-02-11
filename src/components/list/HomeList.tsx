@@ -55,7 +55,10 @@ const List = ({ lists, pathnameProp }: HomeListProps) => (
         }}
         style={{ width: '100%' }}
       >
-        <Wrapper $backgroundColor={item.id}>
+        <Wrapper
+          $backgroundColor={item.id}
+          $matchingStatus={item.matchingStatus}
+        >
           <div className="box">
             <div className="matching">
               <p className="matchingText">{item.matchingStatus}</p>
@@ -85,12 +88,17 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Wrapper = styled.div<{ $backgroundColor: number }>`
+const Wrapper = styled.div<{
+  $backgroundColor: number;
+  $matchingStatus: string;
+}>`
   display: flex;
   flex-direction: column;
   padding: 12px 18px 12px 18px;
   background-color: ${props =>
-    props.$backgroundColor % 2 === 0 ? '#F9F9FB' : 'white'};
+    props.$matchingStatus === '매칭 완료'
+      ? '#F9F9FB' // 매칭 완료일 경우
+      : 'white'}; // 매칭 대기일 경우
 
   &:active {
     background-color: rgba(255, 105, 105, 0.2);
@@ -114,12 +122,16 @@ const Wrapper = styled.div<{ $backgroundColor: number }>`
     width: 90px;
     height: 23px;
     border-radius: 0 8px 0 8px;
-    background-color: rgba(255, 105, 105, 0.2);
+    background-color: ${props =>
+      props.$matchingStatus === '매칭 완료'
+        ? '#7A7A7A'
+        : 'rgba(255, 105, 105, 0.2)'};
   }
 
   .matchingText {
     font-size: 12px;
-    color: #ff6969;
+    color: ${props =>
+      props.$matchingStatus === '매칭 완료' ? 'white' : '#FF0000'};
   }
 
   .title {
@@ -135,7 +147,4 @@ const Wrapper = styled.div<{ $backgroundColor: number }>`
     padding: 3px;
     color: #8d8d8d;
   }
-
-  background-color: ${props =>
-    props.$backgroundColor % 2 !== 0 ? '#F9F9FB' : 'white'};
 `;
