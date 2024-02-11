@@ -46,6 +46,7 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 100px;
   }
   .numberContainer {
     width: 74px;
