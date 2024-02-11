@@ -1,6 +1,5 @@
+import { type HuftingAlarmIconType } from '@/types/alarm';
 import React from 'react';
-
-type HuftingAlarmIconType = 'new' | 'complete';
 
 const HuftingAlarmIcon = ({
   classname,
@@ -9,7 +8,7 @@ const HuftingAlarmIcon = ({
   classname?: string;
   type: HuftingAlarmIconType;
 }) => {
-  const iconType = type === 'new' ? '#5C7899' : '#FF6969';
+  const iconType = type === '매칭 요청' ? '#5C7899' : '#FF6969';
   return (
     <svg
       width="48"

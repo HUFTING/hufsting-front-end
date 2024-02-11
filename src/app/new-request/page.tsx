@@ -9,25 +9,10 @@ import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axiosInstance from '@/api/axiosInstance';
+import { type NewAlarmType } from '@/types/alarm';
+import { getAlarmInfoAPI } from '@/api/alarm';
 
-interface ParticipantInfo {
-  id: number;
-  name: string;
-  major: string;
-  studentNumber: string;
-  age: string;
-  mbti: string;
-  content: string;
-}
-
-interface PostInfo {
-  matchingRequestId: number;
-  matchingRequestTitle: string;
-  participants: ParticipantInfo[];
-  hosts: ParticipantInfo[];
-}
-
-const Accept = () => {
+const NewRequestPage = () => {
   // 쿼리 받아오기
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
@@ -41,16 +26,17 @@ const Accept = () => {
     setOpenModal(!isOpenModal);
   };
   // 리스트 받아오기
-  const [postInfo, setPostInfo] = useState<PostInfo | null>(null);
+  const [postInfo, setPostInfo] = useState<NewAlarmType | null>(null);
 
   useEffect(() => {
-    axiosInstance
-      .get(`/apis/api/v1/come-matchingrequests/${search}`)
-      .then(res => {
-        const { data } = res;
+    const getAlarmInfo = async () => {
+      try {
+        const data = (await getAlarmInfoAPI(search ?? '')) as NewAlarmType;
         setPostInfo(data);
-      })
-      .catch(e => e);
+      } catch (e) {}
+    };
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    getAlarmInfo();
   }, [search]);
 
   // 거절하기
@@ -66,7 +52,9 @@ const Accept = () => {
   // 수락하기
   const handleAccept = () => {
     axiosInstance
-      .patch(`/apis/api/v1/matchingrequests/${search}/accept`)
+      .patch(
+        `/apis/api/v1/matchingrequests/${postInfo?.matchingRequestId}/accept`,
+      )
       .then(res => {
         router.push(`/result?id=${search}`);
       })
@@ -136,7 +124,7 @@ const Accept = () => {
   );
 };
 
-export default Accept;
+export default NewRequestPage;
 
 const Container = styled.div`
   padding: 33px 0 0 0;

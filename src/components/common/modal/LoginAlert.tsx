@@ -43,6 +43,7 @@ const ModalContainer = styled.div`
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  opacity: 0.5;
   border-radius: 30px;
   z-index: 1000;
 `;

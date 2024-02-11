@@ -9,7 +9,8 @@ export default function GlobalError({
 }) {
   return (
     <>
-      <h2>Something went wrong! {error.message}</h2>
+      <div>알 수 없는 오류입니다.</div>
+      <div>{error.message}</div>
       <button
         type="button"
         onClick={() => {

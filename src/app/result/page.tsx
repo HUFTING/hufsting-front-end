@@ -3,8 +3,10 @@
 import styled from 'styled-components';
 import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { type AgreedAlarmType } from '@/types/alarm';
+import { getAlarmInfoAPI } from '@/api/alarm';
 // import axiosInstance from '@/api/axiosInstance';
 
 const Container = styled.div`
@@ -66,12 +68,20 @@ const SubTitle = styled.p`
 
 const Result = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const search = searchParams.get('id');
   const [info, setInfo] = useState('');
 
   useEffect(() => {
-    // axiosInstance.get('/apis/');
-    setInfo('https://open.kakao.com/tttt');
-  }, []);
+    const getAlarmInfo = async () => {
+      try {
+        const data = (await getAlarmInfoAPI(search ?? '')) as AgreedAlarmType;
+        setInfo(data.openTalkLink);
+      } catch (e) {}
+    };
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    getAlarmInfo();
+  }, [search]);
 
   const handleCopyLink = () => {
     navigator.clipboard
