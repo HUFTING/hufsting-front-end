@@ -115,10 +115,10 @@ const Registerting = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showAlertNumMatch, setShowAlertNumMatch] = useState<boolean>(false);
   const [titleAlert, setTitleAlert] = useState<boolean>(false);
-  const [linkCopyAlert, setLinkCopyAlert] = useState<boolean>(false);
+  // const [linkCopyAlert, setLinkCopyAlert] = useState<boolean>(false);
   // 텍스트 설정
 
-  const handleCopyLink = () => {
+  /* const handleCopyLink = () => {
     navigator.clipboard
       .writeText(kakaoLink)
       .then(() => {
@@ -129,7 +129,7 @@ const Registerting = () => {
         // eslint-disable-next-line no-console
         console.error('링크 복사에 실패했습니다.', error);
       });
-  };
+  }; */
 
   const alertModal = () => {
     setShowAlert(true);
@@ -310,9 +310,9 @@ const Registerting = () => {
             marginBottom: '11px',
           }}
         />
-        <button type="button" onClick={handleCopyLink}>
+        {/* <button type="button" onClick={handleCopyLink}>
           주소 복사
-        </button>
+        </button> */}
       </div>
 
       <div className="listbox">
@@ -377,7 +377,7 @@ const Registerting = () => {
           }}
         />
       )}
-      {linkCopyAlert && (
+      {/* {linkCopyAlert && (
         <EffectivenessAlert
           message={
             <>
@@ -390,7 +390,7 @@ const Registerting = () => {
             setLinkCopyAlert(false);
           }}
         />
-      )}
+      )} */}
     </Container>
   );
 };

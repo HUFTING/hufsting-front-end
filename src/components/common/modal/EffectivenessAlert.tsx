@@ -1,6 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); // 반투명한 회색 배경
+  z-index: 999; // 모달보다 앞에 나타나도록
+`;
+
 const ModalContainer = styled.div`
   position: fixed;
   top: 50%;
@@ -55,14 +65,17 @@ const EffectivenessAlert: React.FC<EffectivenessAlertProps> = ({
   };
 
   return (
-    <ModalContainer>
-      <ContentWrapper>
-        <TitleWrapper>
-          <Title>{message}</Title>
-        </TitleWrapper>
-        <ButtonOk onClick={handleBack}>확인했습니다.</ButtonOk>
-      </ContentWrapper>
-    </ModalContainer>
+    <>
+      <Overlay />
+      <ModalContainer>
+        <ContentWrapper>
+          <TitleWrapper>
+            <Title>{message}</Title>
+          </TitleWrapper>
+          <ButtonOk onClick={handleBack}>확인했습니다.</ButtonOk>
+        </ContentWrapper>
+      </ModalContainer>
+    </>
   );
 };
 
