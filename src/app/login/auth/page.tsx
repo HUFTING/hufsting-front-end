@@ -1,6 +1,6 @@
 'use client';
 
-import { loginAPI } from '@/api/user';
+import { getProfileAPI, loginAPI } from '@/api/user';
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Login from '@/components/login';
@@ -34,6 +34,8 @@ export default function AuthPage() {
         return;
       }
       if (data.profileSetUpStatus) {
+        const profileData = await getProfileAPI();
+        setUserData({ ...loginUserData, ...profileData });
         router.push('/');
       }
     };

@@ -13,7 +13,7 @@ import Logo from '@/components/common/ui/LogoIcon';
 import UserProfileInput from '@/components/common/input/UserProfileInput';
 import UserProfileTextArea from '@/components/common/input/UserProfileTextArea';
 import BasicButton from '@/components/common/button/Button';
-import { profileSaveAPI } from '@/api/user';
+import { saveProfileAPI } from '@/api/user';
 import { useRouter } from 'next/navigation';
 import useUserDataStore from '@/store/user';
 
@@ -26,7 +26,8 @@ const Register = () => {
   const { userData, setUserData } = useUserDataStore();
   const router = useRouter();
   const handleOnClick = async () => {
-    await profileSaveAPI(dropDownState);
+    const saveProfileData = { ...dropDownState, content: textValue };
+    await saveProfileAPI(saveProfileData);
     const profileData = {
       ...userData,
       ...dropDownState,

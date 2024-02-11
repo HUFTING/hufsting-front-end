@@ -21,13 +21,6 @@ const AlarmSelectMenuBar = () => {
               setPageType(menuObj.id as ALARM_TYPE);
             },
           },
-          {
-            id: 'follow',
-            title: '팔로우 신청',
-            onClick: menuObj => {
-              setPageType(menuObj.id as ALARM_TYPE);
-            },
-          },
         ]}
         pickedMenuId={pageType}
       />

@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 interface UserDataType {
   email: string | null;
   name: string | null;
-  birthday: string | null;
+  age: string | null;
   mbti: string | null;
   content: string | null;
   studentNumber: string | null;
@@ -27,7 +27,7 @@ const useUserDataStore = create(
         major: null,
         studentNumber: null,
         gender: null,
-        birthday: null,
+        age: null,
         mbti: null,
         content: null,
       },
@@ -42,7 +42,7 @@ const useUserDataStore = create(
             major: null,
             studentNumber: null,
             gender: null,
-            birthday: null,
+            age: null,
             mbti: null,
             content: null,
           },

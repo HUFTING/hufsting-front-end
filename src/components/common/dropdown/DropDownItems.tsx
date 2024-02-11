@@ -19,7 +19,7 @@ const DropDownList = ({
           handleCloseDropDown();
         }}
       >
-        {item} {dropDownName === 'birthday' && item === 1996 && '이하'}
+        {item} {dropDownName === 'age' && item === '1996' && '이하'}
       </li>
     ))}
   </ul>

@@ -23,8 +23,7 @@ export const ProfileDropDownInitalState = {
   gender: null,
   mbti: null,
   studentNumber: null,
-  birthday: null,
-  content: null,
+  age: null,
 };
 
 export const ProfileDropDownData: DropDownDataType[] = [
@@ -65,7 +64,7 @@ export const ProfileDropDownData: DropDownDataType[] = [
   },
   {
     dropDownTitle: '출생년도',
-    dropDownName: 'birthday',
+    dropDownName: 'age',
     dropDownItems: years,
   },
 ];

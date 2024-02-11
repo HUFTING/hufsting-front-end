@@ -1,38 +1,68 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  ProfileDropDownData,
-  ProfileDropDownInitalState,
-} from '@/constants/dropdown';
+import { ProfileDropDownData } from '@/constants/dropdown';
 import useDropdownForm from '@/hooks/useDropdownForm';
-import { ProfileData, ProfileInitialState } from '@/constants/profile';
-import ProfileHeader from './header';
+import { ProfileInputData } from '@/constants/profile';
+import useUserDataStore from '@/store/user';
+import { type TotalProfileDataType } from '@/types/user';
+import { deleteProfileAPI, updateProfileAPI } from '@/api/user';
+import ProfileHeader from '@/components/profile/header';
 import ProfileContainer from '../register/ProfileContainer';
 import UserProfileInput from '../common/input/UserProfileInput';
 import UserProfileTextArea from '../common/input/UserProfileTextArea';
 import Text from '../common/text/Text';
 
 const Profile = () => {
-  const [dropDownState, setDropDownState] = useDropdownForm(
-    ProfileDropDownInitalState,
-  );
-  const [profileInitailState] =
-    useState<Record<string, string>>(ProfileInitialState);
+  const { userData, setUserData } = useUserDataStore();
+  const dropDownInitialState = {
+    gender: userData.gender,
+    studentNumber: userData.studentNumber,
+    mbti: userData.mbti,
+    age: userData.age,
+  };
+  const profileInitailState = {
+    name: userData.name,
+    major: userData.major,
+    email: userData.email,
+  };
+  const [dropDownState, setDropDownState] =
+    useDropdownForm(dropDownInitialState);
+  const [profileState] = useState<TotalProfileDataType>(profileInitailState);
   const [isDisable, setIsDisable] = useState(true);
-  const [textValue, setTextValue] = useState('초기값');
+  const [textValue, setTextValue] = useState(userData.content ?? '');
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     setIsDisable(prev => !prev);
+    try {
+      await updateProfileAPI({
+        ...dropDownState,
+        content: textValue,
+      });
+      setUserData({
+        ...userData,
+        ...dropDownState,
+        content: textValue,
+      });
+    } catch (e) {
+      // console.log(e);
+    }
+  };
+  const handleDeleteOnclick = async () => {
+    try {
+      await deleteProfileAPI();
+    } catch (e) {
+      // console.log(e);
+    }
   };
 
   return (
     <ProfileContainer>
       <ProfileHeader isDisable={isDisable} handleEdit={handleEdit} />
-      {ProfileData.map(({ dropDownTitle, dropDownName, disabled }) => (
+      {ProfileInputData.map(({ dropDownTitle, dropDownName, disabled }) => (
         <UserProfileInput
           key={dropDownTitle}
-          dropDownState={profileInitailState[dropDownName]}
+          dropDownState={profileState[dropDownName]}
           dropDownTitle={dropDownTitle}
           dropDownName={dropDownName}
           disabled={disabled}
@@ -67,10 +97,8 @@ const Profile = () => {
           fontWeight="Regular"
           color="red"
           fontSize="lg"
-          onClick={() => {
-            // eslint-disable-next-line no-console
-            console.log('탈퇴하기');
-          }}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClick={handleDeleteOnclick}
         />
       </div>
     </ProfileContainer>
