@@ -357,7 +357,9 @@ const Registerting = () => {
         <EffectivenessAlert
           message={
             <>
-              희망 인원 수와 참가자의 수가
+              희망 인원 수와
+              <br />
+              참가자의 수가
               <br />
               일치하지 않습니다.
             </>
