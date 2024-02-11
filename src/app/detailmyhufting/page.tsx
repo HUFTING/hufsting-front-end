@@ -42,18 +42,39 @@ interface ListType {
   representativeEmail: string;
 }
 
+interface TextType {
+  isEdit: boolean;
+  subtitle: string;
+  buttonleft: string;
+  buttonright: string;
+}
+
 const MyDetail = () => {
+  const onEdit = true;
   // 쿼리 받아오기
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
 
   const userData = useUserDataStore(state => state.userData);
 
+  // NameList 참여자 아이디
+  const [returnId, setReturnId] = useState<number[]>([]);
+
   // router
   const router = useRouter();
 
+  // 텍스트 설정
+  const [text, setText] = useState<TextType>({
+    isEdit: false,
+    subtitle: '내가 올린 훕팅',
+    buttonleft: '삭제하기',
+    buttonright: '수정하기',
+  });
+
   // 리스트 받아오기
   const [postInfo, setPostInfo] = useState<ListType | null>(null);
+  const [openTalkLink, setOpenTalkLink] = useState(postInfo?.openKakaoTalk);
+  const [updatedParticipants, setUpdatedParticipants] = useState<Hosts[]>([]);
 
   useEffect(() => {
     axiosInstance
@@ -73,16 +94,98 @@ const MyDetail = () => {
       .catch(e => e);
   };
 
+  // 매칭 글 수정
   const handleEdit = () => {
-    postInfo !== null &&
-      router.push(`/editing?id=${search}&count=${postInfo.desiredNumPeople}`);
+    setOpenTalkLink(postInfo?.openKakaoTalk);
+    setText({
+      isEdit: true,
+      subtitle: '훕팅 수정',
+      buttonleft: '취소하기',
+      buttonright: '수정완료',
+    });
+  };
+
+  // 수정 저장
+  const handleSave = async () => {
+    setText({
+      isEdit: false,
+      subtitle: '내가 올린 훕팅',
+      buttonleft: '삭제하기',
+      buttonright: '수정하기',
+    });
+
+    const requestData = {
+      title: postInfo?.title,
+      id: postInfo?.id,
+      gender: postInfo?.gender,
+      desiredNumPeople: postInfo?.desiredNumPeople,
+      openTalkLink,
+      participants: returnId,
+    };
+
+    const myProfile = await fetchMyProfile();
+    setUpdatedParticipants(prevParticipants => [
+      ...prevParticipants,
+      myProfile,
+    ]);
+
+    await Promise.all(
+      returnId.slice(1).map(async (id, index) => {
+        const modifiedProfile = await fetchProfileById(id);
+        return modifiedProfile;
+      }),
+    ).then(modifiedProfiles => {
+      setUpdatedParticipants(prevParticipants => [
+        ...prevParticipants,
+        ...modifiedProfiles,
+      ]);
+    });
+
+    axiosInstance
+      .put(`/apis/api/v1/matchingposts/${search}`, requestData)
+      .then(res => res)
+      .catch(e => e);
+  };
+
+  // 수정 취소
+  const handleCancel = () => {
+    setText({
+      isEdit: false,
+      subtitle: '내가 올린 훕팅',
+      buttonleft: '삭제하기',
+      buttonright: '수정하기',
+    });
+  };
+
+  // 아이디 정보 가져오기
+  const fetchProfileById = async (id: number): Promise<Hosts> => {
+    const res = await axiosInstance.get(`/apis/api/v1/member/${id}`);
+    return res.data;
+  };
+
+  const fetchMyProfile = async (): Promise<Hosts> => {
+    const res = await axiosInstance.get('/apis/api/v1/profile');
+    return res.data;
+  };
+
+  // 왼쪽 버튼 클릭 이벤트
+  const handleButtonClick = () => {
+    void handleLeftButton();
+  };
+
+  const handleLeftButton = async () => {
+    if (text.isEdit) {
+      await handleSave();
+    } else {
+      handleEdit();
+    }
   };
 
   return (
     <Container>
       <MainHeader />
       <SubHeader
-        title="내가 올린 훕팅"
+        title={text.subtitle}
         rightButton={{
           content: '❮',
           clickEvent: () => {
@@ -97,20 +200,40 @@ const MyDetail = () => {
             <p>{postInfo.desiredNumPeople}</p>
           </div>
           <OtherInfo>
-            <div className="top">
-              <SubTitle>오픈채팅방 링크</SubTitle>
-              <ClipboardCopy text={postInfo.openKakaoTalk} />
-            </div>
-            <p>{postInfo.openKakaoTalk}</p>
-            <div className="bottom">
-              <SubTitle>훕팅 신청 {postInfo.matchingRequestsCount}건</SubTitle>
-              <ApplyList
-                lists={postInfo.matchingRequests}
-                pathnameProp="/accept"
-                representativeEmail={postInfo.representativeEmail}
-                matchingStatus={postInfo.matchingStatus}
-              />
-            </div>
+            {text.isEdit ? (
+              <div className="editTop">
+                <SubTitle>오픈채팅방 링크</SubTitle>
+                <input
+                  type="text"
+                  value={openTalkLink}
+                  placeholder="카카오톡 오픈채팅방 링크 입력"
+                  onChange={e => {
+                    setOpenTalkLink(e.target.value);
+                  }}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="top">
+                  <SubTitle>오픈채팅방 링크</SubTitle>
+                  <ClipboardCopy text={postInfo.openKakaoTalk} />
+                </div>
+                <p>{postInfo.openKakaoTalk}</p>
+              </>
+            )}
+            {!text.isEdit && (
+              <div className="bottom">
+                <SubTitle>
+                  훕팅 신청 {postInfo.matchingRequestsCount}건
+                </SubTitle>
+                <ApplyList
+                  lists={postInfo.matchingRequests}
+                  pathnameProp="/accept"
+                  representativeEmail={postInfo.representativeEmail}
+                  matchingStatus={postInfo.matchingStatus}
+                />
+              </div>
+            )}
           </OtherInfo>
         </div>
       )}
@@ -118,8 +241,14 @@ const MyDetail = () => {
         <div className="listbox">
           <NameList
             desiredNumPeople={postInfo.desiredNumPeople}
-            participants={postInfo.matchingHosts}
-            editable={false}
+            participants={
+              updatedParticipants.length === 0
+                ? postInfo.matchingHosts
+                : updatedParticipants
+            }
+            editable={text.isEdit}
+            setReturnId={setReturnId}
+            onEditButton={onEdit}
           />
         </div>
       )}
@@ -131,8 +260,14 @@ const MyDetail = () => {
               color="gray"
               assetType="Primary"
               size="M"
-              content="삭제하기"
-              onClickEvent={handleRemove}
+              content={text.buttonleft}
+              onClickEvent={() => {
+                if (text.isEdit) {
+                  handleCancel();
+                } else {
+                  handleRemove();
+                }
+              }}
               isActive
               width="48%"
             />
@@ -140,8 +275,8 @@ const MyDetail = () => {
               color="red"
               assetType="Primary"
               size="M"
-              content="수정하기"
-              onClickEvent={handleEdit}
+              content={text.buttonright}
+              onClickEvent={handleButtonClick}
               isActive
               width="48%"
             />
@@ -191,6 +326,12 @@ const SubTitle = styled.p`
 `;
 
 const OtherInfo = styled.div`
+  .editTop {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid black;
+  }
   .top {
     display: flex;
     justify-content: space-between;
