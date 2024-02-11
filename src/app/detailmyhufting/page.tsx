@@ -50,6 +50,7 @@ interface TextType {
 }
 
 const MyDetail = () => {
+  const onEdit = true;
   // 쿼리 받아오기
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
@@ -73,6 +74,7 @@ const MyDetail = () => {
   // 리스트 받아오기
   const [postInfo, setPostInfo] = useState<ListType | null>(null);
   const [openTalkLink, setOpenTalkLink] = useState(postInfo?.openKakaoTalk);
+  const [updatedParticipants, setUpdatedParticipants] = useState<Hosts[]>([]);
 
   useEffect(() => {
     axiosInstance
@@ -104,13 +106,14 @@ const MyDetail = () => {
   };
 
   // 수정 저장
-  const handleSave = () => {
+  const handleSave = async () => {
     setText({
       isEdit: false,
       subtitle: '내가 올린 훕팅',
       buttonleft: '삭제하기',
       buttonright: '수정하기',
     });
+
     const requestData = {
       title: postInfo?.title,
       id: postInfo?.id,
@@ -119,6 +122,24 @@ const MyDetail = () => {
       openTalkLink,
       participants: returnId,
     };
+
+    const myProfile = await fetchMyProfile();
+    setUpdatedParticipants(prevParticipants => [
+      ...prevParticipants,
+      myProfile,
+    ]);
+
+    await Promise.all(
+      returnId.slice(1).map(async (id, index) => {
+        const modifiedProfile = await fetchProfileById(id);
+        return modifiedProfile;
+      }),
+    ).then(modifiedProfiles => {
+      setUpdatedParticipants(prevParticipants => [
+        ...prevParticipants,
+        ...modifiedProfiles,
+      ]);
+    });
 
     axiosInstance
       .put(`/apis/api/v1/matchingposts/${search}`, requestData)
@@ -134,6 +155,30 @@ const MyDetail = () => {
       buttonleft: '삭제하기',
       buttonright: '수정하기',
     });
+  };
+
+  // 아이디 정보 가져오기
+  const fetchProfileById = async (id: number): Promise<Hosts> => {
+    const res = await axiosInstance.get(`/apis/api/v1/member/${id}`);
+    return res.data;
+  };
+
+  const fetchMyProfile = async (): Promise<Hosts> => {
+    const res = await axiosInstance.get('/apis/api/v1/profile');
+    return res.data;
+  };
+
+  // 왼쪽 버튼 클릭 이벤트
+  const handleButtonClick = () => {
+    void handleLeftButton();
+  };
+
+  const handleLeftButton = async () => {
+    if (text.isEdit) {
+      await handleSave();
+    } else {
+      handleEdit();
+    }
   };
 
   return (
@@ -196,10 +241,14 @@ const MyDetail = () => {
         <div className="listbox">
           <NameList
             desiredNumPeople={postInfo.desiredNumPeople}
-            participants={postInfo.matchingHosts}
+            participants={
+              updatedParticipants.length === 0
+                ? postInfo.matchingHosts
+                : updatedParticipants
+            }
             editable={text.isEdit}
             setReturnId={setReturnId}
-            onEditButton
+            onEditButton={onEdit}
           />
         </div>
       )}
@@ -227,13 +276,7 @@ const MyDetail = () => {
               assetType="Primary"
               size="M"
               content={text.buttonright}
-              onClickEvent={() => {
-                if (text.isEdit) {
-                  handleSave();
-                } else {
-                  handleEdit();
-                }
-              }}
+              onClickEvent={handleButtonClick}
               isActive
               width="48%"
             />
