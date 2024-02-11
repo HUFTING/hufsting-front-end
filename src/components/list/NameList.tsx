@@ -41,24 +41,40 @@ const NameList = ({
       setUserInfo(modifiedParticipants);
       setEdited(Array(desiredNumPeople).fill(false));
     } else if (editable && !onEditButton) {
-      const initialUserInfo = Array.from(
-        { length: desiredNumPeople },
-        (_, index) => ({
-          id: index,
-          name: `참가자 ${index + 1}`,
-          major: '',
-          gender: '',
-          studentNumber: '',
-          age: '',
-          mbti: '',
-          content: '',
-        }),
-      );
-      setUserInfo(initialUserInfo);
-      setEdited(Array(desiredNumPeople).fill(false));
+      const existInfoNum = userInfo.filter(
+        user => !user.name.includes('참가자'),
+      ).length;
+      const additionalUserInfoCount = desiredNumPeople - existInfoNum;
+      if (additionalUserInfoCount < 0) {
+        setUserInfo(prevUserInfo => prevUserInfo.slice(0, desiredNumPeople));
+      } else {
+        const initialUserInfo = Array.from(
+          { length: additionalUserInfoCount },
+          (_, index) => ({
+            id: existInfoNum + index,
+            name: `참가자 ${existInfoNum + index + 1}`,
+            major: '',
+            gender: '',
+            studentNumber: '',
+            age: '',
+            mbti: '',
+            content: '',
+          }),
+        );
+        setUserInfo(prevUserInfo => [
+          ...prevUserInfo.slice(0, existInfoNum),
+          ...initialUserInfo,
+        ]);
+        setEdited(Array(desiredNumPeople).fill(false));
+      }
     } else if (participants.length > 0) {
       const modifiedParticipants = modifyParticipants(participants);
       setUserInfo(modifiedParticipants);
+      if (userInfo.length > 0) {
+        setUserInfo(prevUserInfo =>
+          prevUserInfo.slice(0, desiredNumPeople - 1),
+        );
+      }
     } else {
       const initialUserInfo = Array.from(
         { length: desiredNumPeople },
@@ -137,6 +153,14 @@ const NameList = ({
       .then(res => {
         const { data } = res;
         const modifiedData = modifyUserInfo(data);
+        // if (modifiedData.gender !== userData.gender) {
+        //   if (modifiedData.gender === '비공개') {
+        //     alert('성별을 확인할 수 없습니다.');
+        //     return;
+        //   }
+        //   alert('같은 성별의 메이트를 추가해주세요.');
+        //   return;
+        // } else {
         setUserInfo(prev =>
           prev.map((user, i) =>
             i === index ? { ...user, ...modifiedData } : user,
@@ -149,6 +173,7 @@ const NameList = ({
             return newIdList;
           });
         }
+        // }
       })
       .catch(e => e);
   };
@@ -175,7 +200,7 @@ const NameList = ({
     if (selectedUserId !== undefined) {
       loadUserInfoById(mateIndex);
     }
-  }, [selectedUserId]);
+  }, [isOpenModal]);
 
   // 정보 수정 후 완료
   const handleComplete = (index: number) => {
