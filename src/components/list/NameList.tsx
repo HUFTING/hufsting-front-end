@@ -185,7 +185,17 @@ const NameList = ({
       return;
     }
     setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
-    updateProfile(currentInfo);
+
+    const ageWithoutYear = currentInfo.age.replace('년', '');
+    const updateInfo = {
+      ...currentInfo,
+      age: ageWithoutYear,
+      studentNumber: currentInfo.studentNumber,
+      mbti: currentInfo.mbti,
+      content: currentInfo.content,
+    };
+
+    updateProfile(updateInfo);
   };
 
   // 프로필 수정 함수
