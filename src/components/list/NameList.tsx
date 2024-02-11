@@ -56,11 +56,26 @@ const NameList = ({
       );
       setUserInfo(initialUserInfo);
       setEdited(Array(desiredNumPeople).fill(false));
-    } else {
+    } else if (participants.length > 0) {
       const modifiedParticipants = modifyParticipants(participants);
       setUserInfo(modifiedParticipants);
+    } else {
+      const initialUserInfo = Array.from(
+        { length: desiredNumPeople },
+        (_, index) => ({
+          id: index,
+          name: `참가자 ${index + 1}`,
+          major: '',
+          gender: '',
+          studentNumber: '',
+          age: '',
+          mbti: '',
+          content: '',
+        }),
+      );
+      setUserInfo(initialUserInfo);
     }
-  }, [desiredNumPeople, editable, participants, onEditButton ?? false]);
+  }, [desiredNumPeople, editable, participants, onEditButton]);
 
   // 개인 정보 수정해서 반환
   const modifyUserInfo = (data: UserInfo) => ({
@@ -96,7 +111,11 @@ const NameList = ({
           ),
         );
         if (setReturnId !== undefined) {
-          setReturnId(prevIds => [...prevIds, data.id]);
+          setReturnId(prevIds => {
+            const newIdList = [...prevIds];
+            newIdList[index] = data.id;
+            return newIdList;
+          });
         }
       })
       .catch(e => e);
@@ -124,7 +143,11 @@ const NameList = ({
           ),
         );
         if (setReturnId !== undefined) {
-          setReturnId(prevIds => [...prevIds, data.id]);
+          setReturnId(prevIds => {
+            const newIdList = [...prevIds];
+            newIdList[index] = data.id;
+            return newIdList;
+          });
         }
       })
       .catch(e => e);
