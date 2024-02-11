@@ -90,7 +90,9 @@ const MyDetail = () => {
   const handleRemove = () => {
     axiosInstance
       .delete(`/apis/api/v1/matchingposts/${search}`)
-      .then(res => res)
+      .then(res => {
+        router.push('/myhufting');
+      })
       .catch(e => e);
   };
 
