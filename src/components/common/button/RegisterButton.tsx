@@ -1,12 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
+import axiosInstance from '@/api/axiosInstance';
 import RegisterIcon from '../ui/RegisterIcon';
 
 const RegisterButton = () => {
   const router = useRouter();
   const handleClick = () => {
-    router.push('/registerting');
+    axiosInstance
+      .get('/apis/api/v1/profile')
+      .then(res => {
+        router.push('/registerting');
+      })
+      .catch(e => e);
   };
   return (
     <Container>
@@ -25,7 +31,7 @@ const Container = styled.div`
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9999;
+  z-index: 10;
 `;
 
 const ButtonWrapper = styled.button`
