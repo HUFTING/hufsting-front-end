@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
+// import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
-import NotificationIcon from '@/components/common/ui/NotificationIcon';
+// import NotificationIcon from '@/components/common/ui/NotificationIcon';
 import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
@@ -14,6 +14,7 @@ import axiosInstance from '@/api/axiosInstance';
 import useUserDataStore from '@/store/user';
 import { useRouter } from 'next/navigation';
 import EffectivenessAlert from '@/components/common/modal/EffectivenessAlert';
+import MainHeader from '@/components/common/layout/MainHeader';
 
 const test = [
   {
@@ -156,9 +157,9 @@ const Registerting = () => {
     setShowAlert(true);
   };
 
-  const alertModalNumMatch = () => {
+  /* const alertModalNumMatch = () => {
     setShowAlertNumMatch(true);
-  };
+  }; */
 
   const alertTitle = () => {
     setTitleAlert(true);
@@ -173,7 +174,7 @@ const Registerting = () => {
 
   const handleClick = () => {
     // eslint-disable-next-line no-console
-    console.log('이동하는 함수 호출');
+    console.log('post성공시 myhufting으로 이동하는 함수 호출');
     router.push('/myhufting');
   };
   /* const handleGenderSelection = (selectedGender: string) => {
@@ -212,12 +213,12 @@ const Registerting = () => {
       }
 
       // ReturnId와 DesiredNumPeople 유효성 검사
-      if (returnId.length !== numberOfPeople) {
+      /* if (returnId.length !== numberOfPeople) {
         // eslint-disable-next-line no-console
         console.log('희망 인원 수와 참가자의 수가 일치하지 않습니다.');
         alertModalNumMatch();
         return;
-      }
+      } */
 
       if (returnId.length === numberOfPeople) {
         const data = {
@@ -284,10 +285,9 @@ const Registerting = () => {
     <Container>
       <Header>
         <LogoIcon width={118} height={30} />
-        <div>
-          <NotificationIcon />
-          <HamburgerIcon />
-        </div>
+        <MainHeader />
+        {/* <NotificationIcon />
+          <HamburgerIcon /> */}
       </Header>
       <div className="titlebox">
         <BackIcon />
@@ -362,7 +362,7 @@ const Registerting = () => {
       <div className="listbox">
         <NameList
           desiredNumPeople={total.num}
-          participants={test}
+          participants={test} // 이렇게 놔두기 (건드리지 말것))
           // eslint-disable-next-line react/jsx-boolean-value
           editable={true}
           setReturnId={setReturnId}
