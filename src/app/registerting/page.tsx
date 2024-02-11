@@ -2,11 +2,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-// import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
-import LogoIcon from '@/components/common/ui/LogoIcon';
-// import NotificationIcon from '@/components/common/ui/NotificationIcon';
 import NameList from '@/components/list/NameList';
-import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
@@ -15,6 +11,7 @@ import useUserDataStore from '@/store/user';
 import { useRouter } from 'next/navigation';
 import EffectivenessAlert from '@/components/common/modal/EffectivenessAlert';
 import MainHeader from '@/components/common/layout/MainHeader';
+import SubHeader from '@/components/common/layout/SubHeader';
 
 const test = [
   {
@@ -62,7 +59,7 @@ const Container = styled.div`
   }
   .flex {
     display: flex;
-    gap: 10px; /* 요소들 사이의 간격 설정 */
+    gap: 10px;
     margin-bottom: 20px;
     .numberContainer {
       width: 74px;
@@ -78,30 +75,6 @@ const Container = styled.div`
       width: 300px;
     }
   }
-`;
-
-const Header = styled.div`
-  width: 100%;
-  padding: 0px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 23px;
-  div {
-    width: 73px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
-const Title = styled.p`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  color: black;
-  font-size: 25px;
-  font-weight: bold;
 `;
 
 const SubTitle = styled.p`
@@ -128,6 +101,10 @@ const total = {
   num: 1,
 };
 
+const text = {
+  subtitle: '훕팅 등록하기',
+};
+
 const Registerting = () => {
   const router = useRouter();
   // const [gender, setGender] = useState<string | null>(null);
@@ -139,6 +116,7 @@ const Registerting = () => {
   const [showAlertNumMatch, setShowAlertNumMatch] = useState<boolean>(false);
   const [titleAlert, setTitleAlert] = useState<boolean>(false);
   const [linkCopyAlert, setLinkCopyAlert] = useState<boolean>(false);
+  // 텍스트 설정
 
   const handleCopyLink = () => {
     navigator.clipboard
@@ -157,9 +135,9 @@ const Registerting = () => {
     setShowAlert(true);
   };
 
-  /* const alertModalNumMatch = () => {
+  const alertModalNumMatch = () => {
     setShowAlertNumMatch(true);
-  }; */
+  };
 
   const alertTitle = () => {
     setTitleAlert(true);
@@ -168,24 +146,16 @@ const Registerting = () => {
   const userData = useUserDataStore(state => state.userData);
   const genderData = userData.gender;
 
-  /* const alertLink = () => {
-    alert('올바른 오픈 카톡 링크를 입력해주세요.');
-  }; */
-
   const handleClick = () => {
     // eslint-disable-next-line no-console
-    console.log('post성공시 myhufting으로 이동하는 함수 호출');
     router.push('/myhufting');
   };
-  /* const handleGenderSelection = (selectedGender: string) => {
-    setGender(selectedGender);
-  }; */
+
   const handleSubmit = async () => {
     try {
       // 제목 유효성 검사
       if (title.trim() === '') {
         // eslint-disable-next-line no-console
-        console.log('제목을 입력하세요!');
         alertTitle();
         return;
       }
@@ -199,7 +169,6 @@ const Registerting = () => {
       // DesiredNumPeople 유효성 검사
       if (numberOfPeople < 1 || numberOfPeople > 4) {
         // eslint-disable-next-line no-console
-        console.log('희망 인원 수는 1부터 4까지의 값이어야 합니다.');
         return;
       }
 
@@ -207,18 +176,16 @@ const Registerting = () => {
       const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
       if (!kakaoLinkRegex.test(kakaoLink)) {
         // eslint-disable-next-line no-console
-        console.log('올바른 오픈 카톡 링크를 입력해주세요.');
         alertModal();
         return;
       }
 
       // ReturnId와 DesiredNumPeople 유효성 검사
-      /* if (returnId.length !== numberOfPeople) {
+      if (returnId.length !== numberOfPeople) {
         // eslint-disable-next-line no-console
-        console.log('희망 인원 수와 참가자의 수가 일치하지 않습니다.');
         alertModalNumMatch();
         return;
-      } */
+      }
 
       if (returnId.length === numberOfPeople) {
         const data = {
@@ -270,29 +237,18 @@ const Registerting = () => {
     }
   };
 
-  // 리스트 받아오기
-  /*  useEffect(() => {
-    axios
-      .get('http://www.hufsting.com:8080/api/v1/matchingposts')
-      .then(res => {
-        const { data } = res.data;
-        setInitialLists(data);
-        setFilteredLists(data);
-      })
-      .catch(e => e);
-  }, []); */
   return (
     <Container>
-      <Header>
-        <LogoIcon width={118} height={30} />
-        <MainHeader />
-        {/* <NotificationIcon />
-          <HamburgerIcon /> */}
-      </Header>
-      <div className="titlebox">
-        <BackIcon />
-        <Title>훕팅 등록하기</Title>
-      </div>
+      <MainHeader />
+      <SubHeader
+        title={text.subtitle}
+        rightButton={{
+          content: '❮',
+          clickEvent: () => {
+            router.back();
+          },
+        }}
+      />
       <div className="otherInfo">
         <input
           type="text"
