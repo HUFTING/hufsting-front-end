@@ -24,7 +24,7 @@ interface ListType {
   desiredNumPeople: number;
   gender: string;
   authorName: string;
-  createdAt: string;
+  createdAt: Date;
 }
 
 const Home = () => {
