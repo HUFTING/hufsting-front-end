@@ -63,13 +63,9 @@ const Profile = () => {
   };
   const handleDeleteOnclick = async () => {
     setModalOpen(false);
-    try {
-      await deleteProfileAPI();
-      resetUserData();
-      router.push('/');
-    } catch (e) {
-      // console.log(e);
-    }
+    await deleteProfileAPI();
+    resetUserData();
+    router.push('/');
   };
   return (
     <ProfileContainer>

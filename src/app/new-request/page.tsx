@@ -11,6 +11,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import axiosInstance from '@/api/axiosInstance';
 import { type NewAlarmType } from '@/types/alarm';
 import { getAlarmInfoAPI } from '@/api/alarm';
+import isAuthError from '@/utils/isAuthError';
+import { type AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 const NewRequestPage = () => {
   // 쿼리 받아오기
@@ -33,7 +36,11 @@ const NewRequestPage = () => {
       try {
         const data = (await getAlarmInfoAPI(search ?? '')) as NewAlarmType;
         setPostInfo(data);
-      } catch (e) {}
+      } catch (e) {
+        if (!isAuthError(e as AxiosError)) {
+          toast.error('정보를 불러오는데 실패했습니다.');
+        }
+      }
     };
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     getAlarmInfo();
@@ -48,7 +55,11 @@ const NewRequestPage = () => {
       .then(res => {
         router.push(`/myhufting`);
       })
-      .catch(e => e);
+      .catch(e => {
+        if (!isAuthError(e as AxiosError)) {
+          toast.error('다시 시도해주세요.');
+        }
+      });
   };
 
   // 수락하기
@@ -61,7 +72,11 @@ const NewRequestPage = () => {
         const id = res.data.alarmId;
         router.push(`/result?id=${id}`);
       })
-      .catch(e => e);
+      .catch(e => {
+        if (!isAuthError(e as AxiosError)) {
+          toast.error('다시 시도해주세요.');
+        }
+      });
   };
 
   return (

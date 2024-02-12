@@ -6,7 +6,10 @@ import FollowCard from '@/components/alarm/card/FollowCard';
 import Text from '@/components/common/text/Text';
 import SelectMenuBar from '@/components/mate/SelectMenuBar';
 import { type AlarmListType } from '@/types/alarm';
+import isAuthError from '@/utils/isAuthError';
+import { type AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 type ALARM_TYPE = 'hufting' | 'follow';
 
@@ -18,8 +21,14 @@ const AlarmSelectMenuBar = () => {
   });
   useEffect(() => {
     const getAlarmList = async () => {
-      const data = await getAlarmListAPI();
-      setAlarmList(data);
+      try {
+        const data = await getAlarmListAPI();
+        setAlarmList(data);
+      } catch (e) {
+        if (!isAuthError(e as AxiosError)) {
+          toast.error('알람을 불러오는데 실패했습니다.');
+        }
+      }
     };
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     getAlarmList();

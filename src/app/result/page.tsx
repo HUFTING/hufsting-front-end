@@ -7,6 +7,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { type AgreedAlarmType } from '@/types/alarm';
 import { getAlarmInfoAPI } from '@/api/alarm';
+import { toast } from 'react-toastify';
+import isAuthError from '@/utils/isAuthError';
+import { type AxiosError } from 'axios';
 // import axiosInstance from '@/api/axiosInstance';
 
 const Container = styled.div`
@@ -77,7 +80,11 @@ const Result = () => {
       try {
         const data = (await getAlarmInfoAPI(search ?? '')) as AgreedAlarmType;
         setInfo(data.openTalkLink);
-      } catch (e) {}
+      } catch (e) {
+        if (!isAuthError(e as AxiosError)) {
+          toast.error('정보를 불러오는데 실패했습니다.');
+        }
+      }
     };
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     getAlarmInfo();
@@ -87,9 +94,9 @@ const Result = () => {
     navigator.clipboard
       .writeText(info)
       .then(() => {
-        alert('링크가 클립보드에 복사되었습니다.');
+        toast.success('링크가 클립보드에 복사되었습니다.');
       })
-      .catch(e => e);
+      .catch(e => toast.error('링크 복사에 실패했습니다.'));
   };
 
   return (

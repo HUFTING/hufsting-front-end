@@ -30,7 +30,7 @@ export default function LoginAgreePage() {
     }
   }, [nameAgree, genderAgree, majorAgree, emailAgree]);
 
-  const handleOnClick = async () => {
+  const handleOnClick = () => {
     router.push('/register');
   };
   const checkBoxes = [
@@ -86,9 +86,7 @@ export default function LoginAgreePage() {
           size="M"
           isActive={isAgree}
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClickEvent={async () => {
-            await handleOnClick();
-          }}
+          onClickEvent={handleOnClick}
         />
       </div>
     </SignUpContainer>
