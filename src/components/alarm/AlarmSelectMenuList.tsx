@@ -36,7 +36,7 @@ const AlarmSelectMenuBar = () => {
             },
           },
         ]}
-        pickedMenuId={pageType}
+        pickedMenuId="hufting"
       />
       {pageType === 'hufting' ? (
         <>
@@ -54,7 +54,7 @@ const AlarmSelectMenuBar = () => {
               color="black"
               fontSize="xl"
               fontWeight="SemiBold"
-              className="w-full align-center"
+              className="w-full  text-center"
             >
               잠시만 기다려주세요.
             </Text>

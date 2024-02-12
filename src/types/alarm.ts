@@ -22,6 +22,7 @@ export interface NewAlarmType {
   matchingRequestId: number;
   matchingRequestTitle: string;
   participants: ParticipantInfo[];
+  matchingAcceptance: string;
   hosts: ParticipantInfo[];
 }
 

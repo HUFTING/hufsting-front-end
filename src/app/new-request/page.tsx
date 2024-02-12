@@ -42,7 +42,9 @@ const NewRequestPage = () => {
   // 거절하기
   const handleReject = () => {
     axiosInstance
-      .patch(`/apis/api/v1/matchingrequests/${search}/reject`)
+      .patch(
+        `/apis/api/v1/matchingrequests/${postInfo?.matchingRequestId}/reject`,
+      )
       .then(res => {
         router.push(`/myhufting`);
       })
@@ -56,7 +58,8 @@ const NewRequestPage = () => {
         `/apis/api/v1/matchingrequests/${postInfo?.matchingRequestId}/accept`,
       )
       .then(res => {
-        router.push(`/result?id=${search}`);
+        const id = res.data.alarmId;
+        router.push(`/result?id=${id}`);
       })
       .catch(e => e);
   };
@@ -98,26 +101,28 @@ const NewRequestPage = () => {
               editable={false}
             />
           </div>
-          <BasicButtonWrapper>
-            <BasicButton
-              color="gray"
-              assetType="Primary"
-              size="M"
-              content="거절하기"
-              onClickEvent={handleReject}
-              isActive
-              width="48%"
-            />
-            <BasicButton
-              color="red"
-              assetType="Primary"
-              size="M"
-              content="수락하기"
-              onClickEvent={handleAccept}
-              isActive
-              width="48%"
-            />
-          </BasicButtonWrapper>
+          {postInfo.matchingAcceptance === '매칭 대기' && (
+            <BasicButtonWrapper>
+              <BasicButton
+                color="gray"
+                assetType="Primary"
+                size="M"
+                content="거절하기"
+                onClickEvent={handleReject}
+                isActive
+                width="48%"
+              />
+              <BasicButton
+                color="red"
+                assetType="Primary"
+                size="M"
+                content="수락하기"
+                onClickEvent={handleAccept}
+                isActive
+                width="48%"
+              />
+            </BasicButtonWrapper>
+          )}
         </>
       )}
     </Container>
