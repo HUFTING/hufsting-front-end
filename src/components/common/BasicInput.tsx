@@ -5,6 +5,7 @@ import type { ChangeEvent } from 'react';
 
 interface props {
   placeholder: string;
+  changeHandler?: (target: ChangeEvent<HTMLInputElement>) => void;
   searchHandler?: (value: string) => void;
   blurHandler?: (target: ChangeEvent<HTMLInputElement>) => void;
   type?: 'text' | 'number';
@@ -13,6 +14,7 @@ interface props {
 
 const BasicInput = ({
   placeholder,
+  changeHandler,
   searchHandler,
   blurHandler,
   type = 'text',
@@ -26,7 +28,10 @@ const BasicInput = ({
         type={type}
         placeholder={placeholder}
         onChange={e => {
-          setValue(e.target.value);
+          if (changeHandler !== undefined) {
+            setValue(e.target.value);
+            changeHandler(e);
+          }
         }}
         onBlur={e => {
           if (blurHandler !== undefined) {
