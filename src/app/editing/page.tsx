@@ -1,18 +1,31 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
 import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
-import NameList from '@/components/NameList';
+import NotificationIcon from '@/components/common/ui/NotificationIcon';
+import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/Modal';
-import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
-import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+// import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
+// import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+import axiosInstance from '@/api/axiosInstance';
+import useUserDataStore from '@/store/user';
+import EffectivenessAlert from '@/components/common/modal/EffectivenessAlert';
 
-const otherInfo = 'https://open.kakao.com/o/gto74LSf';
+const test = [
+  {
+    id: 100,
+    name: '김재우',
+    major: '일단 테스트',
+    studentNumber: '21학번',
+    age: '2002',
+    mbti: 'ESFJ',
+    content: 'namelist 내 정보 보내는 메시지~',
+  },
+];
 
 const Container = styled.div`
   padding: 33px 0 0 0;
@@ -118,11 +131,6 @@ const OtherInfo = styled.div`
   }
 `;
 
-/* const More = styled.button`
-  font-size: 15px;
-  color: #8d8d8d;
-`; */
-
 const BasicButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -135,53 +143,142 @@ const BasicButtonWrapper = styled.div`
   z-index: 1000;
 `;
 
-const total = {
-  huftingid: 1,
-  gender: '남',
-  num: 1,
-};
-
 const Editing = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
   /* const [gender, setGender] = useState<string | null>(null); */
-  const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
+  // const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
+  const [kakaoLink, setKakaoLink] = useState<string>('');
+  const [returnId, setReturnId] = useState<number[]>([]);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [showAlertNumMatch, setShowAlertNumMatch] = useState<boolean>(false);
+  const [linkCopyAlert, setLinkCopyAlert] = useState<boolean>(false);
 
-  /* const handleGenderSelection = (selectedGender: string) => {
-    setGender(selectedGender);
-  }; */
-
-  const handleIncrement = () => {
-    setNumberOfPeople(prev => {
-      const incrementedValue = prev + 1;
-      // total.num을 numberOfPeople과 동일하게 업데이트
-      total.num = incrementedValue;
-      return incrementedValue;
-    });
+  const alertModal = () => {
+    setShowAlert(true);
   };
 
-  const handleDecrement = () => {
-    if (numberOfPeople > 1) {
-      setNumberOfPeople(prev => {
-        const decrementedValue = prev - 1;
-        // total.num을 numberOfPeople과 동일하게 업데이트
-        total.num = decrementedValue;
-        return decrementedValue;
-      });
+  const alertModalNumMatch = () => {
+    setShowAlertNumMatch(true);
+  };
+
+  const router = useRouter();
+  const handleClickEditComplete = () => {
+    router.push('/detailmyhufting');
+  };
+
+  const handleClickDelete = () => {
+    router.push('/myhufting');
+  };
+
+  /*  const alertLink = () => {
+    alert('올바른 오픈 카톡 링크를 입력해주세요.');
+  };
+
+  const alertNumMatch = () => {
+    alert('희망 인원 수와 참가자의 수가 일치하지 않습니다.');
+  }; */
+
+  const userData = useUserDataStore(state => state.userData);
+  const genderData = userData.gender;
+
+  const searchParams = useSearchParams();
+
+  const matchingPostId = searchParams.get('id'); // 방의 아이디
+
+  const countNumPeople = searchParams.get('count');
+  // eslint-disable-next-line no-console
+  console.log(countNumPeople);
+
+  const numberOfPeople = returnId.length;
+
+  const handleSubmit = async () => {
+    try {
+      // Gender 유효성 검사
+      /* if (genderData !== '남' && genderData !== '여') {
+        console.log('성별은 남 또는 여 중 하나여야 합니다.');
+        return;
+      } */
+
+      // DesiredNumPeople 유효성 검사
+      if (numberOfPeople < 1 || numberOfPeople > 4) {
+        // eslint-disable-next-line no-console
+        console.log('희망 인원 수는 1부터 4까지의 값이어야 합니다.');
+        return;
+      }
+
+      // OpenTalkLink 유효성 검사
+      const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
+      if (!kakaoLinkRegex.test(kakaoLink)) {
+        // eslint-disable-next-line no-console
+        console.log('올바른 오픈 카톡 링크를 입력해주세요.');
+        alertModal();
+        return;
+      }
+
+      // ReturnId와 DesiredNumPeople 유효성 검사
+      if (returnId.length !== numberOfPeople) {
+        // eslint-disable-next-line no-console
+        console.log('희망 인원 수와 참가자의 수가 일치하지 않습니다.');
+        alertModalNumMatch();
+        return;
+      }
+
+      if (returnId.length === numberOfPeople) {
+        const data = {
+          id: matchingPostId,
+          gender: genderData, // @/store/user에서 로그인 했을때 저장된 gender값을 가져옴
+          desiredNumPeople: countNumPeople,
+          openTalkLink: kakaoLink,
+          participants: returnId,
+        };
+        // eslint-disable-next-line no-console
+        console.log(data);
+
+        const response = await axiosInstance.patch(
+          `/api/v1/matchingposts/${matchingPostId}`,
+          data,
+        );
+        // eslint-disable-next-line no-console
+        console.log(response);
+
+        const roomId = response.data.matchingPostId;
+        localStorage.setItem('roomId', roomId);
+
+        // eslint-disable-next-line no-console
+        console.log('훕팅수정 PATCH 요청 성공');
+
+        handleClickEditComplete(); // detailmyhufting으로의 페이지 이동은 patch 요청이 성공했을때 작동
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('훕팅수정 PATCH 요청 실패:', error);
     }
   };
 
-  const handleClick = () => {
-    alert('clicked!');
+  const handleDelete = async () => {
+    try {
+      if (returnId.length === numberOfPeople) {
+        const response = await axiosInstance.delete(
+          `/apis/api/v1/matchingposts/${matchingPostId}`,
+        );
+        // eslint-disable-next-line no-console
+        console.log(response);
+        // eslint-disable-next-line no-console
+        console.log('훕팅 수정에서 DELETE 요청 성공');
+
+        handleClickDelete(); // myhufting으로의 페이지 이동은 patch 요청이 성공했을때 작동
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Error in handleSubmit:', error);
+    }
   };
-  const handleMore = useCallback(() => {
-    setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
 
   const handleCopyLink = () => {
     navigator.clipboard
-      .writeText(otherInfo)
+      .writeText(kakaoLink)
       .then(() => {
-        alert('링크가 클립보드에 복사되었습니다.');
+        // alert('링크가 클립보드에 복사되었습니다.');
+        setLinkCopyAlert(true);
       })
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -194,7 +291,7 @@ const Editing = () => {
       <Header>
         <LogoIcon width={118} height={30} />
         <div>
-          <SearchIcon />
+          <NotificationIcon />
           <HamburgerIcon />
         </div>
       </Header>
@@ -202,17 +299,14 @@ const Editing = () => {
         <BackIcon />
         <Title>훕팅 수정</Title>
       </div>
-      {isOpenModal && (
-        <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
-      )}
       <div className="otherInfo">
         <SubTitle>희망 인원 수</SubTitle>
         <div className="flex">
           <div className="numberContainer">
-            <span>{numberOfPeople}</span>
+            <span>{countNumPeople}</span>
           </div>
           <div className="SmallButtonContainer">
-            <SmallButtonMinus
+            {/* <SmallButtonMinus
               content="-"
               onClickEvent={() => {
                 handleDecrement();
@@ -225,16 +319,33 @@ const Editing = () => {
                 handleIncrement();
               }}
               isActive
-            />
+            /> */}
           </div>
         </div>
 
         <OtherInfo>
           <div className="top">
             <SubTitle>오픈채팅방 링크</SubTitle>
-            <a href={otherInfo} target="_blank" rel="noopener noreferrer">
-              {otherInfo}
-            </a>
+            {/* 주소 입력을 위한 input 요소 추가 */}
+            <input
+              type="text"
+              placeholder="카카오톡 오픈채팅방 링크 입력"
+              value={kakaoLink}
+              onChange={e => {
+                setKakaoLink(e.target.value);
+                return undefined; // 명시적으로 void를 반환합니다.
+              }}
+              style={{
+                border: 'none',
+                borderBottom: '2px solid #8D8D8D', // 밑줄 설정
+                borderRadius: '0',
+                width: '100%',
+                height: '35px',
+                paddingLeft: '5px',
+                marginTop: '5px',
+                marginBottom: '11px',
+              }}
+            />
 
             {/* <More onClick={handleMore}>더보기</More> */}
           </div>
@@ -245,7 +356,15 @@ const Editing = () => {
         </OtherInfo>
       </div>
       <div className="listbox">
-        <NameList total={total} />
+        <NameList
+          desiredNumPeople={
+            countNumPeople !== null ? parseInt(countNumPeople, 10) : 0
+          }
+          participants={test}
+          // eslint-disable-next-line react/jsx-boolean-value
+          editable={true}
+          setReturnId={setReturnId}
+        />
       </div>
       <BasicButtonWrapper
         style={{ display: 'flex', justifyContent: 'space-evenly' }}
@@ -253,26 +372,71 @@ const Editing = () => {
         <BasicButton
           color="red"
           assetType="Primary"
-          size="S"
+          size="M"
           content="삭제하기"
-          onClickEvent={handleClick}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClickEvent={handleDelete}
           isActive
           buttonType="button"
-          width="40"
+          width="48%"
         />
         <BasicButton
           color="red"
           assetType="Primary"
-          size="S"
+          size="M"
           content="수정완료"
-          onClickEvent={handleClick}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClickEvent={handleSubmit}
           isActive
           buttonType="button"
-          width="40%"
+          width="48%"
         />
       </BasicButtonWrapper>
+      {/* 모달 렌더링 */}
+      {showAlert && (
+        <EffectivenessAlert
+          message={
+            <>
+              올바른 오픈 카톡 링크를
+              <br />
+              입력해주세요.
+            </>
+          }
+          onClose={() => {
+            setShowAlert(false);
+          }}
+        />
+      )}
+      {/* 모달 렌더링 */}
+      {showAlertNumMatch && (
+        <EffectivenessAlert
+          message={
+            <>
+              희망 인원 수와 참가자의 수가
+              <br />
+              일치하지 않습니다.
+            </>
+          }
+          onClose={() => {
+            setShowAlertNumMatch(false);
+          }}
+        />
+      )}
+      {linkCopyAlert && (
+        <EffectivenessAlert
+          message={
+            <>
+              링크가 클립보드에
+              <br />
+              복사되었습니다.
+            </>
+          }
+          onClose={() => {
+            setLinkCopyAlert(false);
+          }}
+        />
+      )}
     </Container>
   );
 };
-
 export default Editing;

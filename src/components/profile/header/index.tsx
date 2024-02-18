@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 'use client';
 
 import React from 'react';
 import Text from '@/components/common/text/Text';
+import { useRouter } from 'next/navigation';
 import BackIcon from '../../common/ui/BackIcon';
 import ProfileHeaderSection from './styles';
 
@@ -10,19 +13,27 @@ const ProfileHeader = ({
   handleEdit,
 }: {
   isDisable: boolean;
-  handleEdit: () => void;
+  handleEdit: () => Promise<void>;
 }) => {
-  const handleOnClick = () => {
+  const router = useRouter();
+  const handleOnClick = async () => {
     if (isDisable) {
       // api call
       // eslint-disable-next-line no-console
       console.log('저장');
     }
-    handleEdit();
+    await handleEdit();
   };
   return (
     <ProfileHeaderSection>
-      <BackIcon />
+      <button
+        type="button"
+        onClick={() => {
+          router.back();
+        }}
+      >
+        <BackIcon />
+      </button>
       <div role="presentation" onClick={handleOnClick}>
         <Text
           color="black"

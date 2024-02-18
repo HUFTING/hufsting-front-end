@@ -1,15 +1,19 @@
+import {
+  type TotalProfileDataType,
+  type DropDownProfileDataType,
+} from '@/types/user';
 import { type Dispatch } from 'react';
 
 export interface DropDownActionType {
   name: string;
-  value: string;
+  value: string | null;
 }
 
 export interface DropDownTypes {
-  dropDownState: string;
+  dropDownState?: string | null;
   dropDownItems?: string[];
   dropDownTitle: string;
-  dropDownName: string;
+  dropDownName: keyof TotalProfileDataType;
   isBorder?: boolean;
   required?: boolean;
   onChange?: Dispatch<DropDownActionType>;
@@ -18,7 +22,7 @@ export interface DropDownTypes {
 }
 export interface DropDownDataType {
   dropDownTitle: string;
-  dropDownName: string;
+  dropDownName: keyof DropDownProfileDataType;
   dropDownItems?: string[];
   required?: boolean;
   disabled?: boolean;
@@ -53,3 +57,9 @@ export type DropDownType = Pick<
   | 'onChange'
   | 'disabled'
 >;
+
+export interface ProfileInputDataType {
+  dropDownTitle: string;
+  dropDownName: keyof TotalProfileDataType;
+  disabled?: boolean;
+}

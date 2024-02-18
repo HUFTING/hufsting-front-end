@@ -3,140 +3,100 @@
 import Filter, {
   type SelectedFilters,
 } from '@/components/common/dropdown/HomeFilter';
-import React, { useState } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  type ChangeEvent,
+} from 'react';
 import styled from 'styled-components';
 import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
+import BasicInput from '@/components/common/BasicInput';
+import axiosInstance from '@/api/axiosInstance';
+import RegisterButton from '@/components/common/button/RegisterButton';
 import List from '../../components/list/HomeList';
 
-// YourListType을 정의
 interface ListType {
-  huftingid: number;
-  matching: boolean;
+  id: number;
+  matchingStatus: string;
   title: string;
-  people: number;
+  desiredNumPeople: number;
   gender: string;
-  username: string;
-  upload: number;
+  authorName: string;
+  createdAt: Date;
 }
 
-const initialLists: ListType[] = [
-  {
-    huftingid: 1,
-    matching: false,
-    title: '모두 같이 훕팅해요~~',
-    people: 3,
-    gender: '남',
-    username: '김**',
-    upload: 1,
-  },
-  {
-    huftingid: 2,
-    matching: false,
-    title: '모두 같이',
-    people: 3,
-    gender: '여',
-    username: '김**',
-    upload: 1,
-  },
-  {
-    huftingid: 3,
-    matching: false,
-    title: '모두 같이 훕팅해요~~',
-    people: 2,
-    gender: '여',
-    username: '김**',
-    upload: 1,
-  },
-  {
-    huftingid: 4,
-    matching: false,
-    title: '안녕하세요',
-    people: 3,
-    gender: '남',
-    username: '김**',
-    upload: 1,
-  },
-  {
-    huftingid: 5,
-    matching: false,
-    title: 'Hello! How are you',
-    people: 4,
-    gender: '남',
-    username: '김**',
-    upload: 2,
-  },
-  {
-    huftingid: 6,
-    matching: true,
-    title: '넌 누구니',
-    people: 1,
-    gender: '남',
-    username: '김**',
-    upload: 2,
-  },
-];
-
 const Home = () => {
-  // const [initialLists, setInitialLists] = useState<ListType[]>([]);
+  const [initialLists, setInitialLists] = useState<ListType[]>([]);
   const [filteredLists, setFilteredLists] = useState(initialLists);
 
-  // useEffect(() => {
-  //   // 서버에서 데이터를 가져오는 함수
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         'http://35.219.139.69:8080/api/v1/matchingposts',
-  //         {
-  //           method: 'GET',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //         },
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error('error');
-  //       }
-
-  //       const data = await response.json();
-  //       setInitialLists(data);
-  //       setFilteredLists(data);
-  //     } catch (error) {
-  //       console.error('데이터를 가져오는 동안 오류 발생:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  const handleFilterChange = (selectedFilters: SelectedFilters) => {
-    const updatedLists = filterLists(selectedFilters, initialLists);
-    setFilteredLists(updatedLists);
-  };
+  // 리스트 받아오기
+  useEffect(() => {
+    axiosInstance
+      .get('/apis/api/v1/matchingposts')
+      .then(res => {
+        const { data } = res.data;
+        setInitialLists(data);
+        setFilteredLists(data);
+      })
+      .catch(e => e);
+  }, []);
 
   // 선택된 필터에 따라 리스트를 필터링하는 함수
-  const filterLists = (filters: SelectedFilters, lists: ListType[]) => {
-    const filteredByGender =
-      filters.gender !== ''
-        ? lists.filter(item => item.gender === filters.gender)
-        : lists;
+  const filterLists = useCallback(
+    (filters: SelectedFilters, lists: ListType[]) => {
+      const filteredByGender =
+        filters.gender !== ''
+          ? lists.filter(item => item.gender === filters.gender)
+          : lists;
 
-    const filteredByCount =
-      filters.count !== ''
-        ? filteredByGender.filter(
-            item => `${item.people.toString()}명` === filters.count,
-          )
-        : filteredByGender;
+      const filteredByCount =
+        filters.count !== ''
+          ? filteredByGender.filter(
+              item => `${item.desiredNumPeople.toString()}명` === filters.count,
+            )
+          : filteredByGender;
 
-    return filteredByCount;
+      return filteredByCount;
+    },
+    [],
+  );
+
+  // 필터 선택 감지
+  const handleFilterChange = useCallback(
+    (selectedFilters: SelectedFilters) => {
+      const updatedLists = filterLists(selectedFilters, initialLists);
+      setFilteredLists(updatedLists);
+    },
+    [filterLists, initialLists],
+  );
+
+  // 검색 필터링
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    const updatedLists = initialLists.filter(item =>
+      item.title.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+    setFilteredLists(updatedLists);
   };
 
   return (
     <Container>
+      <RegisterButton />
       <MainHeader />
       <SubHeader title="훕팅 목록" />
-      <Filter onFilterChange={handleFilterChange} />
-      <List lists={filteredLists} pathnameProp="/detail" />
+      <div className="searchbox">
+        <BasicInput placeholder="제목 검색" changeHandler={handleInputChange} />
+      </div>
+      {initialLists.length === 0 ? (
+        <NoDataMessage>훕팅 리스트가 없습니다.</NoDataMessage>
+      ) : (
+        <>
+          <Filter onFilterChange={handleFilterChange} />
+          <List lists={filteredLists} pathnameProp="/detail" />
+        </>
+      )}
     </Container>
   );
 };
@@ -147,4 +107,19 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  .searchbox {
+    padding: 14px 18px;
+  }
+`;
+
+const NoDataMessage = styled.div`
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: lightgray;
 `;

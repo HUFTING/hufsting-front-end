@@ -1,12 +1,6 @@
-import BackIcon from '@/components/common/ui/BackIcon';
-import LogoIcon from '@/components/common/ui/LogoIcon';
 import React from 'react';
+import Home from './home/page';
 
-export default function page() {
-  return (
-    <div>
-      <LogoIcon />
-      <BackIcon />
-    </div>
-  );
+export default function Page() {
+  return <Home />;
 }

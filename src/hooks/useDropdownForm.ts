@@ -1,7 +1,11 @@
 import { type DropDownActionType } from '@/types/common/profile';
+import { type DropDownProfileDataType } from '@/types/user';
 import { useReducer } from 'react';
 
-type DropDownDataType = Record<string, string>;
+export type DropDownDataType = Record<
+  keyof DropDownProfileDataType,
+  string | null
+>;
 
 const reducer = (state: DropDownDataType, action: DropDownActionType) => ({
   ...state,

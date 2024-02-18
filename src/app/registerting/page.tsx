@@ -1,16 +1,29 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
-import LogoIcon from '@/components/common/ui/LogoIcon';
-import SearchIcon from '@/components/common/ui/SearchIcon';
-import NameList from '@/components/NameList';
-import BackIcon from '@/components/common/ui/BackIcon';
+import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/Modal';
 import SmallButtonPlus from '@/components/common/button/SmallButtonPlus';
 import SmallButtonMinus from '@/components/common/button/SmallButtonMinus';
+import axiosInstance from '@/api/axiosInstance';
+import useUserDataStore from '@/store/user';
+import { useRouter } from 'next/navigation';
+import EffectivenessAlert from '@/components/common/modal/EffectivenessAlert';
+import MainHeader from '@/components/common/layout/MainHeader';
+import SubHeader from '@/components/common/layout/SubHeader';
+
+const test = [
+  {
+    id: 100,
+    name: '김재우',
+    major: '일단 테스트',
+    studentNumber: '21학번',
+    age: '2002',
+    mbti: 'ESFJ',
+    content: 'namelist 내 정보 보내는 메시지~',
+  },
+];
 
 const Container = styled.div`
   padding: 33px 0 0 0;
@@ -33,6 +46,7 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 100px;
   }
   .numberContainer {
     width: 74px;
@@ -46,7 +60,7 @@ const Container = styled.div`
   }
   .flex {
     display: flex;
-    gap: 10px; /* 요소들 사이의 간격 설정 */
+    gap: 10px;
     margin-bottom: 20px;
     .numberContainer {
       width: 74px;
@@ -62,30 +76,6 @@ const Container = styled.div`
       width: 300px;
     }
   }
-`;
-
-const Header = styled.div`
-  width: 100%;
-  padding: 0px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 23px;
-  div {
-    width: 73px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
-const Title = styled.p`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  color: black;
-  font-size: 25px;
-  font-weight: bold;
 `;
 
 const SubTitle = styled.p`
@@ -112,24 +102,129 @@ const total = {
   num: 1,
 };
 
+const text = {
+  subtitle: '훕팅 등록하기',
+};
+
 const Registerting = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
+  const router = useRouter();
   // const [gender, setGender] = useState<string | null>(null);
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [title, setTitle] = useState<string>(''); // title 상태 추가
   const [kakaoLink, setKakaoLink] = useState<string>('');
+  const [returnId, setReturnId] = useState<number[]>([]);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [showAlertNumMatch, setShowAlertNumMatch] = useState<boolean>(false);
+  const [titleAlert, setTitleAlert] = useState<boolean>(false);
+  // const [linkCopyAlert, setLinkCopyAlert] = useState<boolean>(false);
+  // 텍스트 설정
 
-  /* const handleGenderSelection = (selectedGender: string) => {
-    setGender(selectedGender);
+  /* const handleCopyLink = () => {
+    navigator.clipboard
+      .writeText(kakaoLink)
+      .then(() => {
+        // alert('링크가 클립보드에 복사되었습니다.');
+        setLinkCopyAlert(true);
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.error('링크 복사에 실패했습니다.', error);
+      });
   }; */
 
+  const alertModal = () => {
+    setShowAlert(true);
+  };
+
+  const alertModalNumMatch = () => {
+    setShowAlertNumMatch(true);
+  };
+
+  const alertTitle = () => {
+    setTitleAlert(true);
+  };
+
+  const userData = useUserDataStore(state => state.userData);
+  const genderData = userData.gender;
+
+  const handleClick = () => {
+    // eslint-disable-next-line no-console
+    router.push('/myhufting');
+  };
+
+  const handleSubmit = async () => {
+    try {
+      // 제목 유효성 검사
+      if (title.trim() === '') {
+        // eslint-disable-next-line no-console
+        alertTitle();
+        return;
+      }
+
+      // Gender 유효성 검사
+      /* if (genderData !== '남' && genderData !== '여') {
+        console.log('성별은 남 또는 여 중 하나여야 합니다.');
+        return;
+      } */
+
+      // DesiredNumPeople 유효성 검사
+      if (numberOfPeople < 1 || numberOfPeople > 4) {
+        // eslint-disable-next-line no-console
+        return;
+      }
+
+      // OpenTalkLink 유효성 검사
+      const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
+      if (!kakaoLinkRegex.test(kakaoLink)) {
+        // eslint-disable-next-line no-console
+        alertModal();
+        return;
+      }
+
+      // ReturnId와 DesiredNumPeople 유효성 검사
+      if (returnId.length !== numberOfPeople) {
+        // eslint-disable-next-line no-console
+        alertModalNumMatch();
+        return;
+      }
+
+      if (returnId.length === numberOfPeople) {
+        const data = {
+          title,
+          gender: genderData, // 적절한 방식으로 gender 값 설정
+          desiredNumPeople: numberOfPeople,
+          openTalkLink: kakaoLink,
+          participants: returnId,
+        };
+
+        const response = await axiosInstance.post(
+          '/apis/api/v1/matchingposts',
+          data,
+        );
+        // eslint-disable-next-line no-console
+        console.log(response);
+
+        const roomId = response.data.matchingPostId;
+        localStorage.setItem('roomId', roomId);
+        // eslint-disable-next-line no-console
+        console.log('훕팅 등록 포스트 요청 성공');
+        handleClick(); // myhufting으로의 페이지 이동은 post 요청이 성공했을때 작동
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('훕팅 등록 버튼 에러', error);
+    }
+  };
+
   const handleIncrement = () => {
-    setNumberOfPeople(prev => {
-      const incrementedValue = prev + 1;
-      // total.num을 numberOfPeople과 동일하게 업데이트
-      total.num = incrementedValue;
-      return incrementedValue;
-    });
+    if (numberOfPeople < 4) {
+      setNumberOfPeople(prev => {
+        const incrementedValue = prev + 1;
+        // total.num을 numberOfPeople과 동일하게 업데이트
+        total.num = incrementedValue;
+        return incrementedValue;
+      });
+    }
   };
 
   const handleDecrement = () => {
@@ -143,30 +238,18 @@ const Registerting = () => {
     }
   };
 
-  const handleClick = () => {
-    alert('clicked!');
-  };
-  const handleMore = useCallback(() => {
-    setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
-
   return (
     <Container>
-      <Header>
-        <LogoIcon width={118} height={30} />
-        <div>
-          <SearchIcon />
-          <HamburgerIcon />
-        </div>
-      </Header>
-      <div className="titlebox">
-        <BackIcon />
-        <Title>훕팅 등록하기</Title>
-      </div>
-      {isOpenModal && (
-        <Modal handleMore={handleMore}>이곳에 children이 들어갑니다.</Modal>
-      )}
-
+      <MainHeader />
+      <SubHeader
+        title={text.subtitle}
+        rightButton={{
+          content: '❮',
+          clickEvent: () => {
+            router.back();
+          },
+        }}
+      />
       <div className="otherInfo">
         <input
           type="text"
@@ -182,6 +265,7 @@ const Registerting = () => {
             width: '100%',
             height: '35px',
             marginBottom: '20px',
+            paddingLeft: '8px',
           }}
         />
         <SubTitle>희망 인원 수</SubTitle>
@@ -223,26 +307,91 @@ const Registerting = () => {
             borderRadius: '0',
             width: '100%',
             height: '35px',
+            paddingLeft: '8px',
+            marginBottom: '11px',
           }}
         />
+        {/* <button type="button" onClick={handleCopyLink}>
+          주소 복사
+        </button> */}
       </div>
 
       <div className="listbox">
-        <NameList total={total} />
+        <NameList
+          desiredNumPeople={total.num}
+          participants={test} // 이렇게 놔두기 (건드리지 말것))
+          // eslint-disable-next-line react/jsx-boolean-value
+          editable={true}
+          setReturnId={setReturnId}
+        />
       </div>
-
       <BasicButtonWrapper>
         <BasicButton
           color="red"
           assetType="Primary"
           size="M"
-          content="매칭하기"
-          onClickEvent={handleClick}
+          content="훕팅 등록"
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClickEvent={handleSubmit}
           isActive
           buttonType="button"
           width="100%"
         />
       </BasicButtonWrapper>
+      {/* 모달 렌더링 */}
+      {showAlert && (
+        <EffectivenessAlert
+          message={
+            <>
+              올바른 오픈 카톡 링크를
+              <br />
+              입력해주세요.
+            </>
+          }
+          onClose={() => {
+            setShowAlert(false);
+          }}
+        />
+      )}
+      {/* 모달 렌더링 */}
+      {showAlertNumMatch && (
+        <EffectivenessAlert
+          message={
+            <>
+              희망 인원 수와
+              <br />
+              참가자의 수가
+              <br />
+              일치하지 않습니다.
+            </>
+          }
+          onClose={() => {
+            setShowAlertNumMatch(false);
+          }}
+        />
+      )}
+      {titleAlert && (
+        <EffectivenessAlert
+          message={<>제목을 입력해주세요!</>}
+          onClose={() => {
+            setTitleAlert(false);
+          }}
+        />
+      )}
+      {/* {linkCopyAlert && (
+        <EffectivenessAlert
+          message={
+            <>
+              링크가 클립보드에
+              <br />
+              복사되었습니다.
+            </>
+          }
+          onClose={() => {
+            setLinkCopyAlert(false);
+          }}
+        />
+      )} */}
     </Container>
   );
 };

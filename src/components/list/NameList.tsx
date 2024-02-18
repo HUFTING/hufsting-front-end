@@ -2,69 +2,207 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axiosInstance from '@/api/axiosInstance';
+import ImportMateModal from '../common/modal/ImportMateModal';
 
 interface NameListProps {
-  total: {
-    huftingid: number;
-    gender: string;
-    num: number;
-  };
+  desiredNumPeople: number;
+  participants: UserInfo[];
+  editable: boolean;
+  setReturnId?: React.Dispatch<React.SetStateAction<number[]>>;
+  onEditButton?: boolean;
 }
 
 interface UserInfo {
   id: number;
-  gender: string;
-  username: string;
+  name: string;
   major: string;
-  stID: null | number;
-  age: null | number;
+  gender?: string;
+  studentNumber: string;
+  age: string;
   mbti: string;
-  introduce: string;
-  public: boolean;
+  content: string;
 }
 
-const myInfo = {
-  id: 1,
-  gender: '여',
-  username: '김예은',
-  major: 'GBT학부',
-  stID: 202100000,
-  age: 2002,
-  mbti: 'ESFJ',
-  introduce: '즐거운 훕팅 많이 많이 이용해주세요~',
-  public: true,
-};
-
-const NameList = ({ total }: NameListProps) => {
+const NameList = ({
+  desiredNumPeople,
+  participants,
+  editable,
+  setReturnId,
+  onEditButton = false,
+}: NameListProps) => {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [edited, setEdited] = useState<boolean[]>([]);
 
+  // 초기 유저 정보
   useEffect(() => {
-    const initialUserInfo = Array.from({ length: total.num }, (_, index) => ({
-      id: index + 1,
-      gender: '',
-      username: `참가자 ${index + 1}`,
-      major: '',
-      stID: null,
-      age: null,
-      mbti: '',
-      introduce: '',
-      public: false,
-    }));
-    setUserInfo(initialUserInfo);
-    setEdited(Array(total.num).fill(false));
-  }, [total.num]);
+    if (editable && onEditButton) {
+      const modifiedParticipants = modifyParticipants(participants);
+      setUserInfo(modifiedParticipants);
+      setEdited(Array(desiredNumPeople).fill(false));
+    } else if (editable && !onEditButton) {
+      const existInfoNum = userInfo.filter(
+        user => !user.name.includes('참가자'),
+      ).length;
+      const additionalUserInfoCount = desiredNumPeople - existInfoNum;
+      if (additionalUserInfoCount < 0) {
+        setUserInfo(prevUserInfo => prevUserInfo.slice(0, desiredNumPeople));
+      } else {
+        const initialUserInfo = Array.from(
+          { length: additionalUserInfoCount },
+          (_, index) => ({
+            id: existInfoNum + index,
+            name: `참가자 ${existInfoNum + index + 1}`,
+            major: '',
+            gender: '',
+            studentNumber: '',
+            age: '',
+            mbti: '',
+            content: '',
+          }),
+        );
+        setUserInfo(prevUserInfo => [
+          ...prevUserInfo.slice(0, existInfoNum),
+          ...initialUserInfo,
+        ]);
+        setEdited(Array(desiredNumPeople).fill(false));
+      }
+    } else if (participants.length > 0) {
+      const modifiedParticipants = modifyParticipants(participants);
+      setUserInfo(modifiedParticipants);
+      if (userInfo.length > 0) {
+        setUserInfo(prevUserInfo =>
+          prevUserInfo.slice(0, desiredNumPeople - 1),
+        );
+      }
+    } else {
+      const initialUserInfo = Array.from(
+        { length: desiredNumPeople },
+        (_, index) => ({
+          id: index,
+          name: `참가자 ${index + 1}`,
+          major: '',
+          gender: '',
+          studentNumber: '',
+          age: '',
+          mbti: '',
+          content: '',
+        }),
+      );
+      setUserInfo(initialUserInfo);
+    }
+  }, [desiredNumPeople, editable, participants, onEditButton]);
 
-  const onClickEditButton = (index: number) => {
-    setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
+  // 개인 정보 수정해서 반환
+  const modifyUserInfo = (data: UserInfo) => ({
+    ...data,
+    gender: data.gender ?? '비공개',
+    studentNumber: data.studentNumber ?? '비공개',
+    mbti: data.mbti ?? '비공개',
+    content: data.content ?? '비공개',
+    age: data.age !== null ? `${data.age}년` : '비공개',
+  });
+
+  // 참가자'들' 정보 수정해서 반환
+  const modifyParticipants = (partips: UserInfo[]) =>
+    partips.map(partip => modifyUserInfo(partip));
+
+  // 정보 불러오기 버튼
+  const handleImportClick = (index: number) => {
+    if (index === 0) {
+      loadMyInfo(index);
+    }
   };
 
+  // 내 정보 불러오기
+  const loadMyInfo = (index: number) => {
+    axiosInstance
+      .get('/apis/api/v1/profile')
+      .then(res => {
+        const { data } = res;
+        const modifiedData = modifyUserInfo(data);
+        setUserInfo(prev =>
+          prev.map((user, i) =>
+            i === index ? { ...user, ...modifiedData } : user,
+          ),
+        );
+        if (setReturnId !== undefined) {
+          setReturnId(prevIds => {
+            const newIdList = [...prevIds];
+            newIdList[index] = data.id;
+            return newIdList;
+          });
+        }
+      })
+      .catch(e => e);
+  };
+
+  // 메이트 선택하기(모달)
+  const [isOpenModal, setOpenModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number>();
+  const [mateIndex, setMateIndex] = useState<number>(1);
+
+  const handleMore = () => {
+    setOpenModal(prev => !prev);
+  };
+
+  // 아이디로 친구 정보 불러오기
+  const loadUserInfoById = (index: number) => {
+    axiosInstance
+      .get(`/apis/api/v1/member/${selectedUserId}`)
+      .then(res => {
+        const { data } = res;
+        const modifiedData = modifyUserInfo(data);
+        // if (modifiedData.gender !== userData.gender) {
+        //   if (modifiedData.gender === '비공개') {
+        //     alert('성별을 확인할 수 없습니다.');
+        //     return;
+        //   }
+        //   alert('같은 성별의 메이트를 추가해주세요.');
+        //   return;
+        // } else {
+        setUserInfo(prev =>
+          prev.map((user, i) =>
+            i === index ? { ...user, ...modifiedData } : user,
+          ),
+        );
+        if (setReturnId !== undefined) {
+          setReturnId(prevIds => {
+            const newIdList = [...prevIds];
+            newIdList[index] = data.id;
+            return newIdList;
+          });
+        }
+        // }
+      })
+      .catch(e => e);
+  };
+
+  // 내용 변경 감지
   const handleInputChange = (index: number, field: string, value: string) => {
     setUserInfo(prev =>
       prev.map((user, i) => (i === index ? { ...user, [field]: value } : user)),
     );
   };
 
+  // 수정하기 or 메이트 불러오기 버튼
+  const onClickEditButton = (index: number) => {
+    if (index === 0) {
+      setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
+    } else {
+      setMateIndex(index);
+      setOpenModal(true);
+    }
+  };
+
+  // 메이트 정보 불러오기
+  useEffect(() => {
+    if (selectedUserId !== undefined) {
+      loadUserInfoById(mateIndex);
+    }
+  }, [isOpenModal]);
+
+  // 정보 수정 후 완료
   const handleComplete = (index: number) => {
     const currentInfo = userInfo[index];
     if (currentInfo.major === '') {
@@ -72,169 +210,183 @@ const NameList = ({ total }: NameListProps) => {
       return;
     }
     setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
+
+    const ageWithoutYear = currentInfo.age.replace('년', '');
+    const updateInfo = {
+      ...currentInfo,
+      age: ageWithoutYear,
+      studentNumber: currentInfo.studentNumber,
+      mbti: currentInfo.mbti,
+      content: currentInfo.content,
+    };
+
+    updateProfile(updateInfo);
   };
 
-  const handleImportClick = (index: number) => {
-    if (index === 0) {
-      loadMyInfo(index);
-    } else {
-      // 아이디로 상대방 정보 불러오는 api
-      loadUserInfoById(index);
-    }
-  };
-
-  const loadMyInfo = (index: number) => {
-    setUserInfo(prev =>
-      prev.map((user, i) => (i === index ? { ...user, ...myInfo } : user)),
-    );
-  };
-
-  const loadUserInfoById = (index: number) => {
-    const userId = prompt('아이디를 입력하세요.');
-    alert(userId);
-    // fetchUserInfoById(userId)
-    //   .then((user) => {
-    //     setUserInfo(prev => prev.map((u, i) => (i === index ? { ...u, ...user } : u)));
-    //   })
-    //   .catch((error) => {
-    //     console.error('Failed to fetch user information:', error);
-    //   });
+  // 프로필 수정 함수
+  const updateProfile = (updatedInfo: UserInfo) => {
+    axiosInstance
+      .put('/apis/api/v1/profile', updatedInfo)
+      .then(res => res)
+      .catch(e => e);
   };
 
   return (
-    <Container>
-      {userInfo.map((info, index) => (
-        <Wrapper key={info.id}>
-          <ListBox>
-            <Top>
-              <div className="name">
-                {edited[index] ? (
-                  <input
-                    className="p_input"
-                    value={info.username}
-                    onChange={e => {
-                      handleInputChange(index, 'username', e.target.value);
-                    }}
-                  />
-                ) : (
-                  <p>{info.username}</p>
-                )}
-              </div>
-              <div className="buttonbox">
-                <button
-                  type="button"
-                  className="import"
-                  onClick={() => {
-                    handleImportClick(index);
-                  }}
-                >
-                  {index === 0 ? '내 정보 불러오기' : '아이디로 불러오기'}
-                </button>
-                {edited[index] ? (
-                  <button
-                    type="submit"
-                    className="edit"
-                    onClick={() => {
-                      handleComplete(index);
-                    }}
-                  >
-                    완료
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="edit"
-                    onClick={() => {
-                      onClickEditButton(index);
-                    }}
-                  >
-                    ✏️
-                  </button>
-                )}
-              </div>
-            </Top>
-            {edited[index] ? (
-              <Bottom>
-                <div className="content">
-                  <p className="category">학과*</p>
-                  <input
-                    className="value_input"
-                    value={info.major}
-                    onChange={e => {
-                      handleInputChange(index, 'major', e.target.value);
-                    }}
-                  />
+    <>
+      {isOpenModal && (
+        <ImportMateModal
+          handleMore={handleMore}
+          isModal={isOpenModal}
+          onUserSelect={setSelectedUserId}
+        />
+      )}
+      <Container>
+        {userInfo.map((info, index) => (
+          <Wrapper key={info.id}>
+            <ListBox>
+              <Top>
+                <div className="name">
+                  {editable && edited[index] ? (
+                    <input
+                      className="p_input"
+                      value={info.name}
+                      onChange={e => {
+                        handleInputChange(index, 'name', e.target.value);
+                      }}
+                    />
+                  ) : (
+                    <p>{info.name}</p>
+                  )}
                 </div>
-                <div className="content">
-                  <p className="category">학번</p>
-                  <input
-                    className="value_input"
-                    value={info.stID !== null ? info.stID.toString() : ''}
-                    onChange={e => {
-                      handleInputChange(index, 'stID', e.target.value);
-                    }}
-                  />
+                <div className="buttonbox">
+                  {editable && (
+                    <>
+                      <button
+                        type="button"
+                        className="import"
+                        onClick={() => {
+                          handleImportClick(index);
+                        }}
+                      >
+                        {index === 0 ? '내 정보 불러오기' : ''}
+                      </button>
+                      {edited[index] ? (
+                        <button
+                          type="submit"
+                          className="edit"
+                          onClick={() => {
+                            handleComplete(index);
+                          }}
+                        >
+                          완료
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="edit"
+                          style={{ color: index === 0 ? '#8d8d8d' : '#FF6869' }}
+                          onClick={() => {
+                            onClickEditButton(index);
+                          }}
+                        >
+                          {index === 0 ? '✏️' : '메이트 불러오기'}
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
-                <div className="content">
-                  <p className="category">나이</p>
-                  <input
-                    className="value_input"
-                    value={info.age !== null ? info.age.toString() : ''}
-                    onChange={e => {
-                      handleInputChange(index, 'age', e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="content">
-                  <p className="category">MBTI</p>
-                  <input
-                    className="value_input"
-                    value={info.mbti}
-                    onChange={e => {
-                      handleInputChange(index, 'mbti', e.target.value);
-                    }}
-                  />
-                </div>
-                <div className="content">
-                  <p className="category">소개 글(30자 제한)</p>
-                  <input
-                    className="value_input"
-                    value={info.introduce}
-                    onChange={e => {
-                      handleInputChange(index, 'introduce', e.target.value);
-                    }}
-                    maxLength={30}
-                  />
-                </div>
-              </Bottom>
-            ) : (
-              <Bottom>
-                <div className="content">
-                  <p className="category">학과*</p>
-                  <p className="value">{info.major}</p>
-                </div>
-                <div className="content">
-                  <p className="category">학번</p>
-                  <p className="value">{info.stID}</p>
-                </div>
-                <div className="content">
-                  <p className="category">나이</p>
-                  <p className="value">{info.age}</p>
-                </div>
-                <div className="content">
-                  <p className="category">MBTI</p>
-                  <p className="value">{info.mbti}</p>
-                </div>
-                <div className="content">
-                  <p className="category">소개 글(30자 제한)</p>
-                  <p className="value">{info.introduce}</p>
-                </div>
-              </Bottom>
-            )}
-          </ListBox>
-        </Wrapper>
-      ))}
-    </Container>
+              </Top>
+              {edited[index] ? (
+                <Bottom>
+                  <div className="content">
+                    <p className="category">학과*</p>
+                    <input
+                      className="value_input"
+                      value={info.major}
+                      onChange={e => {
+                        handleInputChange(index, 'major', e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <p className="category">학번</p>
+                    <input
+                      className="value_input"
+                      value={
+                        info.studentNumber !== null
+                          ? info.studentNumber.toString()
+                          : ''
+                      }
+                      onChange={e => {
+                        handleInputChange(
+                          index,
+                          'studentNumber',
+                          e.target.value,
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <p className="category">나이</p>
+                    <input
+                      className="value_input"
+                      value={info.age !== null ? info.age.toString() : ''}
+                      onChange={e => {
+                        handleInputChange(index, 'age', e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <p className="category">MBTI</p>
+                    <input
+                      className="value_input"
+                      value={info.mbti}
+                      onChange={e => {
+                        handleInputChange(index, 'mbti', e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <p className="category">소개 글(30자 제한)</p>
+                    <input
+                      className="value_input"
+                      value={info.content}
+                      onChange={e => {
+                        handleInputChange(index, 'content', e.target.value);
+                      }}
+                      maxLength={30}
+                    />
+                  </div>
+                </Bottom>
+              ) : (
+                <Bottom>
+                  <div className="content">
+                    <p className="category">학과*</p>
+                    <p className="value">{info.major}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">학번</p>
+                    <p className="value">{info.studentNumber}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">나이</p>
+                    <p className="value">{info.age}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">MBTI</p>
+                    <p className="value">{info.mbti}</p>
+                  </div>
+                  <div className="content">
+                    <p className="category">소개 글(30자 제한)</p>
+                    <p className="value">{info.content}</p>
+                  </div>
+                </Bottom>
+              )}
+            </ListBox>
+          </Wrapper>
+        ))}
+      </Container>
+    </>
   );
 };
 
@@ -289,7 +441,7 @@ const Top = styled.div`
     align-items: center;
 
     .import {
-      margin-right: 20px;
+      margin-right: 14px;
       font-size: 13px;
       color: #8d8d8d;
     }

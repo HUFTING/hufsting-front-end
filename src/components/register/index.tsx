@@ -6,19 +6,36 @@ import {
   ProfileDropDownData,
   ProfileDropDownInitalState,
 } from '@/constants/dropdown';
-import Logo from '../common/ui/LogoIcon';
-import Text from '../common/text/Text';
-import BasicButton from '../common/button/Button';
-import SignUpHeader from './SignUpHeader';
-import SignUpContainer from './SignUpContainer';
-import UserProfileInput from '../common/input/UserProfileInput';
-import UserProfileTextArea from '../common/input/UserProfileTextArea';
+import SignUpHeader from '@/components/register/SignUpHeader';
+import Text from '@/components/common/text/Text';
+import SignUpContainer from '@/components/register/SignUpContainer';
+import Logo from '@/components/common/ui/LogoIcon';
+import UserProfileInput from '@/components/common/input/UserProfileInput';
+import UserProfileTextArea from '@/components/common/input/UserProfileTextArea';
+import BasicButton from '@/components/common/button/Button';
+import { saveProfileAPI } from '@/api/user';
+import { useRouter } from 'next/navigation';
+import useUserDataStore from '@/store/user';
 
+// Import the necessary type
 const Register = () => {
   const [dropDownState, setDropDownState] = useDropdownForm(
     ProfileDropDownInitalState,
   );
   const [textValue, setTextValue] = useState('');
+  const { userData, setUserData } = useUserDataStore();
+  const router = useRouter();
+  const handleOnClick = async () => {
+    const saveProfileData = { ...dropDownState, content: textValue };
+    await saveProfileAPI(saveProfileData);
+    const profileData = {
+      ...userData,
+      ...dropDownState,
+      content: textValue,
+    };
+    setUserData(profileData);
+    router.push('/');
+  };
   return (
     <SignUpContainer>
       <SignUpHeader>
@@ -63,10 +80,12 @@ const Register = () => {
           color="red"
           assetType="Primary"
           size="M"
-          onClickEvent={() => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClickEvent={async () => {
+            await handleOnClick();
             // eslint-disable-next-line no-console
           }}
-          isActive
+          isActive={dropDownState.gender !== null}
         />
       </div>
     </SignUpContainer>

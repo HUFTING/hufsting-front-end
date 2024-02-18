@@ -11,29 +11,33 @@ import NotificationIcon from '../ui/BasicNotificationIcon';
 const MainHeader = () => {
   const router = useRouter();
   const [openHamburger, setOpenHamburger] = useState<boolean>(false);
+  const handleOnClickAlarm = () => {
+    router.push('/alarm');
+  };
 
   return (
     <MainHeaderStyle>
       <div
         role="presentation"
         onClick={() => {
-          router.push('/home');
+          router.push('/');
         }}
       >
         <Logo width={118} height={30} />
       </div>
       <div>
-        <div>
+        <button type="button" onClick={handleOnClickAlarm} tabIndex={0}>
           <NotificationIcon />
-        </div>
-        <div
+        </button>
+        <button
+          type="button"
           onClick={() => {
             setOpenHamburger(true);
           }}
-          role="presentation"
+          tabIndex={0}
         >
           <HamburgerIcon />
-        </div>
+        </button>
       </div>
       {openHamburger && (
         <HamburgerMenu

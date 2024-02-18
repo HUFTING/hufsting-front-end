@@ -1,74 +1,290 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
-import MainInfo from '@/components/common/modal/MainInfo';
+import ClipboardCopy from '@/components/copy/Copy';
+import NameList from '@/components/list/NameList';
+import axiosInstance from '@/api/axiosInstance';
+import ApplyList from '@/components/list/ApplyList';
+import useUserDataStore from '@/store/user';
 
-const total = {
-  huftingid: 1,
-  gender: '남',
-  num: 2,
-  openlink: 'open.kakao.com/o/gto74LSf',
-};
+interface Hosts {
+  id: number;
+  name: string;
+  major: string;
+  studentNumber: string;
+  age: string;
+  mbti: string;
+  content: string;
+}
+
+interface ApplyLists {
+  matchingRequestId: number;
+  matchingRequestTitle: string;
+}
+
+interface ListType {
+  id: number;
+  content: string;
+  matchingStatus: string;
+  title: string;
+  desiredNumPeople: number;
+  gender: string;
+  authorName: string;
+  openKakaoTalk: string;
+  matchingHosts: Hosts[];
+  matchingRequestsCount: number;
+  matchingRequests: ApplyLists[];
+  representativeEmail: string;
+}
+
+interface TextType {
+  isEdit: boolean;
+  subtitle: string;
+  buttonleft: string;
+  buttonright: string;
+}
 
 const MyDetail = () => {
-  // const [isOpenModal, setOpenModal] = useState<boolean>(false);
+  const onEdit = true;
+  // 쿼리 받아오기
+  const searchParams = useSearchParams();
+  const search = searchParams.get('id');
 
+  const userData = useUserDataStore(state => state.userData);
+
+  // NameList 참여자 아이디
+  const [returnId, setReturnId] = useState<number[]>([]);
+
+  // router
+  const router = useRouter();
+
+  // 텍스트 설정
+  const [text, setText] = useState<TextType>({
+    isEdit: false,
+    subtitle: '내가 올린 훕팅',
+    buttonleft: '삭제하기',
+    buttonright: '수정하기',
+  });
+
+  // 리스트 받아오기
+  const [postInfo, setPostInfo] = useState<ListType | null>(null);
+  const [openTalkLink, setOpenTalkLink] = useState(postInfo?.openKakaoTalk);
+  const [updatedParticipants, setUpdatedParticipants] = useState<Hosts[]>([]);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`/apis/api/v1/my-matchingposts/${search}`)
+      .then(res => {
+        const { data } = res;
+        setPostInfo(data);
+      })
+      .catch(e => e);
+  }, [search]);
+
+  // 매칭 글 삭제
   const handleRemove = () => {
-    alert('삭제!');
+    axiosInstance
+      .delete(`/apis/api/v1/matchingposts/${search}`)
+      .then(res => {
+        router.push('/myhufting');
+      })
+      .catch(e => e);
   };
 
+  // 매칭 글 수정
   const handleEdit = () => {
-    alert('수정!');
+    setOpenTalkLink(postInfo?.openKakaoTalk);
+    setText({
+      isEdit: true,
+      subtitle: '훕팅 수정',
+      buttonleft: '취소하기',
+      buttonright: '수정완료',
+    });
   };
 
-  const handleMore = () => {
-    alert('복사되었습니다!');
+  // 수정 저장
+  const handleSave = async () => {
+    setUpdatedParticipants([]);
+    setText({
+      isEdit: false,
+      subtitle: '내가 올린 훕팅',
+      buttonleft: '삭제하기',
+      buttonright: '수정하기',
+    });
+
+    const requestData = {
+      title: postInfo?.title,
+      id: postInfo?.id,
+      gender: postInfo?.gender,
+      desiredNumPeople: postInfo?.desiredNumPeople,
+      openTalkLink,
+      participants: returnId,
+    };
+
+    const myProfile = await fetchMyProfile();
+    setUpdatedParticipants(prevParticipants => [
+      ...prevParticipants,
+      myProfile,
+    ]);
+
+    await Promise.all(
+      returnId.slice(1).map(async (id, index) => {
+        const modifiedProfile = await fetchProfileById(id);
+        return modifiedProfile;
+      }),
+    ).then(modifiedProfiles => {
+      setUpdatedParticipants(prevParticipants => [
+        ...prevParticipants,
+        ...modifiedProfiles,
+      ]);
+    });
+
+    axiosInstance
+      .put(`/apis/api/v1/matchingposts/${search}`, requestData)
+      .then(res => res)
+      .catch(e => e);
+  };
+
+  // 수정 취소
+  const handleCancel = () => {
+    setText({
+      isEdit: false,
+      subtitle: '내가 올린 훕팅',
+      buttonleft: '삭제하기',
+      buttonright: '수정하기',
+    });
+  };
+
+  // 아이디 정보 가져오기
+  const fetchProfileById = async (id: number): Promise<Hosts> => {
+    const res = await axiosInstance.get(`/apis/api/v1/member/${id}`);
+    return res.data;
+  };
+
+  const fetchMyProfile = async (): Promise<Hosts> => {
+    const res = await axiosInstance.get('/apis/api/v1/profile');
+    return res.data;
+  };
+
+  // 왼쪽 버튼 클릭 이벤트
+  const handleButtonClick = () => {
+    void handleLeftButton();
+  };
+
+  const handleLeftButton = async () => {
+    if (text.isEdit) {
+      await handleSave();
+    } else {
+      handleEdit();
+    }
   };
 
   return (
     <Container>
       <MainHeader />
-      <SubHeader title="내가 올린 훕팅" />
-      <div className="otherInfo">
-        <SubTitle>희망 인원 수</SubTitle>
-        <div className="genderbox">
-          <p>{total.num}</p>
-        </div>
-        <OtherInfo>
-          <div className="top">
-            <SubTitle>오픈채팅방 링크</SubTitle>
-            <More onClick={handleMore}>복사하기</More>
+      <SubHeader
+        title={text.subtitle}
+        rightButton={{
+          content: '❮',
+          clickEvent: () => {
+            router.back();
+          },
+        }}
+      />
+      {postInfo !== null && (
+        <div className="otherInfo">
+          <SubTitle>희망 인원 수</SubTitle>
+          <div className="desiredNumPeople">
+            <p>{postInfo.desiredNumPeople}</p>
           </div>
-          <p>{total.openlink}</p>
-        </OtherInfo>
-      </div>
-      <div className="listbox">
-        <MainInfo isModal={false} />
-      </div>
-      <BasicButtonWrapper>
-        <BasicButton
-          color="gray"
-          assetType="Primary"
-          size="M"
-          content="삭제하기"
-          onClickEvent={handleRemove}
-          isActive
-          width="48%"
-        />
-        <BasicButton
-          color="red"
-          assetType="Primary"
-          size="M"
-          content="수정하기"
-          onClickEvent={handleEdit}
-          isActive
-          width="48%"
-        />
-      </BasicButtonWrapper>
+          <OtherInfo>
+            {text.isEdit ? (
+              <div className="editTop">
+                <SubTitle>오픈채팅방 링크</SubTitle>
+                <input
+                  type="text"
+                  value={openTalkLink}
+                  placeholder="카카오톡 오픈채팅방 링크 입력"
+                  onChange={e => {
+                    setOpenTalkLink(e.target.value);
+                  }}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="top">
+                  <SubTitle>오픈채팅방 링크</SubTitle>
+                  <ClipboardCopy text={postInfo.openKakaoTalk} />
+                </div>
+                <p>{postInfo.openKakaoTalk}</p>
+              </>
+            )}
+            {!text.isEdit && (
+              <div className="bottom">
+                <SubTitle>
+                  훕팅 신청 {postInfo.matchingRequestsCount}건
+                </SubTitle>
+                <ApplyList
+                  lists={postInfo.matchingRequests}
+                  pathnameProp="/accept"
+                  representativeEmail={postInfo.representativeEmail}
+                  matchingStatus={postInfo.matchingStatus}
+                />
+              </div>
+            )}
+          </OtherInfo>
+        </div>
+      )}
+      {postInfo !== null && (
+        <div className="listbox">
+          <NameList
+            desiredNumPeople={postInfo.desiredNumPeople}
+            participants={
+              updatedParticipants.length === 0
+                ? postInfo.matchingHosts
+                : updatedParticipants
+            }
+            editable={text.isEdit}
+            setReturnId={setReturnId}
+            onEditButton={onEdit}
+          />
+        </div>
+      )}
+      {postInfo !== null &&
+        postInfo.representativeEmail === userData.email &&
+        postInfo?.matchingStatus === '매칭 대기' && (
+          <BasicButtonWrapper>
+            <BasicButton
+              color="gray"
+              assetType="Primary"
+              size="M"
+              content={text.buttonleft}
+              onClickEvent={() => {
+                if (text.isEdit) {
+                  handleCancel();
+                } else {
+                  handleRemove();
+                }
+              }}
+              isActive
+              width="48%"
+            />
+            <BasicButton
+              color="red"
+              assetType="Primary"
+              size="M"
+              content={text.buttonright}
+              onClickEvent={handleButtonClick}
+              isActive
+              width="48%"
+            />
+          </BasicButtonWrapper>
+        )}
     </Container>
   );
 };
@@ -81,17 +297,10 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
 
-  .titlebox {
-    padding: 2px 22px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-  }
-
   .otherInfo {
     padding: 25px 22px;
 
-    .genderbox {
+    .desiredNumPeople {
       margin-bottom: 20px;
       display: flex;
       justify-content: center;
@@ -110,13 +319,6 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    .essential {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ff324b;
-      margin-bottom: 30px;
-    }
   }
 `;
 
@@ -127,20 +329,21 @@ const SubTitle = styled.p`
 `;
 
 const OtherInfo = styled.div`
+  .editTop {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid black;
+  }
   .top {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .infobox p {
-    font-size: 18px;
+  .bottom {
+    margin-top: 15px;
   }
-`;
-
-const More = styled.button`
-  font-size: 15px;
-  color: #8d8d8d;
 `;
 
 const BasicButtonWrapper = styled.div`

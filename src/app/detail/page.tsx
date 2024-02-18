@@ -1,83 +1,170 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
-import Modal from '@/components/common/modal/MainInfo';
 import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
+import MainInfo from '@/components/common/modal/MainInfo';
+import axiosInstance from '@/api/axiosInstance';
 
-const otherInfo = [
-  {
-    id: 1,
-    username: '김**',
-    major: 'Global Business%Technology 학부',
-  },
-  {
-    id: 2,
-    username: '원**',
-    major: '수학과',
-  },
-];
+interface Participant {
+  id: number;
+  name: string;
+  major: string;
+  studentNumber: string;
+  age: string;
+  mbti: string;
+  content: string;
+}
 
-const total = {
-  huftingid: 1,
-  gender: '남',
-  num: 2,
-};
+interface ListType {
+  id: number;
+  content: string;
+  matchingStatus: boolean;
+  title: string;
+  desiredNumPeople: number;
+  gender: string;
+  authorName: string;
+  participants: Participant[];
+}
 
 const Detail = () => {
-  const [isOpenModal, setOpenModal] = useState<boolean>(false);
+  // 쿼리 받아오기
+  const searchParam = useSearchParams();
+  const search = parseInt(searchParam.get('id') ?? '', 10);
 
-  const handleClick = () => {
-    alert('clicked!');
+  // router
+  const router = useRouter();
+
+  // NameList 참여자 아이디
+  const [returnId, setReturnId] = useState<number[]>([]);
+
+  // 타이틀 입력
+  const [title, setTitle] = useState('');
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
   };
 
-  const handleMore = useCallback(() => {
+  // 더 보기
+  const [isOpenModal, setOpenModal] = useState(false);
+
+  const handleMore = () => {
     setOpenModal(!isOpenModal);
-  }, [isOpenModal]);
+  };
+
+  // 리스트 받아오기
+  const [postInfo, setPostInfo] = useState<ListType | null>(null);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`apis/api/v1/matchingposts/${search}`)
+      .then(res => {
+        const { data } = res;
+        setPostInfo(data);
+      })
+      .catch(e => e);
+  }, [search]);
+
+  // 훕팅 신청 api
+  const onApplyClick = () => {
+    if (title.trim() === '') {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+    if (postInfo !== null && returnId.length < postInfo.desiredNumPeople) {
+      alert('정보를 모두 입력해주세요.');
+      return;
+    }
+
+    const RequestData = {
+      matchingPostId: search,
+      participantIds: returnId,
+      title,
+    };
+
+    axiosInstance
+      .post('/apis/api/v1/matchingrequests', RequestData)
+      .then(res => {
+        router.push('/');
+      })
+      .catch(e => e);
+  };
 
   return (
     <Container>
       <MainHeader />
-      <SubHeader title="훕팅 참여하기" />
-      {isOpenModal && <Modal handleMore={handleMore} isModal />}
-      <div className="otherInfo">
-        <SubTitle>성별</SubTitle>
-        <div className="genderbox">
-          <p>{total.gender}성</p>
-        </div>
-        <OtherInfo>
-          <div className="top">
-            <SubTitle>상대 정보</SubTitle>
-            <More onClick={handleMore}>더 보기</More>
+      <SubHeader
+        title="훕팅 참여하기"
+        rightButton={{
+          content: '❮',
+          clickEvent: () => {
+            router.back();
+          },
+        }}
+      />
+      {postInfo !== null && (
+        <>
+          {isOpenModal && (
+            <MainInfo
+              desiredNumPeople={postInfo.desiredNumPeople}
+              handleMore={handleMore}
+              isModal={isOpenModal}
+              userInfo={postInfo.participants}
+            />
+          )}
+          <div className="titlebox">
+            <Title
+              placeholder="한 줄 소개를 작성해주세요."
+              value={title}
+              onChange={handleTitleChange}
+            />
           </div>
-          {otherInfo.map(info => (
-            <div className="infobox" key={info.id}>
-              <p>
-                {info.username} _ {info.major}
-              </p>
+          <div className="otherInfo">
+            <SubTitle>성별</SubTitle>
+            <div className="genderbox">
+              <p>{postInfo.gender}성</p>
             </div>
-          ))}
-        </OtherInfo>
-      </div>
-      <div className="listbox">
-        <p className="essential">필수 참가 인원 {total.num}인</p>
-        <NameList total={total} />
-      </div>
-      <BasicButtonWrapper>
-        <BasicButton
-          color="red"
-          assetType="Primary"
-          size="M"
-          content="매칭하기"
-          onClickEvent={handleClick}
-          isActive
-          buttonType="button"
-          width="100%"
-        />
-      </BasicButtonWrapper>
+            <OtherInfo>
+              <div className="top">
+                <SubTitle>상대 정보</SubTitle>
+                <More onClick={handleMore}>더 보기</More>
+              </div>
+              {postInfo.participants.map(info => (
+                <div className="infobox" key={info.id}>
+                  <p>
+                    {info.name} _ {info.major}
+                  </p>
+                </div>
+              ))}
+            </OtherInfo>
+          </div>
+          <div className="listbox">
+            <p className="essential">
+              필수 참가 인원 {postInfo.desiredNumPeople}인
+            </p>
+            <NameList
+              desiredNumPeople={postInfo.desiredNumPeople}
+              participants={postInfo.participants}
+              editable
+              setReturnId={setReturnId}
+            />
+          </div>
+          <BasicButtonWrapper>
+            <BasicButton
+              color="red"
+              assetType="Primary"
+              size="M"
+              content="훕팅 신청"
+              onClickEvent={onApplyClick}
+              isActive
+              buttonType="button"
+            />
+          </BasicButtonWrapper>
+        </>
+      )}
     </Container>
   );
 };
@@ -89,16 +176,18 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 50px;
 
   .titlebox {
-    padding: 2px 22px;
+    margin: 10px 0px;
+    padding: 0px 22px;
     width: 100%;
     display: flex;
     align-items: center;
   }
 
   .otherInfo {
-    padding: 25px 22px;
+    padding: 10px 22px 20px 22px;
 
     .genderbox {
       margin-bottom: 20px;
@@ -129,6 +218,15 @@ const Container = styled.div`
   }
 `;
 
+const Title = styled.input`
+  width: 100%;
+  padding: 10px 17px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: 1px solid #8d8d8d;
+`;
+
 const SubTitle = styled.p`
   margin-bottom: 10px;
   font-size: 18px;
@@ -139,7 +237,7 @@ const OtherInfo = styled.div`
   .top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .infobox p {
