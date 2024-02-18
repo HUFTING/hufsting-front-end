@@ -5,73 +5,44 @@ import SubHeader from '@/components/common/layout/SubHeader';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FollowerListPageStyle } from '@/styles/followerStyles';
-import AddFollowingModal from '@/components/common/modal/AddFollowingModal';
 import SelectMenuBar from '@/components/mate/SelectMenuBar';
 import MateListItem from '@/components/mate/MateListItem';
 import Image from 'next/image';
 import BasicInput from '@/components/common/BasicInput';
+import { followMateAPI, getMateListAPI, searchMateListAPI } from '@/api/mate';
+import { type MateInfo } from '@/types/user';
 
 type MatePageType = 'my-mate' | 'new-mate';
-export interface UserInfo {
-  id: number;
-  name: string;
-  email: string;
-  photo: string;
-  profile: string;
-  isFollowing: boolean;
-}
-// TODO yarn dev해야 hmr 가능이다.
 
 const ManageMateList = () => {
   const router = useRouter();
-  const [userList, setUserList] = useState<UserInfo[]>([]);
-  const [openModal] = useState(false);
+  const [userList, setUserList] = useState<MateInfo[]>([]);
   const [pageType, setPageType] = useState<MatePageType>('my-mate');
 
-  const addFollowing = (value: string) => {
-    // console.log(value);
-  };
-
-  const getUserList = useCallback((searchValue: string | null) => {
-    // api 호출할 때 searchValue 넣기
-    // eslint-disable-next-line no-console
-    console.log(searchValue);
-
-    setUserList([
-      {
-        id: 1,
-        name: '임예람',
-        email: 'email',
-        photo:
-          'https://phinf.pstatic.net/contact/20220224_279/1645675907154rcS3m_JPEG/profileImage.jpg?type=s80',
-        profile: 'hi',
-        isFollowing: true,
-      },
-      {
-        id: 2,
-        name: '김강민',
-        email: 'email',
-        photo:
-          'https://phinf.pstatic.net/contact/20220224_279/1645675907154rcS3m_JPEG/profileImage.jpg?type=s80',
-        profile: 'hi',
-        isFollowing: false,
-      },
-      // { id: 3, name: '김재우', email: '', isFollowing: false },
-      // { id: 4, name: '김예은', email: '', isFollowing: false },
-      // { id: 5, name: '원동현', email: '', isFollowing: false },
-      // { id: 6, name: '설희관', email: '', isFollowing: false },
-      // { id: 7, name: '조성민', email: '', isFollowing: false },
-    ]);
+  const getUserList = useCallback(async (searchValue: string | null) => {
+    if (searchValue !== null) {
+      // eslint-disable-next-line no-console
+      console.log(searchValue);
+      const response = await searchMateListAPI(searchValue);
+      setUserList([response]);
+    } else {
+      // TODO 1은 임시 숫자
+      const response = await getMateListAPI(1);
+      setUserList(response);
+    }
   }, []);
 
   const changeMateState = useCallback(
-    (user: UserInfo) => {
-      const copiedUserList = JSON.parse(JSON.stringify(userList));
-      const clickedMate = copiedUserList?.find(
-        (copiedUser: UserInfo) => copiedUser.id === user.id,
-      );
-      clickedMate.isFollowing = clickedMate.isFollowing !== true;
-      setUserList(copiedUserList);
+    async (user: MateInfo) => {
+      const response = await followMateAPI();
+      if (response) {
+        const copiedUserList = JSON.parse(JSON.stringify(userList));
+        const clickedMate = copiedUserList?.find(
+          (copiedUser: MateInfo) => copiedUser.id === user.id,
+        );
+        clickedMate.isFollowing = clickedMate.isFollowing !== true;
+        setUserList(copiedUserList);
+      }
     },
     [userList],
   );
@@ -98,7 +69,7 @@ const ManageMateList = () => {
 
   useEffect(() => {
     if (pageType === 'my-mate') {
-      getUserList(null);
+      void getUserList(null);
     }
   }, [pageType]);
 
@@ -134,7 +105,7 @@ const ManageMateList = () => {
             pageType === 'my-mate' ? '훕팅 메이트 검색' : '사용자 ID 검색'
           }
           searchHandler={e => {
-            getUserList(e);
+            void getUserList(e);
           }}
         />
       </div>
@@ -186,7 +157,7 @@ const ManageMateList = () => {
                             />
                           ),
                           onClick: () => {
-                            changeMateState(user);
+                            void changeMateState(user);
                           },
                         }
                   }
@@ -197,7 +168,6 @@ const ManageMateList = () => {
           })}
         </section>
       </section>
-      {openModal && <AddFollowingModal addEvent={addFollowing} />}
     </FollowerListPageStyle>
   );
 };
