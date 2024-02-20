@@ -29,6 +29,7 @@ export interface DropDownProfileDataType {
 export interface MateInfo {
   id: number;
   name: string;
+  email: string;
   photo: string;
   content: string;
   isFollowing: boolean;

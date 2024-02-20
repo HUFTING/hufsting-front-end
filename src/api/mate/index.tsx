@@ -1,8 +1,8 @@
 import axiosInstance from '@/api/axiosInstance';
 import { type MateInfo } from '@/types/user';
 
-export const getMateListAPI = async (memberId: number): Promise<MateInfo[]> => {
-  const { data } = await axiosInstance.get(`/api/v1/followingList/${memberId}`);
+export const getMateListAPI = async (): Promise<MateInfo[]> => {
+  const { data } = await axiosInstance.get(`/api/v1/followingList/`);
   return data;
 };
 
@@ -13,7 +13,9 @@ export const searchMateListAPI = async (email: string): Promise<MateInfo> => {
   return data;
 };
 
-export const followMateAPI = async (): Promise<boolean> => {
-  const { data } = await axiosInstance.get(`/api/v1/follow`);
+export const followMateAPI = async (email: string): Promise<boolean> => {
+  const { data } = await axiosInstance.post(`/api/v1/follow`, {
+    memberEmail: email,
+  });
   return data;
 };

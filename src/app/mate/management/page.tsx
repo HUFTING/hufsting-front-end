@@ -21,20 +21,17 @@ const ManageMateList = () => {
 
   const getUserList = useCallback(async (searchValue: string | null) => {
     if (searchValue !== null) {
-      // eslint-disable-next-line no-console
-      console.log(searchValue);
       const response = await searchMateListAPI(searchValue);
       setUserList([response]);
     } else {
-      // TODO 1은 임시 숫자
-      const response = await getMateListAPI(1);
+      const response = await getMateListAPI();
       setUserList(response);
     }
   }, []);
 
   const changeMateState = useCallback(
     async (user: MateInfo) => {
-      const response = await followMateAPI();
+      const response = await followMateAPI(user.email);
       if (response) {
         const copiedUserList = JSON.parse(JSON.stringify(userList));
         const clickedMate = copiedUserList?.find(
