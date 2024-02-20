@@ -28,8 +28,8 @@ const BasicInput = ({
         type={type}
         placeholder={placeholder}
         onChange={e => {
+          setValue(e.target.value);
           if (changeHandler !== undefined) {
-            setValue(e.target.value);
             changeHandler(e);
           }
         }}

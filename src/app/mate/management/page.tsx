@@ -97,14 +97,16 @@ const ManageMateList = () => {
       />
 
       <div className="w-[90%] mb-4 mx-auto">
-        <BasicInput
-          placeholder={
-            pageType === 'my-mate' ? '훕팅 메이트 검색' : '사용자 ID 검색'
-          }
-          searchHandler={e => {
-            void getUserList(e);
-          }}
-        />
+        {pageType === 'new-mate' ? (
+          <BasicInput
+            placeholder="사용자 ID 검색"
+            searchHandler={e => {
+              void getUserList(e);
+            }}
+          />
+        ) : (
+          ''
+        )}
       </div>
 
       <section
@@ -115,54 +117,46 @@ const ManageMateList = () => {
         <div className="font-bold text-xl mb-2">{getText()}</div>
 
         <section className="w-full flex flex-grow flex-col overflow-auto">
-          {userList?.map(user => {
-            if (
-              (pageType === 'my-mate' && user.isFollowing) ||
-              pageType === 'new-mate'
-            ) {
-              return (
-                <MateListItem
-                  key={user.id}
-                  user={user}
-                  onClickItem={() => {
-                    if (pageType === 'my-mate') {
-                      if (user.isFollowing) {
-                        router.push('/profile');
-                      } else {
-                        // eslint-disable-next-line no-alert
-                        alert('서로 파트너여야만 프로필 조회가 가능합니다');
-                      }
-                    }
-                  }}
-                  right={
-                    pageType === 'my-mate'
-                      ? null
-                      : {
-                          icon: user.isFollowing ? (
-                            <Image
-                              src="/check.svg"
-                              width={24}
-                              height={24}
-                              alt="my-mate-icon"
-                            />
-                          ) : (
-                            <Image
-                              src="/Plus.svg"
-                              width={24}
-                              height={24}
-                              alt="add-mate-icon"
-                            />
-                          ),
-                          onClick: () => {
-                            void changeMateState(user);
-                          },
-                        }
+          {userList?.map(user => (
+            <MateListItem
+              key={user.id}
+              user={user}
+              onClickItem={() => {
+                if (pageType === 'my-mate') {
+                  if (user.isFollowing) {
+                    router.push('/profile');
+                  } else {
+                    // eslint-disable-next-line no-alert
+                    alert('서로 파트너여야만 프로필 조회가 가능합니다');
                   }
-                />
-              );
-            }
-            return '';
-          })}
+                }
+              }}
+              right={
+                pageType === 'my-mate'
+                  ? null
+                  : {
+                      icon: user.isFollowing ? (
+                        <Image
+                          src="/check.svg"
+                          width={24}
+                          height={24}
+                          alt="my-mate-icon"
+                        />
+                      ) : (
+                        <Image
+                          src="/Plus.svg"
+                          width={24}
+                          height={24}
+                          alt="add-mate-icon"
+                        />
+                      ),
+                      onClick: () => {
+                        void changeMateState(user);
+                      },
+                    }
+              }
+            />
+          ))}
         </section>
       </section>
     </FollowerListPageStyle>

@@ -25,7 +25,7 @@ const menuList = [
   },
   {
     title: '친구 관리',
-    link: '/follow/list',
+    link: '/mate/management',
     icon: <ManageFollowIcon />,
     pickedIcon: <ManageFollowIcon color="white" />,
   },
