@@ -9,12 +9,15 @@ import SubHeader from '@/components/common/layout/SubHeader';
 import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
 import axiosInstance from '@/api/axiosInstance';
+import { toast } from 'react-toastify';
+import useUserDataStore from '@/store/user';
 
 interface Participant {
   id: number;
   name: string;
   major: string;
   studentNumber: string;
+  gender: string;
   age: string;
   mbti: string;
   content: string;
@@ -32,6 +35,8 @@ interface ListType {
 }
 
 const Detail = () => {
+  const userData = useUserDataStore(state => state.userData);
+
   // 쿼리 받아오기
   const searchParam = useSearchParams();
   const search = parseInt(searchParam.get('id') ?? '', 10);
@@ -71,14 +76,17 @@ const Detail = () => {
   // 훕팅 신청 api
   const onApplyClick = () => {
     if (title.trim() === '') {
-      alert('제목을 입력해주세요.');
+      toast.warning('제목을 입력해주세요.');
       return;
     }
     if (postInfo !== null && returnId.length < postInfo.desiredNumPeople) {
-      alert('정보를 모두 입력해주세요.');
+      toast.warning('참여자의 정보를 모두 입력해주세요.');
       return;
     }
-
+    if (postInfo !== null && postInfo.gender === userData.gender) {
+      toast.error('매칭글과 참여자의 성별이 같아 신청할 수 없습니다.');
+      return;
+    }
     const RequestData = {
       matchingPostId: search,
       participantIds: returnId,
@@ -88,9 +96,13 @@ const Detail = () => {
     axiosInstance
       .post('/apis/api/v1/matchingrequests', RequestData)
       .then(res => {
+        toast.success('훕팅 신청이 완료되었습니다.');
         router.push('/');
       })
-      .catch(e => e);
+      .catch(e => {
+        const errorMsg = e.response.data.errorMessages.matchingPost;
+        toast.error(errorMsg);
+      });
   };
 
   return (

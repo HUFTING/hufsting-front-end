@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axiosInstance from '@/api/axiosInstance';
+import { toast } from 'react-toastify';
+import useUserDataStore from '@/store/user';
 import ImportMateModal from '../common/modal/ImportMateModal';
 
 interface NameListProps {
@@ -17,7 +19,7 @@ interface UserInfo {
   id: number;
   name: string;
   major: string;
-  gender?: string;
+  gender: string;
   studentNumber: string;
   age: string;
   mbti: string;
@@ -33,6 +35,7 @@ const NameList = ({
 }: NameListProps) => {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [edited, setEdited] = useState<boolean[]>([]);
+  const userData = useUserDataStore(state => state.userData);
 
   // 초기 유저 정보
   useEffect(() => {
@@ -153,27 +156,28 @@ const NameList = ({
       .then(res => {
         const { data } = res;
         const modifiedData = modifyUserInfo(data);
-        // if (modifiedData.gender !== userData.gender) {
-        //   if (modifiedData.gender === '비공개') {
-        //     alert('성별을 확인할 수 없습니다.');
-        //     return;
-        //   }
-        //   alert('같은 성별의 메이트를 추가해주세요.');
-        //   return;
-        // } else {
+        if (modifiedData.gender !== userData.gender) {
+          if (modifiedData.gender === '비공개') {
+            toast.warning('메이트의 성별을 확인할 수 없습니다.');
+            return;
+          }
+          toast.warning('같은 성별의 메이트를 추가해주세요.');
+          return;
+        }
         setUserInfo(prev =>
           prev.map((user, i) =>
             i === index ? { ...user, ...modifiedData } : user,
           ),
         );
+
         if (setReturnId !== undefined) {
           setReturnId(prevIds => {
             const newIdList = [...prevIds];
             newIdList[index] = data.id;
             return newIdList;
           });
+          // }
         }
-        // }
       })
       .catch(e => e);
   };
@@ -214,6 +218,7 @@ const NameList = ({
     const ageWithoutYear = currentInfo.age.replace('년', '');
     const updateInfo = {
       ...currentInfo,
+      gender: currentInfo.gender,
       age: ageWithoutYear,
       studentNumber: currentInfo.studentNumber,
       mbti: currentInfo.mbti,
