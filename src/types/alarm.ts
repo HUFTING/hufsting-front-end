@@ -30,6 +30,7 @@ interface ParticipantInfo {
   id: number;
   name: string;
   major: string;
+  gender: string;
   studentNumber: string;
   age: string;
   mbti: string;

@@ -11,11 +11,13 @@ import NameList from '@/components/list/NameList';
 import axiosInstance from '@/api/axiosInstance';
 import ApplyList from '@/components/list/ApplyList';
 import useUserDataStore from '@/store/user';
+import { toast } from 'react-toastify';
 
 interface Hosts {
   id: number;
   name: string;
   major: string;
+  gender: string;
   studentNumber: string;
   age: string;
   mbti: string;
@@ -109,6 +111,15 @@ const MyDetail = () => {
 
   // 수정 저장
   const handleSave = async () => {
+    const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
+    if (openTalkLink !== undefined) {
+      if (!kakaoLinkRegex.test(openTalkLink)) {
+        toast.warning(
+          "오픈채팅방 링크 오류 😢\n'https://open.kakao.com/' 로 시작하는 올바른 링크를 작성해주세요.",
+        );
+        return;
+      }
+    }
     setUpdatedParticipants([]);
     setText({
       isEdit: false,
@@ -116,15 +127,6 @@ const MyDetail = () => {
       buttonleft: '삭제하기',
       buttonright: '수정하기',
     });
-
-    const requestData = {
-      title: postInfo?.title,
-      id: postInfo?.id,
-      gender: postInfo?.gender,
-      desiredNumPeople: postInfo?.desiredNumPeople,
-      openTalkLink,
-      participants: returnId,
-    };
 
     const myProfile = await fetchMyProfile();
     setUpdatedParticipants(prevParticipants => [
@@ -143,6 +145,15 @@ const MyDetail = () => {
         ...modifiedProfiles,
       ]);
     });
+
+    const requestData = {
+      title: postInfo?.title,
+      id: postInfo?.id,
+      gender: postInfo?.gender,
+      desiredNumPeople: postInfo?.desiredNumPeople,
+      openTalkLink,
+      participants: returnId,
+    };
 
     axiosInstance
       .put(`/apis/api/v1/matchingposts/${search}`, requestData)
@@ -231,7 +242,7 @@ const MyDetail = () => {
                 </SubTitle>
                 <ApplyList
                   lists={postInfo.matchingRequests}
-                  pathnameProp="/accept"
+                  pathnameProp="/new-request"
                   representativeEmail={postInfo.representativeEmail}
                   matchingStatus={postInfo.matchingStatus}
                 />

@@ -19,6 +19,7 @@ const NewRequestPage = () => {
   // 쿼리 받아오기
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
+  const from = searchParams.get('from');
 
   const router = useRouter();
 
@@ -34,8 +35,18 @@ const NewRequestPage = () => {
   useEffect(() => {
     const getAlarmInfo = async () => {
       try {
-        const data = (await getAlarmInfoAPI(search ?? '')) as NewAlarmType;
-        setPostInfo(data);
+        if (from === 'alarm') {
+          const data = (await getAlarmInfoAPI(search ?? '')) as NewAlarmType;
+          setPostInfo(data);
+        } else {
+          axiosInstance
+            .get(`/apis/api/v1/come-matchingrequests/${search}`)
+            .then(res => {
+              const { data } = res;
+              setPostInfo(data);
+            })
+            .catch(e => e);
+        }
       } catch (e) {
         if (!isAuthError(e as AxiosError)) {
           toast.error('정보를 불러오는데 실패했습니다.');
