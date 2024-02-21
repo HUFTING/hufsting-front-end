@@ -11,11 +11,13 @@ import NameList from '@/components/list/NameList';
 import axiosInstance from '@/api/axiosInstance';
 import ApplyList from '@/components/list/ApplyList';
 import useUserDataStore from '@/store/user';
+import { toast } from 'react-toastify';
 
 interface Hosts {
   id: number;
   name: string;
   major: string;
+  gender: string;
   studentNumber: string;
   age: string;
   mbti: string;
@@ -109,6 +111,15 @@ const MyDetail = () => {
 
   // 수정 저장
   const handleSave = async () => {
+    const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
+    if (openTalkLink !== undefined) {
+      if (!kakaoLinkRegex.test(openTalkLink)) {
+        toast.warning(
+          "오픈채팅방 링크 오류 😢\n'https://open.kakao.com/' 로 시작하는 올바른 링크를 작성해주세요.",
+        );
+        return;
+      }
+    }
     setUpdatedParticipants([]);
     setText({
       isEdit: false,
