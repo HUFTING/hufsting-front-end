@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 
 export const MainHeaderStyle = styled.section`
   & {
-    ${tw`w-full p-4 flex justify-between relative`}
+    ${tw`w-full p-4 flex justify-between relative z-[100]`}
 
     >div:first-child {
       ${tw`cursor-pointer`}

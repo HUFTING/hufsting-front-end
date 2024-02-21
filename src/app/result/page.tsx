@@ -1,7 +1,6 @@
 'use client';
 
 import styled from 'styled-components';
-import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -101,7 +100,6 @@ const Result = () => {
 
   return (
     <Container>
-      <MainHeader />
       <SubHeader
         title="훕팅 완료"
         leftButton={{

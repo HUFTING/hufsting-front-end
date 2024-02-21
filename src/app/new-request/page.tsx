@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
-import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axiosInstance from '@/api/axiosInstance';
@@ -92,7 +91,6 @@ const NewRequestPage = () => {
 
   return (
     <Container>
-      <MainHeader />
       <SubHeader title="훕팅 신청 목록" />
       {postInfo !== null && (
         <>

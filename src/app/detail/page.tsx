@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import NameList from '@/components/list/NameList';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
-import MainHeader from '@/components/common/layout/MainHeader';
 import MainInfo from '@/components/common/modal/MainInfo';
 import axiosInstance from '@/api/axiosInstance';
 import { toast } from 'react-toastify';
@@ -107,7 +106,6 @@ const Detail = () => {
 
   return (
     <Container>
-      <MainHeader />
       <SubHeader
         title="훕팅 참여하기"
         rightButton={{
