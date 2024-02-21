@@ -10,7 +10,6 @@ import React, {
   type ChangeEvent,
 } from 'react';
 import styled from 'styled-components';
-import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
 import BasicInput from '@/components/common/BasicInput';
 import axiosInstance from '@/api/axiosInstance';
@@ -84,7 +83,6 @@ const Home = () => {
   return (
     <Container>
       <RegisterButton />
-      <MainHeader />
       <SubHeader title="훕팅 목록" />
       <div className="searchbox">
         <BasicInput placeholder="제목 검색" changeHandler={handleInputChange} />

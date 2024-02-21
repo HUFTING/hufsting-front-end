@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import SubHeader from '@/components/common/layout/SubHeader';
-import MainHeader from '@/components/common/layout/MainHeader';
 import axiosInstance from '@/api/axiosInstance';
 import RegisterButton from '@/components/common/button/RegisterButton';
 import List from '../../components/list/HomeList';
@@ -84,7 +83,6 @@ const MyList = () => {
   return (
     <Container>
       <RegisterButton />
-      <MainHeader />
       <SubHeader title="내가 올린 훕팅" />
       {lists.length === 0 ? (
         <NoDataMessage>훕팅 목록이 존재하지 않습니다.</NoDataMessage>

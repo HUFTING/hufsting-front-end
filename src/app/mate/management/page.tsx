@@ -1,6 +1,5 @@
 'use client';
 
-import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -72,7 +71,6 @@ const ManageMateList = () => {
 
   return (
     <FollowerListPageStyle>
-      <MainHeader />
       <SubHeader title="훕팅 메이트" />
 
       <SelectMenuBar

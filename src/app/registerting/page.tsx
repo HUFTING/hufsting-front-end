@@ -10,7 +10,6 @@ import axiosInstance from '@/api/axiosInstance';
 import useUserDataStore from '@/store/user';
 import { useRouter } from 'next/navigation';
 import EffectivenessAlert from '@/components/common/modal/EffectivenessAlert';
-import MainHeader from '@/components/common/layout/MainHeader';
 import SubHeader from '@/components/common/layout/SubHeader';
 
 const test = [
@@ -240,7 +239,6 @@ const Registerting = () => {
 
   return (
     <Container>
-      <MainHeader />
       <SubHeader
         title={text.subtitle}
         rightButton={{
