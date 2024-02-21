@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import UserIcon from '../ui/UserIcon';
-import SecretIcon from '../ui/SecretIcon';
+// import SecretIcon from '../ui/SecretIcon';
 import BasicButton from '../button/Button';
 import ManageFollowIcon from '../ui/ManageFollowIcon';
 import ListIcon from '../ui/ListIcon';
@@ -29,12 +29,12 @@ const menuList = [
     icon: <ManageFollowIcon />,
     pickedIcon: <ManageFollowIcon color="white" />,
   },
-  {
-    title: '설정',
-    link: '/setting',
-    icon: <SecretIcon />,
-    pickedIcon: <SecretIcon color="white" />,
-  },
+  // {
+  //   title: '설정',
+  //   link: '/setting',
+  //   icon: <SecretIcon />,
+  //   pickedIcon: <SecretIcon color="white" />,
+  // },
 ];
 interface props {
   closeHamburgerEvent: () => void;
