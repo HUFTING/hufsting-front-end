@@ -28,7 +28,7 @@ const ApplyList = ({
               <Link
                 href={{
                   pathname: pathnameProp,
-                  query: { id: item.matchingRequestId },
+                  query: { id: item.matchingRequestId, from: 'detail' },
                 }}
               >
                 <p className="link">{item.matchingRequestTitle}</p>
