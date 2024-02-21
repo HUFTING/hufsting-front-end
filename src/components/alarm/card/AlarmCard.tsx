@@ -21,7 +21,7 @@ const HuftingAlarmCard = ({
   const handleOnClick = () => {
     switch (type) {
       case '매칭 요청':
-        router.push(`/new-request?id=${id}`);
+        router.push(`/new-request?id=${id}&from=${'alarm'}`);
         break;
       case '매칭 수락':
         router.push(`/result?id=${id}`);

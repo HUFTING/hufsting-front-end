@@ -19,7 +19,7 @@ interface UserInfo {
   id: number;
   name: string;
   major: string;
-  gender: string;
+  gender?: string;
   studentNumber: string;
   age: string;
   mbti: string;
@@ -95,6 +95,14 @@ const NameList = ({
       setUserInfo(initialUserInfo);
     }
   }, [desiredNumPeople, editable, participants, onEditButton]);
+
+  // 초기 참가자 아이디 return
+  useEffect(() => {
+    const participantIds = participants.map(participant => participant.id);
+    if (setReturnId !== undefined) {
+      setReturnId(participantIds);
+    }
+  }, [participants, setReturnId]);
 
   // 개인 정보 수정해서 반환
   const modifyUserInfo = (data: UserInfo) => ({
