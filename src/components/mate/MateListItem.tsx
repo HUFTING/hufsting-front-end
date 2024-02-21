@@ -5,7 +5,7 @@ import { type MateInfo } from '@/types/user';
 
 interface props {
   user: MateInfo;
-  onClickItem: () => void;
+  onClickItem?: null | (() => void);
   right?: null | { icon: JSX.Element; onClick: () => void };
 }
 
@@ -20,7 +20,7 @@ const MateListItem = ({ user, onClickItem, right }: props) => {
       key={user.id}
       role="presentation"
       onClick={() => {
-        onClickItem();
+        if (onClickItem !== null && onClickItem !== undefined) onClickItem();
       }}
     >
       <div className="photo">

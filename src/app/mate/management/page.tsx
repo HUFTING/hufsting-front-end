@@ -2,7 +2,6 @@
 
 import SubHeader from '@/components/common/layout/SubHeader';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { FollowerListPageStyle } from '@/styles/followerStyles';
 import SelectMenuBar from '@/components/mate/SelectMenuBar';
 import MateListItem from '@/components/mate/MateListItem';
@@ -14,7 +13,6 @@ import { type MateInfo } from '@/types/user';
 type MatePageType = 'my-mate' | 'new-mate';
 
 const ManageMateList = () => {
-  const router = useRouter();
   const [userList, setUserList] = useState<MateInfo[]>([]);
   const [pageType, setPageType] = useState<MatePageType>('my-mate');
 
@@ -119,16 +117,18 @@ const ManageMateList = () => {
             <MateListItem
               key={user.id}
               user={user}
-              onClickItem={() => {
-                if (pageType === 'my-mate') {
-                  if (user.isFollowing) {
-                    router.push('/profile');
-                  } else {
-                    // eslint-disable-next-line no-alert
-                    alert('서로 파트너여야만 프로필 조회가 가능합니다');
-                  }
-                }
-              }}
+              onClickItem={
+                null
+                //   () => {
+                //   if (pageType === 'my-mate') {
+                //     if (user.isFollowing) {
+                //       router.push('/profile');
+                //     } else {
+                //       toast.info('서로 파트너여야만 프로필 조회가 가능합니다');
+                //     }
+                //   }
+                // }
+              }
               right={
                 pageType === 'my-mate'
                   ? null
