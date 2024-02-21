@@ -128,15 +128,6 @@ const MyDetail = () => {
       buttonright: '수정하기',
     });
 
-    const requestData = {
-      title: postInfo?.title,
-      id: postInfo?.id,
-      gender: postInfo?.gender,
-      desiredNumPeople: postInfo?.desiredNumPeople,
-      openTalkLink,
-      participants: returnId,
-    };
-
     const myProfile = await fetchMyProfile();
     setUpdatedParticipants(prevParticipants => [
       ...prevParticipants,
@@ -154,6 +145,15 @@ const MyDetail = () => {
         ...modifiedProfiles,
       ]);
     });
+
+    const requestData = {
+      title: postInfo?.title,
+      id: postInfo?.id,
+      gender: postInfo?.gender,
+      desiredNumPeople: postInfo?.desiredNumPeople,
+      openTalkLink,
+      participants: returnId,
+    };
 
     axiosInstance
       .put(`/apis/api/v1/matchingposts/${search}`, requestData)
@@ -242,7 +242,7 @@ const MyDetail = () => {
                 </SubTitle>
                 <ApplyList
                   lists={postInfo.matchingRequests}
-                  pathnameProp="/accept"
+                  pathnameProp="/new-request"
                   representativeEmail={postInfo.representativeEmail}
                   matchingStatus={postInfo.matchingStatus}
                 />
