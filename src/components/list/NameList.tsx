@@ -210,7 +210,7 @@ const NameList = ({
   const handleComplete = (index: number) => {
     const currentInfo = userInfo[index];
     if (currentInfo.major === '') {
-      alert('학과는 필수 입력 항목입니다.');
+      toast.warning('학과 정보는 필수 입력 사항입니다.');
       return;
     }
     setEdited(prev => prev.map((value, i) => (i === index ? !value : value)));
