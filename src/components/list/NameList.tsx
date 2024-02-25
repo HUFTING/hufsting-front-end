@@ -211,6 +211,7 @@ const NameList = ({
   useEffect(() => {
     if (selectedUserId !== undefined) {
       loadUserInfoById(mateIndex);
+      setSelectedUserId(undefined);
     }
   }, [isOpenModal]);
 
