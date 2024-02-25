@@ -76,7 +76,7 @@ const Detail = () => {
   // 훕팅 신청 api
   const onApplyClick = () => {
     if (title.trim() === '') {
-      toast.warning('제목을 입력해주세요.');
+      toast.warning('한 줄 소개를 입력해주세요.');
       return;
     }
     if (postInfo !== null && returnId.length < postInfo.desiredNumPeople) {
