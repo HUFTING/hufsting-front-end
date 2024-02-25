@@ -9,6 +9,7 @@ import { getAlarmInfoAPI } from '@/api/alarm';
 import { toast } from 'react-toastify';
 import isAuthError from '@/utils/isAuthError';
 import { type AxiosError } from 'axios';
+import BasicButton from '@/components/common/button/Button';
 // import axiosInstance from '@/api/axiosInstance';
 
 const Container = styled.div`
@@ -16,56 +17,37 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  p {
-    text-align: center;
-  }
-  .titlebox {
-    padding: 2px 22px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-  }
-  .otherInfo {
-    padding: 40px 30px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    .top {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    a {
-      text-decoration: underline;
-    }
-  }
-  .HuftingComplete {
-    margin-top: 28px;
-    margin-bottom: 10px;
-    color: #ff6869;
-    text-align: center;
-    font-family: Inter;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-  }
-  .SayHi {
-    color: #000;
-    font-family: Inter;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-  }
 `;
 
-const SubTitle = styled.p`
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: bold;
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80vh;
+  background-image: url('../result.svg');
+  background-repeat: no-repeat;
+  background-position: 20% 10%;
+
+  .buttonWapper {
+    height: 14vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .completeMsg {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .subMsg {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
 `;
 
 const Result = () => {
@@ -109,20 +91,30 @@ const Result = () => {
           },
         }}
       />
-      <p className="HuftingComplete">❤훕팅완료❤</p>
-      <p className="SayHi">아래링크로 접속해 인사를 건네보세요!</p>
-      <div className="otherInfo">
-        <div className="top">
-          <SubTitle>오픈채팅방 링크</SubTitle>
-          <button type="button" onClick={handleCopyLink}>
-            주소 복사
-          </button>
+      <Content>
+        <p className="completeMsg">❤훕팅완료❤</p>
+        <p className="subMsg">아래링크로 접속해 인사를 건네보세요!</p>
+        <div className="buttonWapper">
+          <BasicButton
+            color="red"
+            assetType="Primary"
+            size="M"
+            content="오픈채팅방 링크 복사"
+            onClickEvent={handleCopyLink}
+            isActive
+            width="100%"
+          />
+          <BasicButton
+            color="red"
+            assetType="Primary"
+            size="M"
+            content="채팅방 이동"
+            onClickEvent={handleCopyLink}
+            isActive
+            width="100%"
+          />
         </div>
-        {/* 복사 버튼 추가 */}
-        <a href={info} target="_blank" rel="noopener noreferrer">
-          {info}
-        </a>
-      </div>
+      </Content>
     </Container>
   );
 };
