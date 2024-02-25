@@ -21,7 +21,7 @@ interface HomeListProps {
 const List = ({ lists, pathnameProp }: HomeListProps) => (
   <Container>
     {lists.map((item, index) => (
-      <React.Fragment key={item.id}>
+      <div key={item.id}>
         {item.matchingStatus === '매칭 대기' ? (
           <Link
             className="link"
@@ -77,7 +77,7 @@ const List = ({ lists, pathnameProp }: HomeListProps) => (
             </div>
           </Wrapper>
         )}
-      </React.Fragment>
+      </div>
     ))}
   </Container>
 );
