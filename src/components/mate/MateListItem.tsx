@@ -1,11 +1,11 @@
-import type { UserInfo } from '@/app/mate/management/page';
 import { FollowerListItemStyle } from '@/styles/followerStyles';
 import React, { useCallback } from 'react';
 import Image from 'next/image';
+import { type MateInfo } from '@/types/user';
 
 interface props {
-  user: UserInfo;
-  onClickItem: () => void;
+  user: MateInfo;
+  onClickItem?: null | (() => void);
   right?: null | { icon: JSX.Element; onClick: () => void };
 }
 
@@ -20,7 +20,7 @@ const MateListItem = ({ user, onClickItem, right }: props) => {
       key={user.id}
       role="presentation"
       onClick={() => {
-        onClickItem();
+        if (onClickItem !== null && onClickItem !== undefined) onClickItem();
       }}
     >
       <div className="photo">
@@ -29,7 +29,7 @@ const MateListItem = ({ user, onClickItem, right }: props) => {
       <div className="user">
         <div>
           <div>{user.name}</div>
-          <div>{user.profile}</div>
+          <div>{user.content}</div>
         </div>
         <div
           role="presentation"

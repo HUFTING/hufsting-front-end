@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import BasicButton from '@/components/common/button/Button';
 import SubHeader from '@/components/common/layout/SubHeader';
-import MainHeader from '@/components/common/layout/MainHeader';
 import ClipboardCopy from '@/components/copy/Copy';
 import NameList from '@/components/list/NameList';
 import axiosInstance from '@/api/axiosInstance';
@@ -197,7 +196,6 @@ const MyDetail = () => {
 
   return (
     <Container>
-      <MainHeader />
       <SubHeader
         title={text.subtitle}
         rightButton={{

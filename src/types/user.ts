@@ -26,6 +26,15 @@ export interface DropDownProfileDataType {
   age: string | null;
 }
 
+export interface MateInfo {
+  id: number;
+  name: string;
+  email: string;
+  photo: string;
+  content: string;
+  isFollowing: boolean;
+}
+
 // '남', '여'만 가능
 // 학번은 '00학번'만 가능
 // mbti는 실제로 존재하는 mbti만 가능 예를들어 AAAA 안됨
