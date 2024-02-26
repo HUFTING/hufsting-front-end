@@ -251,7 +251,7 @@ const Registerting = () => {
       <div className="otherInfo">
         <input
           type="text"
-          placeholder="제목을 입력하세요"
+          placeholder=" 제목을 입력해주세요."
           value={title} // title에 입력된 값이 표시되어야 함
           onChange={e => {
             setTitle(e.target.value);
