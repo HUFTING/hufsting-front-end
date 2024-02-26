@@ -201,17 +201,17 @@ const Registerting = () => {
           data,
         );
         // eslint-disable-next-line no-console
-        console.log(response);
+        // console.log(response);
 
         const roomId = response.data.matchingPostId;
         localStorage.setItem('roomId', roomId);
         // eslint-disable-next-line no-console
-        console.log('훕팅 등록 포스트 요청 성공');
+        // console.log('훕팅 등록 포스트 요청 성공');
         handleClick(); // myhufting으로의 페이지 이동은 post 요청이 성공했을때 작동
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('훕팅 등록 버튼 에러', error);
+      // console.log('훕팅 등록 버튼 에러', error);
     }
   };
 
