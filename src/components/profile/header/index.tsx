@@ -34,7 +34,11 @@ const ProfileHeader = ({
       >
         <BackIcon />
       </button>
-      <div role="presentation" onClick={handleOnClick}>
+      <div
+        role="presentation"
+        className="cursor-pointer"
+        onClick={handleOnClick}
+      >
         <Text
           color="black"
           fontSize="lg"

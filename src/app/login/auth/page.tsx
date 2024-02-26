@@ -15,10 +15,10 @@ export default function AuthPage() {
 
   useEffect(() => {
     const login = async () => {
-      if (code === null || hd === null) {
+      if (hd !== null && hd !== 'hufs.ac.kr') {
         return;
       }
-      if (hd !== 'hufs.ac.kr') {
+      if (code === null || hd === null) {
         return;
       }
       const data = await loginAPI(code);
@@ -33,20 +33,19 @@ export default function AuthPage() {
         router.push('/login/agree');
         return;
       }
-      if (data.profileSetUpStatus) {
-        const profileData = await getProfileAPI();
-        setUserData({ ...loginUserData, ...profileData });
-        router.push('/');
-      }
+      const profileData = await getProfileAPI();
+      setUserData({ ...loginUserData, ...profileData });
+      router.push('/');
     };
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     login();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (code === null || hd === null) {
-    return <Login text="잘못된 접근입니다." />;
-  }
-  if (hd !== 'hufs.ac.kr') {
+
+  if (hd !== null && hd !== 'hufs.ac.kr') {
     return <Login text="학교 이메일로 로그인해주세요!" />;
+  }
+  if (code === null || hd === null) {
+    return <Login text={`잘못된 접근입니다.\n학교 이메일로 로그인해주세요!`} />;
   }
 }
