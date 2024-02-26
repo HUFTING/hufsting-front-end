@@ -182,7 +182,6 @@ const Detail = () => {
 export default Detail;
 
 const Container = styled.div`
-  padding: 33px 0 0 0;
   display: flex;
   flex-direction: column;
   justify-content: center;

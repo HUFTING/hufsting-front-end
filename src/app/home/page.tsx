@@ -130,7 +130,6 @@ const Home = () => {
 export default Home;
 
 const Container = styled.div`
-  padding: 33px 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
