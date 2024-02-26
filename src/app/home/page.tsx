@@ -24,22 +24,39 @@ interface ListType {
   gender: string;
   authorName: string;
   createdAt: Date;
+  totalNum: number;
 }
 
 const Home = () => {
   const [initialLists, setInitialLists] = useState<ListType[]>([]);
   const [filteredLists, setFilteredLists] = useState(initialLists);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const itemsPerPage = 5;
 
-  // 리스트 받아오기
   useEffect(() => {
+    setIsLoading(true);
     axiosInstance
-      .get('/apis/api/v1/matchingposts')
+      .get(
+        `/apis/api/v1/matchingposts?page=${currentPage}&size=${itemsPerPage}`,
+      )
       .then(res => {
         const { data } = res.data;
-        setInitialLists(data);
-        setFilteredLists(data);
+        setInitialLists(prevData => [...prevData, ...data]);
+        setFilteredLists(prevData => [...prevData, ...data]);
       })
       .catch(e => e);
+    setIsLoading(false);
+  }, [currentPage]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, {
+      threshold: 0,
+    });
+    const observerTarget = document.getElementById('observer');
+    if (observerTarget !== null) {
+      observer.observe(observerTarget);
+    }
   }, []);
 
   // 선택된 필터에 따라 리스트를 필터링하는 함수
@@ -67,6 +84,7 @@ const Home = () => {
     (selectedFilters: SelectedFilters) => {
       const updatedLists = filterLists(selectedFilters, initialLists);
       setFilteredLists(updatedLists);
+      // setTotalPages(Math.ceil(updatedLists.totalNum / itemsPerPage));
     },
     [filterLists, initialLists],
   );
@@ -78,6 +96,15 @@ const Home = () => {
       item.title.toLowerCase().includes(inputValue.toLowerCase()),
     );
     setFilteredLists(updatedLists);
+    // setTotalPages(Math.ceil(updatedLists.totalNum / itemsPerPage));
+  };
+
+  // 무한스크롤
+  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (target.isIntersecting && !isLoading) {
+      setCurrentPage(prevPage => prevPage + 1);
+    }
   };
 
   return (
@@ -95,6 +122,8 @@ const Home = () => {
           <List lists={filteredLists} pathnameProp="/detail" />
         </>
       )}
+      {isLoading && <p>Loading...</p>}
+      <div id="observer" style={{ height: '10px' }} />
     </Container>
   );
 };
@@ -112,7 +141,7 @@ const Container = styled.div`
 `;
 
 const NoDataMessage = styled.div`
-  height: 60vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
