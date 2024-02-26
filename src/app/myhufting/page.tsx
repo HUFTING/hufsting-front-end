@@ -126,7 +126,6 @@ const MyList = () => {
 export default MyList;
 
 const Container = styled.div`
-  padding: 33px 0 33px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;

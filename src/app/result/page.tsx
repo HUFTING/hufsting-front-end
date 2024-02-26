@@ -79,6 +79,10 @@ const Result = () => {
       .catch(e => toast.error('링크 복사에 실패했습니다.'));
   };
 
+  const handleMove = () => {
+    window.location.href = info;
+  };
+
   return (
     <Container>
       <SubHeader
@@ -109,7 +113,7 @@ const Result = () => {
             assetType="Primary"
             size="M"
             content="채팅방 이동"
-            onClickEvent={handleCopyLink}
+            onClickEvent={handleMove}
             isActive
             width="100%"
           />

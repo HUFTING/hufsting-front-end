@@ -130,7 +130,6 @@ const Home = () => {
 export default Home;
 
 const Container = styled.div`
-  padding: 33px 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -143,7 +142,8 @@ const Container = styled.div`
 const NoDataMessage = styled.div`
   height: 100vh;
   display: flex;
-  align-items: center;
+  padding-top: 20vh;
+  align-items: flex-start;
   justify-content: center;
   font-size: 22px;
   font-weight: bold;
