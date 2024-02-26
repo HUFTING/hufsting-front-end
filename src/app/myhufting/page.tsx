@@ -48,8 +48,8 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 
 const MyList = () => {
   const [lists, setLists] = useState<ListType[]>([]);
+  const [filter, setFilter] = useState('all'); // 'all', 'waiting', 'completed'
 
-  // 리스트 불러오기
   useEffect(() => {
     axiosInstance
       .get('/apis/api/v1/my-matchingposts')
@@ -59,9 +59,6 @@ const MyList = () => {
       })
       .catch(e => e);
   }, []);
-
-  // 필터링
-  const [filter, setFilter] = useState('all'); // 'all', 'waiting', 'completed'
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);

@@ -59,7 +59,6 @@ const Home = () => {
     }
   }, []);
 
-  // 선택된 필터에 따라 리스트를 필터링하는 함수
   const filterLists = useCallback(
     (filters: SelectedFilters, lists: ListType[]) => {
       const filteredByGender =
