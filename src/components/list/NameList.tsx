@@ -74,9 +74,7 @@ const NameList = ({
       const modifiedParticipants = modifyParticipants(participants);
       setUserInfo(modifiedParticipants);
       if (userInfo.length > 0) {
-        setUserInfo(prevUserInfo =>
-          prevUserInfo.slice(0, desiredNumPeople - 1),
-        );
+        setUserInfo(prevUserInfo => prevUserInfo.slice(0, desiredNumPeople));
       }
     } else {
       const initialUserInfo = Array.from(
