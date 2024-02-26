@@ -70,8 +70,7 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
                 <Image
                   src={user.profile}
                   alt="사용자 프로필 사진"
-                  width={48}
-                  height={48}
+                  layout="fill"
                 />
               ) : (
                 <div className="h-full w-full bg-gray-300" />
