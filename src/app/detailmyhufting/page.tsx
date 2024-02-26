@@ -134,8 +134,10 @@ const MyDetail = () => {
     await axiosInstance
       .put(`/apis/api/v1/matchingposts/${search}`, requestData)
       .then(res => {
-        const data = res.data.matchingHosts;
-        setUpdatedList(data);
+        const lists = res.data.matchingHosts;
+        const link = res.data.openTalkLink;
+        setUpdatedList(lists);
+        setOpenTalkLink(link);
       })
       .catch(e => e);
   };
@@ -199,7 +201,7 @@ const MyDetail = () => {
                   <SubTitle>오픈채팅방 링크</SubTitle>
                   <ClipboardCopy text={postInfo.openKakaoTalk} />
                 </div>
-                <p>{postInfo.openKakaoTalk}</p>
+                <p>{openTalkLink}</p>
               </>
             )}
             {!text.isEdit && (
