@@ -97,9 +97,7 @@ const Wrapper = styled.div<{
   flex-direction: column;
   padding: 12px 18px 12px 18px;
   background-color: ${props =>
-    props.$matchingStatus === '매칭 완료'
-      ? '#F9F9FB' // 매칭 완료일 경우
-      : 'white'}; // 매칭 대기
+    props.$matchingStatus === '매칭 완료' ? '#F9F9FB' : 'white'};
 
   &:active {
     background-color: ${props =>

@@ -82,7 +82,6 @@ const MyDetail = () => {
       .catch(e => e);
   }, [search]);
 
-  // 매칭 글 삭제
   const handleRemove = () => {
     axiosInstance
       .delete(`/apis/api/v1/matchingposts/${search}`)
@@ -93,7 +92,6 @@ const MyDetail = () => {
       .catch(e => e);
   };
 
-  // 매칭 글 수정
   const handleEdit = () => {
     setOpenTalkLink(postInfo?.openKakaoTalk);
     setText({
@@ -104,7 +102,6 @@ const MyDetail = () => {
     });
   };
 
-  // 수정 저장
   const handleSave = async () => {
     const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
     if (openTalkLink !== undefined) {
@@ -142,7 +139,6 @@ const MyDetail = () => {
       .catch(e => e);
   };
 
-  // 수정 취소
   const handleCancel = () => {
     setText({
       isEdit: false,
@@ -152,7 +148,6 @@ const MyDetail = () => {
     });
   };
 
-  // 왼쪽 버튼 클릭 이벤트
   const handleButtonClick = () => {
     void handleLeftButton();
   };

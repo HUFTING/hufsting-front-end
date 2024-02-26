@@ -25,7 +25,6 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
   };
 
   const handleResetFilters = () => {
-    // 초기화 버튼 클릭 시, 상태를 초기값으로 설정
     setSelectedFilters({
       count: '',
       gender: '',

@@ -35,32 +35,22 @@ interface ListType {
 
 const Detail = () => {
   const userData = useUserDataStore(state => state.userData);
-
-  // 쿼리 받아오기
   const searchParam = useSearchParams();
   const search = parseInt(searchParam.get('id') ?? '', 10);
-
-  // router
   const router = useRouter();
 
-  // NameList 참여자 아이디
+  const [postInfo, setPostInfo] = useState<ListType | null>(null);
   const [returnId, setReturnId] = useState<number[]>([]);
-
-  // 타이틀 입력
   const [title, setTitle] = useState('');
+  const [isOpenModal, setOpenModal] = useState(false);
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
 
-  // 더 보기
-  const [isOpenModal, setOpenModal] = useState(false);
-
   const handleMore = () => {
     setOpenModal(!isOpenModal);
   };
-
-  // 리스트 받아오기
-  const [postInfo, setPostInfo] = useState<ListType | null>(null);
 
   useEffect(() => {
     axiosInstance
@@ -72,7 +62,6 @@ const Detail = () => {
       .catch(e => e);
   }, [search]);
 
-  // 훕팅 신청 api
   const onApplyClick = () => {
     if (title.trim() === '') {
       toast.warning('한 줄 소개를 입력해주세요.');

@@ -40,7 +40,6 @@ const ImportMateModal: React.FC<MainInfoProps> = ({
     getUserList();
   }, [isModal, handleMore, onUserSelect]);
 
-  // 사용자 선택
   const handleUserSelect = (userId: number) => {
     onUserSelect?.(userId);
   };
