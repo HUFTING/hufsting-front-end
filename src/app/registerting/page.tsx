@@ -259,11 +259,13 @@ const Registerting = () => {
           }}
           style={{
             border: '2px solid #8D8D8D',
-            borderRadius: '5px',
+            borderRadius: '11px',
             width: '100%',
-            height: '35px',
+            height: '45px',
             marginBottom: '20px',
             paddingLeft: '8px',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
           }}
         />
         <SubTitle>희망 인원 수</SubTitle>

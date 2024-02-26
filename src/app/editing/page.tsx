@@ -3,9 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import HamburgerIcon from '@/components/common/ui/HamburgerIcon';
-import LogoIcon from '@/components/common/ui/LogoIcon';
-import NotificationIcon from '@/components/common/ui/NotificationIcon';
+
 import NameList from '@/components/list/NameList';
 import BackIcon from '@/components/common/ui/BackIcon';
 import BasicButton from '@/components/common/button/Button';
@@ -82,21 +80,6 @@ const Container = styled.div`
     .SmallButtonContainer {
       width: 300px;
     }
-  }
-`;
-
-const Header = styled.div`
-  width: 100%;
-  padding: 0px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 23px;
-  div {
-    width: 73px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
   }
 `;
 
@@ -288,13 +271,6 @@ const Editing = () => {
 
   return (
     <Container>
-      <Header>
-        <LogoIcon width={118} height={30} />
-        <div>
-          <NotificationIcon />
-          <HamburgerIcon />
-        </div>
-      </Header>
       <div className="titlebox">
         <BackIcon />
         <Title>훕팅 수정</Title>
