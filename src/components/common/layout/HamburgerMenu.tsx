@@ -1,11 +1,12 @@
 'use client';
 
 import { HamburgerMenuStyle } from '@/styles/common/layout/layoutStyles';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import useUserDataStore from '@/store/user';
+import { logoutAPI } from '@/api/user';
 import Image from 'next/image';
 import UserIcon from '../ui/UserIcon';
-// import SecretIcon from '../ui/SecretIcon';
 import BasicButton from '../button/Button';
 import ManageFollowIcon from '../ui/ManageFollowIcon';
 import ListIcon from '../ui/ListIcon';
@@ -43,17 +44,20 @@ interface props {
 const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { userData: user, resetUserData } = useUserDataStore();
   const [picked, setPicked] = useState<string | null>(null);
-  const [user] = useState({
-    name: '예람',
-    major: '중국어통번역학과',
-    profile: null,
-  });
 
   useEffect(() => {
     const i = menuList.findIndex(menu => pathname.includes(menu.link));
     if (i > -1) setPicked(menuList[i].title);
   }, [pathname]);
+
+  const logoutHandler = useCallback(async () => {
+    await logoutAPI();
+    resetUserData();
+    router.replace('/');
+    closeHamburgerEvent();
+  }, []);
 
   return (
     <HamburgerMenuStyle>
@@ -78,6 +82,7 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
               <div>{user.major}</div>
             </div>
           </div>
+
           <ul>
             {menuList.map(menu => (
               <li
@@ -101,7 +106,9 @@ const HamburgerMenu = ({ closeHamburgerEvent }: props) => {
             assetType="Secondary"
             size="S"
             content="로그아웃"
-            onClickEvent={null}
+            onClickEvent={() => {
+              void logoutHandler();
+            }}
             isActive
           />
         </div>
