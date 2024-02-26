@@ -59,7 +59,6 @@ const Home = () => {
     }
   }, []);
 
-  // 선택된 필터에 따라 리스트를 필터링하는 함수
   const filterLists = useCallback(
     (filters: SelectedFilters, lists: ListType[]) => {
       const filteredByGender =
@@ -130,7 +129,6 @@ const Home = () => {
 export default Home;
 
 const Container = styled.div`
-  padding: 33px 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -143,7 +141,8 @@ const Container = styled.div`
 const NoDataMessage = styled.div`
   height: 100vh;
   display: flex;
-  align-items: center;
+  padding-top: 20vh;
+  align-items: flex-start;
   justify-content: center;
   font-size: 22px;
   font-weight: bold;

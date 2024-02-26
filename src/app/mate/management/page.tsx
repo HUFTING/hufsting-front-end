@@ -9,6 +9,7 @@ import Image from 'next/image';
 import BasicInput from '@/components/common/BasicInput';
 import { followMateAPI, getMateListAPI, searchMateListAPI } from '@/api/mate';
 import { type MateInfo } from '@/types/user';
+import { toast } from 'react-toastify';
 
 type MatePageType = 'my-mate' | 'new-mate';
 
@@ -19,7 +20,12 @@ const ManageMateList = () => {
   const getUserList = useCallback(async (searchValue: string | null) => {
     if (searchValue !== null) {
       const response = await searchMateListAPI(searchValue);
-      setUserList([response]);
+      if (response.id === null) {
+        setUserList([]);
+        toast.error('해당 이메일을 가진 메이트가 없습니다.');
+      } else {
+        setUserList([response]);
+      }
     } else {
       const response = await getMateListAPI();
       setUserList(response);

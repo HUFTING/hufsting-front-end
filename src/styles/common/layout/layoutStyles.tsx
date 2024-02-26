@@ -54,7 +54,7 @@ export const HamburgerMenuStyle = styled.section`
           ${tw`w-full flex bg-[#EBEBEB] p-2 flex gap-2`}
 
           > div:first-child {
-            ${tw`bg-pink-50 rounded-[50%] w-12 h-12 overflow-hidden`}
+            ${tw`rounded-[50%] w-12 h-12 overflow-hidden relative`}
           }
           > div:last-child {
             > div:first-child {

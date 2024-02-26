@@ -15,21 +15,17 @@ import { type AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 const NewRequestPage = () => {
-  // 쿼리 받아오기
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
   const from = searchParams.get('from');
-
   const router = useRouter();
 
-  // 더 보기
   const [isOpenModal, setOpenModal] = useState(false);
+  const [postInfo, setPostInfo] = useState<NewAlarmType | null>(null);
 
   const handleMore = () => {
     setOpenModal(!isOpenModal);
   };
-  // 리스트 받아오기
-  const [postInfo, setPostInfo] = useState<NewAlarmType | null>(null);
 
   useEffect(() => {
     const getAlarmInfo = async () => {
@@ -56,7 +52,6 @@ const NewRequestPage = () => {
     getAlarmInfo();
   }, [search]);
 
-  // 거절하기
   const handleReject = () => {
     axiosInstance
       .patch(
@@ -73,7 +68,6 @@ const NewRequestPage = () => {
       });
   };
 
-  // 수락하기
   const handleAccept = () => {
     axiosInstance
       .patch(

@@ -82,7 +82,6 @@ const MyDetail = () => {
       .catch(e => e);
   }, [search]);
 
-  // 매칭 글 삭제
   const handleRemove = () => {
     axiosInstance
       .delete(`/apis/api/v1/matchingposts/${search}`)
@@ -93,7 +92,6 @@ const MyDetail = () => {
       .catch(e => e);
   };
 
-  // 매칭 글 수정
   const handleEdit = () => {
     setOpenTalkLink(postInfo?.openKakaoTalk);
     setText({
@@ -104,7 +102,6 @@ const MyDetail = () => {
     });
   };
 
-  // 수정 저장
   const handleSave = async () => {
     const kakaoLinkRegex = /^https:\/\/open\.kakao\.com\//;
     if (openTalkLink !== undefined) {
@@ -134,13 +131,14 @@ const MyDetail = () => {
     await axiosInstance
       .put(`/apis/api/v1/matchingposts/${search}`, requestData)
       .then(res => {
-        const data = res.data.matchingHosts;
-        setUpdatedList(data);
+        const lists = res.data.matchingHosts;
+        const link = res.data.openTalkLink;
+        setUpdatedList(lists);
+        setOpenTalkLink(link);
       })
       .catch(e => e);
   };
 
-  // 수정 취소
   const handleCancel = () => {
     setText({
       isEdit: false,
@@ -150,7 +148,6 @@ const MyDetail = () => {
     });
   };
 
-  // 왼쪽 버튼 클릭 이벤트
   const handleButtonClick = () => {
     void handleLeftButton();
   };
@@ -199,7 +196,7 @@ const MyDetail = () => {
                   <SubTitle>오픈채팅방 링크</SubTitle>
                   <ClipboardCopy text={postInfo.openKakaoTalk} />
                 </div>
-                <p>{postInfo.openKakaoTalk}</p>
+                <p>{openTalkLink}</p>
               </>
             )}
             {!text.isEdit && (
@@ -268,7 +265,6 @@ const MyDetail = () => {
 export default MyDetail;
 
 const Container = styled.div`
-  padding: 33px 0 0 0;
   display: flex;
   flex-direction: column;
   justify-content: center;

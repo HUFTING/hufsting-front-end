@@ -5,7 +5,7 @@ interface UserInfo {
   id: number;
   name: string;
   major: string;
-  studentNumber: null | string;
+  studentNumber: string;
   age: string;
   mbti: string;
   content: string;
