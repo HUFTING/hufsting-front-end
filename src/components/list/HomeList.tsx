@@ -21,8 +21,7 @@ interface HomeListProps {
 const List = ({ lists, pathnameProp }: HomeListProps) => (
   <Container>
     {lists.map((item, index) => (
-      // eslint-disable-next-line react/jsx-no-useless-fragment
-      <>
+      <div key={item.id}>
         {item.matchingStatus === '매칭 대기' ? (
           <Link
             className="link"
@@ -56,6 +55,7 @@ const List = ({ lists, pathnameProp }: HomeListProps) => (
           </Link>
         ) : (
           <Wrapper
+            key={item.id}
             $backgroundColor={item.id}
             $matchingStatus={item.matchingStatus}
           >
@@ -77,7 +77,7 @@ const List = ({ lists, pathnameProp }: HomeListProps) => (
             </div>
           </Wrapper>
         )}
-      </>
+      </div>
     ))}
   </Container>
 );
@@ -102,7 +102,8 @@ const Wrapper = styled.div<{
       : 'white'}; // 매칭 대기
 
   &:active {
-    background-color: rgba(255, 105, 105, 0.2);
+    background-color: ${props =>
+      props.$matchingStatus === '매칭 완료' ? 'none' : '#ff696933'};
   }
 
   &:hover {

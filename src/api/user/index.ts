@@ -21,6 +21,14 @@ export const loginAPI = async (code: string): Promise<LoginUserDataType> => {
   }
 };
 // http://www.hufsting.com:8080/auth/google/callback?code
+export const logoutAPI = async () => {
+  try {
+    await axiosInstance.get(`/apis/api/v1/logout`);
+  } catch (e) {
+    toast.error('로그아웃에 실패했습니다. 다시 시도해주세요.');
+    throw e;
+  }
+};
 
 export const saveProfileAPI = async (profileData: EnteredProfileDataType) => {
   try {

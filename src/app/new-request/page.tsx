@@ -63,6 +63,7 @@ const NewRequestPage = () => {
         `/apis/api/v1/matchingrequests/${postInfo?.matchingRequestId}/reject`,
       )
       .then(res => {
+        toast.success('상대방의 매칭을 거절했습니다.');
         router.push(`/myhufting`);
       })
       .catch(e => {
@@ -79,6 +80,7 @@ const NewRequestPage = () => {
         `/apis/api/v1/matchingrequests/${postInfo?.matchingRequestId}/accept`,
       )
       .then(res => {
+        toast.success('수락되었습니다.');
         const id = res.data.alarmId;
         router.push(`/result?id=${id}`);
       })
