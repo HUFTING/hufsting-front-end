@@ -31,7 +31,6 @@ const Content = styled.div`
   background-position: 20% 10%;
 
   .buttonWapper {
-    height: 14vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -104,6 +103,7 @@ const Result = () => {
             isActive
             width="100%"
           />
+          <div style={{ height: '10px' }} />
           <BasicButton
             color="red"
             assetType="Primary"
