@@ -52,19 +52,15 @@ interface TextType {
 
 const MyDetail = () => {
   const onEdit = true;
-  // 쿼리 받아오기
+
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
 
   const userData = useUserDataStore(state => state.userData);
-
-  // NameList 참여자 아이디
   const [returnId, setReturnId] = useState<number[]>([]);
 
-  // router
   const router = useRouter();
 
-  // 텍스트 설정
   const [text, setText] = useState<TextType>({
     isEdit: false,
     subtitle: '내가 올린 훕팅',
@@ -72,10 +68,9 @@ const MyDetail = () => {
     buttonright: '수정하기',
   });
 
-  // 리스트 받아오기
   const [postInfo, setPostInfo] = useState<ListType | null>(null);
   const [openTalkLink, setOpenTalkLink] = useState(postInfo?.openKakaoTalk);
-  const [updatedParticipants, setUpdatedParticipants] = useState<Hosts[]>([]);
+  const [updatedList, setUpdatedList] = useState<Hosts[]>([]);
 
   useEffect(() => {
     axiosInstance
@@ -92,6 +87,7 @@ const MyDetail = () => {
     axiosInstance
       .delete(`/apis/api/v1/matchingposts/${search}`)
       .then(res => {
+        toast.success('나의 매칭글이 삭제되었습니다.');
         router.push('/myhufting');
       })
       .catch(e => e);
@@ -119,30 +115,11 @@ const MyDetail = () => {
         return;
       }
     }
-    setUpdatedParticipants([]);
     setText({
       isEdit: false,
       subtitle: '내가 올린 훕팅',
       buttonleft: '삭제하기',
       buttonright: '수정하기',
-    });
-
-    const myProfile = await fetchMyProfile();
-    setUpdatedParticipants(prevParticipants => [
-      ...prevParticipants,
-      myProfile,
-    ]);
-
-    await Promise.all(
-      returnId.slice(1).map(async (id, index) => {
-        const modifiedProfile = await fetchProfileById(id);
-        return modifiedProfile;
-      }),
-    ).then(modifiedProfiles => {
-      setUpdatedParticipants(prevParticipants => [
-        ...prevParticipants,
-        ...modifiedProfiles,
-      ]);
     });
 
     const requestData = {
@@ -154,9 +131,12 @@ const MyDetail = () => {
       participants: returnId,
     };
 
-    axiosInstance
+    await axiosInstance
       .put(`/apis/api/v1/matchingposts/${search}`, requestData)
-      .then(res => res)
+      .then(res => {
+        const data = res.data.matchingHosts;
+        setUpdatedList(data);
+      })
       .catch(e => e);
   };
 
@@ -168,17 +148,6 @@ const MyDetail = () => {
       buttonleft: '삭제하기',
       buttonright: '수정하기',
     });
-  };
-
-  // 아이디 정보 가져오기
-  const fetchProfileById = async (id: number): Promise<Hosts> => {
-    const res = await axiosInstance.get(`/apis/api/v1/member/${id}`);
-    return res.data;
-  };
-
-  const fetchMyProfile = async (): Promise<Hosts> => {
-    const res = await axiosInstance.get('/apis/api/v1/profile');
-    return res.data;
   };
 
   // 왼쪽 버튼 클릭 이벤트
@@ -254,9 +223,7 @@ const MyDetail = () => {
           <NameList
             desiredNumPeople={postInfo.desiredNumPeople}
             participants={
-              updatedParticipants.length === 0
-                ? postInfo.matchingHosts
-                : updatedParticipants
+              updatedList.length === 0 ? postInfo.matchingHosts : updatedList
             }
             editable={text.isEdit}
             setReturnId={setReturnId}
