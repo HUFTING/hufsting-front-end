@@ -68,7 +68,16 @@ const AlarmSelectMenuBar = () => {
               잠시만 기다려주세요.
             </Text>
           )}
-          {alarmList.count === 0 && <div>알람이 없습니다.</div>}
+          {alarmList.count === 0 && (
+            <Text
+              color="gray"
+              fontSize="xl"
+              fontWeight="SemiBold"
+              className="w-full  text-center"
+            >
+              알림이 없습니다.
+            </Text>
+          )}
         </>
       ) : (
         <FollowCard name="누우누우" id="1" />

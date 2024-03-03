@@ -78,6 +78,7 @@ const MyDetail = () => {
       .then(res => {
         const { data } = res;
         setPostInfo(data);
+        setOpenTalkLink(data.openTalkLink);
       })
       .catch(e => e);
   }, [search]);
