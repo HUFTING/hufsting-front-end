@@ -327,5 +327,5 @@ const BasicButtonWrapper = styled.div`
   max-width: 390px;
   bottom: 0;
   padding: 22px;
-  z-index: 1000;
+  z-index: 10;
 `;
