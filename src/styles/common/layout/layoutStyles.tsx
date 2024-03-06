@@ -35,6 +35,7 @@ export const SubHeaderStyle = styled.section`
 export const HamburgerMenuStyle = styled.section`
   & {
     ${tw`w-full h-10 absolute top-0 left-0 h-screen flex`}
+    height: 100dvh;
 
     > div {
       ${tw`h-full`}
@@ -54,9 +55,14 @@ export const HamburgerMenuStyle = styled.section`
           ${tw`w-full flex bg-[#EBEBEB] p-2 flex gap-2`}
 
           > div:first-child {
-            ${tw`rounded-[50%] w-12 h-12 overflow-hidden relative`}
+            ${tw`rounded-[50%] min-w-[3rem] w-12 min-h-[3rem] h-12 overflow-hidden relative`}
           }
           > div:last-child {
+            ${tw`flex-grow min-w-[1px]`}
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-all;
+
             > div:first-child {
               color: #294566;
               font-size: 18px;
