@@ -36,7 +36,7 @@ interface ListType {
   desiredNumPeople: number;
   gender: string;
   authorName: string;
-  openKakaoTalk: string;
+  openTalkLink: string;
   matchingHosts: Hosts[];
   matchingRequestsCount: number;
   matchingRequests: ApplyLists[];
@@ -69,7 +69,7 @@ const MyDetail = () => {
   });
 
   const [postInfo, setPostInfo] = useState<ListType | null>(null);
-  const [openTalkLink, setOpenTalkLink] = useState(postInfo?.openKakaoTalk);
+  const [openTalkLink, setOpenTalkLink] = useState(postInfo?.openTalkLink);
   const [updatedList, setUpdatedList] = useState<Hosts[]>([]);
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const MyDetail = () => {
   };
 
   const handleEdit = () => {
-    setOpenTalkLink(postInfo?.openKakaoTalk);
+    setOpenTalkLink(postInfo?.openTalkLink);
     setText({
       isEdit: true,
       subtitle: '훕팅 수정',
@@ -194,7 +194,7 @@ const MyDetail = () => {
               <>
                 <div className="top">
                   <SubTitle>오픈채팅방 링크</SubTitle>
-                  <ClipboardCopy text={postInfo.openKakaoTalk} />
+                  <ClipboardCopy text={postInfo.openTalkLink} />
                 </div>
                 <p>{openTalkLink}</p>
               </>
